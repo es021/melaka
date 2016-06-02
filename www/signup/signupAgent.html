@@ -1,0 +1,65 @@
+<h2 class="title">New Agent Sign Up</h2>
+<form role="form">
+<div class="form-group" ng-form='agentform'>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">First Name</span>
+    <input type="text" class="form-control" id="first_name" placeholder="John" ng-model="newAgent.first_name" required>
+  </label>
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Last Name</span>
+    <input type="text" class="form-control" id="last_name" placeholder="Doe" ng-model="newAgent.last_name" required>
+  </label>
+
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Phone Number</span>
+    <input type="text" class="input-medium bfh-phone" placeholder="XXX-XXXXXXXX" id="phone_number" ng-model="newAgent.phone_number" required data-country="US">
+  </label>  
+
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Email</span>
+    <input type="text" class="form-control" placeholder="john.doe@gmail.com" id="email" ng-model="newAgent.email" >
+  </label>  
+
+  <div class="list">
+    <label class="item item-input item-select">
+      <div class="input-label">State</div>
+      <select ng-model="newAgent.state" required>
+        <option selected>Johor</option>
+        <option>Kedah</option>
+        <option>Kelantan</option>
+        <option>Kuala Lumpur</option>
+        <option>Labuan</option>
+        <option>Malacca</option>
+        <option>Negeri Sembilan</option>
+        <option>Pahang</option>
+        <option>Penang</option>
+        <option>Perak</option>
+        <option>Perlis</option>
+        <option>Putrajaya</option>
+        <option>Sabah</option>
+        <option>Sarawak</option>
+        <option>Selangor</option>
+        <option>Terengganu</option>
+      </select>
+    </label>
+
+    <label class="item item-input item-select">
+      <div class="input-label">Agent Category</div>
+      <select ng-model="newAgent.category" required>
+        <option selected>Stokist</option>
+        <option>Dropship</option>
+        <option>Agent</option>
+      </select>
+    </label>
+
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">About Yourself</span>
+    <textarea class="form-control" placeholder="Tell more about yourself (optional)" rows="4" ng-model="newAgent.about"></textarea>
+    </label>
+
+  </div>
+
+  <button ng-disabled="!agentform.$valid" type="submit" class="button button-block button-positive" ng-click="addAgent()">Submit</button>
+
+</div>
+</form>

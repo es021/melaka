@@ -1,0 +1,31 @@
+<p>
+    <div ng-if="!auth.isAuthenticated">
+		<h2 class="title">Welcome to Melaka</h2>
+		<h3>Lets get started</h3>
+    </div>
+
+    <div ng-if="auth.isAuthenticated">
+	  <div class="item item-avatar">
+	    <img src="{{authProfile.picture}} ">
+	    <h2>{{authProfile.email}}</h2>
+	    <p ng-if="userInSession != null">{{userInSession.user_type}}</p>
+	    <p ng-if="userInSession == null">New User</p>
+	  </div>    
+	</div>    
+
+    <!--FOR NEW USER-->
+    <div ng-if="auth.isAuthenticated && userInSession == null">
+		<h3 class="title">Hello {{authProfile.nickname}}</h3>
+		<h4>Lets get started</h4>
+		
+		<div ng-app="sample" ng-controller="SignupController">
+			<button class="button button-positive" ng-click="signupAsAgent()">Register as Agent</button>
+			<button class="button button-positive" ng-click="signupAsSupplier()">Register as Supplier</button>
+		</div>
+    </div>
+
+    <!--FOR REGISTERED USER-->
+    <div ng-if="auth.isAuthenticated && userInSession != null">
+		<h3 class="title">Welcome Back {{authProfile.nickname}}</h3>
+    </div>
+</p>

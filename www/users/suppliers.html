@@ -1,0 +1,12 @@
+<p>
+<h2 class="title">List of Suppliers</h2>
+        <ion-list can-swipe="true">
+          <ion-item ng-repeat="item in suppliers">
+            Supplier {{item.id}} {{item.email}}
+          </ion-item>
+        </ion-list>
+
+    <div ng-if="suppliers.length == 0">
+    	No registered suppliers
+    </div>
+</p>

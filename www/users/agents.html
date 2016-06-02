@@ -1,0 +1,12 @@
+<p>
+<h2 class="title">List of Agents</h2>
+        <ion-list can-swipe="true">
+          <ion-item ng-repeat="item in agents">
+            Agent {{item.id}} {{item.email}}
+          </ion-item>
+        </ion-list>
+
+    <div ng-if="agents.length == 0">
+    	No registered agent
+    </div>
+</p>

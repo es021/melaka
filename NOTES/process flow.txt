@@ -1,0 +1,29 @@
+
+status -> requested(delivery/pikap)/aprroved(invoice)/delivered(tracking number/eta)/received
+payment_status -> paid(upload proof payment)/payment_comfirmed
+
+Invoice
+---------
+product details
+agent id
+supplier id
+transcation details(id)
+
+------------------------------------------------------------------
+
+----------------
+Category Product
+1) Cloth -> Size
+
+State -> City 
+
+Design display
+----------------
+
+
+Home -> 
+
+
+
+
+
