@@ -5,14 +5,21 @@ var myApp = angular.module('sample.home', [
 ]);
 
 myApp.config(function($stateProvider, BackandProvider) {
+  /*
   $stateProvider
     .state('home', {
       url: "/",
       controller: 'HomeController',
       templateUrl: 'home/home.html',
+
+      params : {
+        authenticated : "no",
+        user_type : "new"
+      }
+
     });
 
-
+*/
   BackandProvider.setAppName('wzs21testapp');
   BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
   
@@ -20,9 +27,18 @@ myApp.config(function($stateProvider, BackandProvider) {
 
 
 
-myApp.controller('HomeController', function($scope, auth, HomeService){
+myApp.controller('HomeController', function($scope, auth, HomeService, $state, $stateParams){
+
+  $scope.authenticated = $stateParams.authenticated;
+  $scope.user_type =  $stateParams.user_type;
+  console.log ("From HomeController ->  " +  $scope.user_type);
+
+
   $scope.auth = auth;
-  //console.log($scope.auth);
+  console.log("Auth");
+
+  console.log($scope.auth);
+
 
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   console.log("UserInSession");
@@ -30,8 +46,6 @@ myApp.controller('HomeController', function($scope, auth, HomeService){
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   console.log("AuthProfile");
   console.log($scope.authProfile);
-
-
 });
 
 

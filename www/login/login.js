@@ -65,7 +65,7 @@ myApp.controller('LoginController', function($scope, auth, $state) {
 });
 
 
-myApp.controller('LoginSuccessController', function($scope, LoginService, auth, $state){
+myApp.controller('LoginSuccessController', function($scope, LoginService, auth, $state, growl){
   $scope.users = [];
   $scope.input = {};
   $scope.auth = auth;
@@ -81,6 +81,8 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
     userInSession.user_id = result.data[0].id;
     userInSession.agent_id = result.data[0].agent_id;
     userInSession.supplier_id = result.data[0].supplier_id;
+    
+    console.log("initUserSession");
 
     if(userInSession.agent_id > 0 && userInSession.supplier_id == 0)
     {
@@ -96,7 +98,7 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
     console.log("User In Session")
     console.log(userInSession);    
 
-    window.localStorage.setItem("UserInSession",JSON.stringify(userInSession));      
+    window.localStorage.setItem("UserInSession",JSON.stringify(userInSession));    
   }
 
   // From auth0 to the real database
@@ -112,25 +114,34 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
       {
         console.log("New User - > " + authId);
         $scope.isNew = true; 
+
+        growl.success("New Member" ,{title: 'Login Success!'});
+        $state.go('home');    
       }
       else
       {
         initUserSession(result);
         $scope.isNew = false; 
-        console.log("huhu");
-      }
+        
+        growl.success($scope.user_type ,{title: 'Login Success!'});
+        
+        $state.go('home');    
 
+      }
+/*
       //Go to home page if the user information is loaded.
       if ($scope.isNew != null)
       {
-        console.log("Go Home");
+        //console.log("Go Home");
+
+
         $state.go('home');   
       }
       else
       {
         console.log("Retrieving user information from DB");
       }
-
+*/
     });
   }
 

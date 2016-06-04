@@ -12,7 +12,7 @@ myApp.config(function($stateProvider, BackandProvider) {
       controller: 'UserController',
       templateUrl: 'users/agents.html',
       data: {
-        requiresLogin: true
+        requiresLogin: false
       }
     });
 
@@ -22,9 +22,50 @@ myApp.config(function($stateProvider, BackandProvider) {
       controller: 'UserController',
       templateUrl: 'users/suppliers.html',
       data: {
-        requiresLogin: true
+        requiresLogin: false
       }
   });
+
+  $stateProvider
+    .state('allUsers', {
+      url: '/allUsers',
+      controller: 'UserController',
+      templateUrl: 'users/allUsers.html',
+      data: {
+        requiresLogin: false
+      }
+  });
+
+
+  $stateProvider
+    .state('showAgent', {
+      url: '/showAgent',
+      controller: 'ShowUserController',
+      templateUrl: 'users/showAgent.html',
+      params : {
+        id : 0,
+        objectName : ""
+      },
+      data: {
+        requiresLogin: false
+      }
+  });
+
+  $stateProvider
+    .state('showSupplier', {
+      url: '/showSupplier',
+      controller: 'ShowUserController',
+      templateUrl: 'users/showSupplier.html',
+      params : {
+        id : 0,
+        objectName : ""
+      },
+      data: {
+        requiresLogin: false
+      }
+  }); 
+
+
 
   BackandProvider.setAppName('wzs21testapp');
   BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
@@ -32,10 +73,15 @@ myApp.config(function($stateProvider, BackandProvider) {
 });
 
 
-myApp.controller('UserController', function($scope, BackandService, auth, $state){
+
+myApp.controller('UserController', function($scope, BackandService, auth, $state, $stateParams){
   
+  //console.log($state.current.name);
+
   $scope.agents = [];
   $scope.suppliers = [];
+
+  $scope.showObject = $stateParams.showObject;
 
   $scope.auth = auth;
   var userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
@@ -43,14 +89,14 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
   $scope.supplierId = userInSession.supplier_id;
   $scope.userType = userInSession.user_type;
   
-  function getAllObjects(objectName,user_type){
+  function getAllObjects(objectName){
       BackandService.getAllObjects(objectName).then(function(result){
 
-        if($scope.userType == "agent")
-          $scope.suppliers = result.data.data;
-
-        if($scope.userType == "supplier")
+        if(objectName == "agents")
           $scope.agents = result.data.data;
+
+        if(objectName == "suppliers")
+          $scope.suppliers = result.data.data;
 
 
         console.log(result.status);
@@ -58,16 +104,53 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
         console.log(result.data.data);
 
       });
+    }
 
+  $scope.showObjectFunction = function(objectName, id)
+  {
+    if(objectName == "agents")
+      $state.go('showAgent', {id:id, objectName:objectName});
 
+    if(objectName == "suppliers")
+      $state.go('showSupplier', {id:id, objectName:objectName});
+  };
+
+  if($state.current.name == "allUsers")
+  {
+    getAllObjects("agents");
+    getAllObjects("suppliers");
   }
 
+  if($state.current.name == "agents")
+  {
+    getAllObjects("agents");
+  }
+
+  if($state.current.name == "suppliers")
+  {
+    getAllObjects("suppliers");
+  }
+
+
+
+});
+
+myApp.controller('ShowUserController', function($scope, BackandService, auth, $state, $stateParams){
   
-  if($scope.userType == "agent")
-   getAllObjects("suppliers", $scope.userType);
-  
-  if($scope.userType == "supplier")
-   getAllObjects("agents", $scope.userType);
+  $scope.id = $stateParams.id;
+  $scope.objectName = $stateParams.objectName;
+  $scope.showObject = $stateParams.showObject;
+
+  function getObjectById(objectName, id)
+  {
+    BackandService.getObjectById(objectName,id).then(function(result){
+    console.log("Data from show object");
+    $scope.showObject = result.data;
+
+    });
+  }
+
+  getObjectById($scope.objectName,$scope.id);
 
 });
 

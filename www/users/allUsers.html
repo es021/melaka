@@ -16,4 +16,25 @@
     <div ng-if="agents.length == 0">
     	No registered agent
     </div>
+</div>
+
+<h2 class="title">List of Suppliers</h2>
+
+    <div class="text-left">
+		<div class="list">
+          <div ng-repeat="item in suppliers">
+			    <a class="item item-avatar" ng-click="showObjectFunction('suppliers',{{item.id}})">
+			    	<img src="{{item.picture}}">
+			      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+			      	<p>{{item.state}}</p>
+			    </a>
+          </div>
+		</div>
+	</div>
+    
+    <div ng-if="suppliers.length == 0">
+    	No registered suppliers
+    </div>
+
 </p>
+

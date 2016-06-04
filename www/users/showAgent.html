@@ -1,0 +1,34 @@
+<p>
+<h2 class="title">Agent Details</h2>
+
+<div class="list card text-left">
+
+  <div class="item item-avatar">
+    <img src="{{showObject.picture}}">
+    <h2>{{showObject.first_name}} {{showObject.last_name}}</h2>
+	<p><strong>Agent Id</strong> | {{showObject.id}}</p>
+  </div>
+
+  <div class="item item-body">
+    <h3><strong>Agent Category</strong> | {{showObject.category}}</h3>
+    <h3><strong>Location</strong> | {{showObject.state}}</h3>
+    <h3><strong>Email</strong> | {{showObject.email}}</h3>
+    <h3><strong>Phone Number</strong> | {{showObject.phone_number}}</h3>
+    <h3><strong>Member Since</strong> | {{showObject.created_at}}</h3>
+    
+    <hr>
+    <h3><strong>More Information</strong></h3>
+    <p ng-if="showObject.about == ''">
+		There is no other information about this agent
+    </p>    
+    <p ng-if="showObject.about != ''">
+		{{showObject.about}}
+    </p>
+  	
+  	<button class="button button-block button-positive" ng-click="addAgent({{showObject.id}})">Add To Your Agent List</button>
+
+  </div>
+
+</div>
+
+</p>
