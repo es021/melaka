@@ -72,7 +72,7 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
   $scope.email = [];
   $scope.user = [];
   $scope.isNew = null;
-  $scope.user_type = "";
+  $scope.user_type = "new";
 
   function initUserSession(result)
   {
