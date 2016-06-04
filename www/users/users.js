@@ -84,11 +84,16 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
   $scope.showObject = $stateParams.showObject;
 
   $scope.auth = auth;
-  var userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  $scope.agentId = userInSession.agent_id;
-  $scope.supplierId = userInSession.supplier_id;
-  $scope.userType = userInSession.user_type;
-  
+
+  if(auth.isAuthenticated)
+  {
+    var userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+    $scope.agentId = userInSession.agent_id;
+    $scope.supplierId = userInSession.supplier_id;
+    $scope.userType = userInSession.user_type;
+  }
+
+
   function getAllObjects(objectName){
       BackandService.getAllObjects(objectName).then(function(result){
 
