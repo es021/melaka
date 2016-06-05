@@ -1,1 +1,6 @@
 /* Empty. Add your own CSS if you like */
+
+.status-text-success {
+	font-family: Courier;
+	color: red;
+}

@@ -65,7 +65,7 @@ myApp.controller('LoginController', function($scope, auth, $state) {
 });
 
 
-myApp.controller('LoginSuccessController', function($scope, LoginService, auth, $state, growl){
+myApp.controller('LoginSuccessController', function($scope, LoginService, auth, $state, growl,USER_LINK_TYPE){
   $scope.users = [];
   $scope.input = {};
   $scope.auth = auth;
@@ -100,6 +100,8 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
 
     window.localStorage.setItem("UserInSession",JSON.stringify(userInSession));    
   }
+
+
 
   // From auth0 to the real database
   function getUserByAuthId(authId){

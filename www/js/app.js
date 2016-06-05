@@ -39,13 +39,14 @@ myApp.run(function($ionicPlatform) {
   });
 });
 
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider) {
-  growlProvider.globalTimeToLive(1000);
+myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider) {
+  growlProvider.globalTimeToLive(3000);
 
     $stateProvider
     .state('home', {
@@ -54,6 +55,36 @@ myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpP
       templateUrl: 'home/home.html'
     });
 
+  BackandProvider.setAppName('wzs21testapp');
+  BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
+
+});
+
+myApp.constant("USER_LINK_TYPE", {
+        "LINKED": 1,
+        "NOT_REQUESTED": 2,
+        "REQUESTED_BY_A": 3,
+        "REQUESTED_BY_S": 4,
+        "SAME_TYPE":5,
+        "NOT_AUTH":6
+});
+
+myApp.constant("USER_TYPE", {
+        "AGENT": 1,
+        "SUPPLIER": 2
+});
+
+myApp.constant("TRANS_STATUS", {
+        "REQUESTED": 1,
+        "DENIED": 2,
+        "APPROVED": 3,
+        "DELIVERED": 4,
+        "RECEIVED": 5
+});
+
+myApp.constant("PAYMENT_STATUS", {
+        "PAID": 1,
+        "COMFIRMED": 2
 });
 
 myApp.run(function(auth) {
@@ -61,18 +92,125 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl) {
+myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl, BackandService,USER_LINK_TYPE) {
   $scope.auth = auth;
 
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  console.log("UserInSession");
-  console.log($scope.userInSession);
-  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
-  console.log("AuthProfile");
-  console.log($scope.authProfile);
-  
-  //console.log("authenticated");
-  $state.go("home",{authenticated:"no", user_type:""});
+  if(auth.isAuthenticated)
+  {
+    $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+    $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+    initAuthenticatedUser($scope);
+
+    /*
+    console.log("UserInSession");
+    console.log($scope.userInSession);
+
+    console.log("AuthProfile");
+    console.log($scope.authProfile);
+    */
+  }
+
+  function initAuthenticatedUser($scope)
+  {
+    $scope.myLinkedUser = {};
+    $scope.requestedToUser = {};
+    $scope.requestedFromUser = {};
+    
+    if($scope.userInSession != null)
+    {
+      if($scope.userInSession.user_type == "agent")
+      {
+        console.log("Init Agent");
+
+        //myLinkedUser
+        getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.LINKED);
+        
+        //requestedToUser
+        getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_S);
+
+        //requestedFromUser
+        getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_A);
+      }
+
+      else if($scope.userInSession.user_type == "supplier")
+      {
+        console.log("Init Supplier");
+        
+        //myLinkedUser
+        getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.LINKED);
+        
+        //requestedToUser
+        getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_A);
+        
+        //requestedFromUser
+        getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_S);
+      }
+    }
+    else
+    {
+      console.log("Init New");
+    }
+
+  }
+
+  function getSupplierLinkByAgentIdAndType(agent_id,type){
+    BackandService.getSupplierLinkByAgentIdAndType(agent_id,type).then(function(result){
+      console.log("Getting all getSupplierLinkByAgentIdAndType | Type : "+type);
+      console.log(result);
+
+      if(type == USER_LINK_TYPE.LINKED)
+      {
+        $scope.myLinkedUser = result.data;
+      }      
+
+
+      //User : Agent
+      //Kita nak supplier, request by supplier => requestedToUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
+      {
+        $scope.requestedToUser = result.data;
+      }
+
+
+      //User : Agent
+      //Kita nak supplier, request by agent => requestedFromUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
+      {
+        $scope.requestedFromUser = result.data;
+      }
+
+    });
+  }
+
+  function getAgentLinkBySupplierIdAndType(supplier_id,type){
+    BackandService.getAgentLinkBySupplierIdAndType(supplier_id,type).then(function(result){
+      console.log("Getting all getAgentLinkBySupplierIdAndType | Type : "+type);
+      console.log(result);
+
+      if(type == USER_LINK_TYPE.LINKED)
+      {
+        $scope.myLinkedUser = result.data;
+      }
+
+
+      //User : Supplier
+      //Kita nak agent, request by agent => requestedToUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
+      {
+        $scope.requestedToUser = result.data;
+      }
+
+      //User : Supplier
+      //Kita nak agent, request by supplier => requestedFromUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
+      {
+        $scope.requestedFromUser = result.data;
+      }
+
+    });
+  }
+
+  $state.go("home");
   
   $scope.home = function(authenticated, user_type) {
     /*

@@ -107,8 +107,10 @@ myApp.controller('SignupControllerHelper', function($scope, SignupService, auth,
     //console.log($scope.userId);
     
     $scope.newAgent.created_at = getTimestampinMysql();
+    $scope.newAgent.picture = $scope.authProfile.picture;
 
     console.log($scope.newAgent.email);
+    console.log($scope.newAgent.picture);
     console.log($scope.newAgent.first_name);
     console.log($scope.newAgent.last_name);
     console.log($scope.newAgent.phone_number);
@@ -136,8 +138,10 @@ myApp.controller('SignupControllerHelper', function($scope, SignupService, auth,
     //console.log($scope.userId);
     //$scope.newSupplier.email = authProfile.email;
     $scope.newSupplier.created_at = getTimestampinMysql();
+    $scope.newSupplier.picture = $scope.authProfile.picture;
 
     console.log($scope.newSupplier.email);
+    console.log($scope.newSupplier.picture);
     console.log($scope.newSupplier.first_name);
     console.log($scope.newSupplier.last_name);
     console.log($scope.newSupplier.phone_number);

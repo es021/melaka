@@ -24,7 +24,45 @@
 		{{showObject.about}}
     </p>
   	
-  	<button class="button button-block button-positive" ng-click="addSupplier({{showObject.id}})">Add To Your Supplier List</button>
+    <!-- Not Valid To Add Request -->
+    <div ng-if ="userLinkType == USER_LINK_TYPE.NOT_AUTH">
+    <button class="button button-block button-positive">Not Authorized</button>
+    </div>    
+
+    <!-- Same User Type -->
+    <div ng-if ="userLinkType == USER_LINK_TYPE.SAME_TYPE">
+    <button class="button button-block button-positive" ng-click="linkUser({{showObject.id}})">Same User Type</button>
+    </div>
+
+    <!-- No Record in userLink -->
+    <div ng-if ="userLinkType == USER_LINK_TYPE.NOT_REQUESTED">
+    <button class="button button-block button-positive" ng-click="linkUser('sendRequest')">Add To Supplier List</button>
+    </div>
+
+    <!-- Requested-by-supplier -->
+    <div ng-if ="userLinkType == USER_LINK_TYPE.REQUESTED_BY_S">
+
+    <div class="button-bar">
+      <a class="button disable button-block button-balanced" ng-click="linkUser('confirmRequest')">Comfirm Request</a>
+      <a class="button disable button-block button-assertive" ng-click="linkUser('ignoreRequest')">Ignore Request</a>
+    </div>
+    </div>
+
+    <!-- Requested-by-agent -->
+    <div ng-if ="userLinkType == USER_LINK_TYPE.REQUESTED_BY_A">
+    <div class="button-bar">
+      <a ng-disabled="true" class="button disable button-block button-balanced">Requested</a>
+      <a class="button disable button-block button-assertive" ng-click="linkUser('cancelRequest')">Cancel Request</a>
+    </div>
+    </div>
+
+    <!-- linked -->
+    <div ng-if ="userLinkType == USER_LINK_TYPE.LINKED">
+    <div class="button-bar">
+      <a ng-disabled="true" class="button disable button-block button-calm">In Your List</a>
+      <a class="button disable button-block button-assertive" ng-click="linkUser('removeFromList')">Remove From List</a>
+    </div>
+    </div>
 
   </div>
 

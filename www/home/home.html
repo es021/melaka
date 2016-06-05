@@ -1,4 +1,4 @@
-
+<!--App Controller-->
 <p>
     <div ng-if="!auth.isAuthenticated">
 
@@ -11,7 +11,11 @@
 
     </div>
 
-    <!--FOR NEW USER-->
+    <!--
+    -----------------------------------------------------------------------------------------------------------------------------------------------------------------
+	FOR NEW USER
+	FOR NEW USER
+	-->
     <div ng-if="auth.isAuthenticated && userInSession == null">
 		<h3 class="title">Hello {{authProfile.nickname}}</h3>
 		<h4>Lets get started</h4>
@@ -23,8 +27,11 @@
 			
 			<div ng-if="userInSession != null">
 				<p ng-if="userInSession.user_type=='agent'"><strong>Agent Id</strong> {{userInSession.agent_id}}</p>
-		    	<p ng-if="userInSession.user_type=='supplier'"><strong>Supplier Id</strong> {{userInSession.supplier_id}}</p>
-							
+		    	<p ng-if="userInSession.user_type=='supplier'"><strong>Supplier Id</strong> {{userInSession.supplier_id}}</p>			
+			</div>
+
+			<div ng-if="userInSession == null">
+				<p>New User</p>
 			</div>
 			
 		  </div>    
@@ -37,12 +44,20 @@
     </div>
 
 
-    <!--FOR REGISTERED USER-->
+    <!--
+ 	-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+	FOR REGISTERED USER
+	FOR REGISTERED USER
+	-->
     <div ng-if="auth.isAuthenticated && (userInSession.user_type == 'agent' || userInSession.user_type == 'supplier')">
 		<h3 class="title">Welcome Back {{authProfile.nickname}}</h3>
 
+		<!--
+		-------------------------------------------------------------------------------------------------------------------------------------------------------------
+		Profile Card
+		Profile Card
+		-->
 		<div class="text-left">
-
 			<div class="item item-avatar">
 			    <img src="{{authProfile.picture}} ">
 			    <h2>{{authProfile.nickname}}</h2>
@@ -57,8 +72,109 @@
 
 			</div>    
 		</div>   
+		
+		<!--
+		-------------------------------------------------------------------------------------------------------------------------------------------------------------
+		User Linked List
+		User Linked List
+		-->
+		<hr>
+		<h4 class="title" ng-if = "userInSession.user_type == 'supplier'">My Linked Agents</h4>
+		<h4 class="title" ng-if = "userInSession.user_type == 'agent'">My Linked Suppliers</h4>
+
+	    <div class="text-left">
+			<div class="list">
+	          <div ng-repeat="item in myLinkedUser">
+	          	<div ng-controller = "UserController">
+				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'supplier'" ng-click="showObjectFunction('agents',{{item.id}})">
+				   	<img src="{{item.picture}}">
+				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+				      	<p><strong>Agent Id</strong> {{item.id}}</p>
+				    </a>
+				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'agent'" ng-click="showObjectFunction('suppliers',{{item.id}})">
+				    	<img src="{{item.picture}}">
+				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+				      	<p><strong>Supplier Id</strong> {{item.id}}</p>
+				    </a>
+				</div>
+	          </div>
+			</div>
+		</div>
+
+	    <div ng-if="myLinkedUser.length == 0">
+	    	<span ng-if = "userInSession.user_type == 'supplier'">No linked agents</span>
+	    	<span ng-if = "userInSession.user_type == 'agent'">No linked suppliers</span>
+	    </div>
+
+		<!--
+		-------------------------------------------------------------------------------------------------------------------------------------------------------------
+		requestedToUser List
+		requestedToUser List
+		-->
+		<hr>
+		<h4 class="title" ng-if = "userInSession.user_type == 'supplier'">Link Request To Me</h4>
+		<h4 class="title" ng-if = "userInSession.user_type == 'agent'">Link Request To Me</h4>
+
+	    <div class="text-left">
+			<div class="list">
+	          <div ng-repeat="item in requestedToUser">
+	          	<div ng-controller = "UserController">
+				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'supplier'" ng-click="showObjectFunction('agents',{{item.id}})">
+				   	<img src="{{item.picture}}">
+				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+				      	<p><strong>Agent Id</strong> {{item.id}}</p>
+				    </a>
+				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'agent'" ng-click="showObjectFunction('suppliers',{{item.id}})">
+				    	<img src="{{item.picture}}">
+				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+				      	<p><strong>Supplier Id</strong> {{item.id}}</p>
+				    </a>
+				</div>
+	          </div>
+			</div>
+		</div>
+
+	    <div ng-if="requestedToUser.length == 0">
+	    	<span ng-if = "userInSession.user_type == 'supplier'">No agent are requesting to connect with you right now.</span>
+	    	<span ng-if = "userInSession.user_type == 'agent'">No supplier are requesting to connect with you right now.</span>
+	    </div>
+
+	    		<!--
+		-------------------------------------------------------------------------------------------------------------------------------------------------------------
+		requestedFromUser List
+		requestedFromUser List
+		-->
+		<hr>
+		<h4 class="title" ng-if = "userInSession.user_type == 'supplier'">Link Request From Me</h4>
+		<h4 class="title" ng-if = "userInSession.user_type == 'agent'">Link Request From Me</h4>
+
+	    <div class="text-left">
+			<div class="list">
+	          <div ng-repeat="item in requestedFromUser">
+	          	<div ng-controller = "UserController">
+				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'supplier'" ng-click="showObjectFunction('agents',{{item.id}})">
+				   	<img src="{{item.picture}}">
+				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+				      	<p><strong>Agent Id</strong> {{item.id}}</p>
+				    </a>
+				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'agent'" ng-click="showObjectFunction('suppliers',{{item.id}})">
+				    	<img src="{{item.picture}}">
+				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+				      	<p><strong>Supplier Id</strong> {{item.id}}</p>
+				    </a>
+				</div>
+	          </div>
+			</div>
+		</div>
+
+	    <div ng-if="requestedFromUser.length == 0">
+	    	<span ng-if = "userInSession.user_type == 'supplier'">You are not requesting to connect with any agents right now.</span>
+	    	<span ng-if = "userInSession.user_type == 'agent'">You are not requesting to connect with any suppliers right now</span>
+	    </div>
+
+
 
     </div>
-
 </p>
+	
 
