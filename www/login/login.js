@@ -65,7 +65,7 @@ myApp.controller('LoginController', function($scope, auth, $state) {
 });
 
 
-myApp.controller('LoginSuccessController', function($scope, LoginService, auth, $state, growl,USER_LINK_TYPE){
+myApp.controller('LoginSuccessController', function($scope, BackandService , auth, $state, growl, USER_LINK_TYPE){
   $scope.users = [];
   $scope.input = {};
   $scope.auth = auth;
@@ -73,6 +73,7 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
   $scope.user = [];
   $scope.isNew = null;
   $scope.user_type = "new";
+  $scope.loading = true;
 
   function initUserSession(result)
   {
@@ -111,7 +112,7 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
   // From auth0 to the real database
   function getUserByAuthId(authId){
     //console.log(email);
-    LoginService.getUserByAuthId(authId).then(function(result){
+    BackandService.getUserByAuthId(authId).then(function(result){
 
       $scope.user = result.data[0];
       console.log(result.data);
@@ -123,9 +124,6 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
         $scope.isNew = true; 
 
         setFooter("newUser");
-
-        growl.success("New Member" ,{title: 'Login Success!'});
-        $state.go('home');    
       }
       else
       {
@@ -133,25 +131,12 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
         $scope.isNew = false; 
 
         setFooter($scope.user_type);
-        
-        growl.success($scope.user_type ,{title: 'Login Success!'});
-        $state.go('home');    
-
       }
-/*
-      //Go to home page if the user information is loaded.
-      if ($scope.isNew != null)
-      {
-        //console.log("Go Home");
 
+      growl.success("" ,{title: 'Login Success!'});
+      $scope.loading = false;
+      $state.go('home');  
 
-        $state.go('home');   
-      }
-      else
-      {
-        console.log("Retrieving user information from DB");
-      }
-*/
     });
   }
 
@@ -180,33 +165,3 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
 
 });
 
-
-myApp.service('LoginService', function ($http, Backand, auth){
-  var baseUrl = '/1/objects/';
-  var objectName = 'users/'
-
-  function getUrl(){
-    return Backand.getApiUrl() + baseUrl + objectName;
-  }
-
-  function getUrlForId(id){
-    return getUrl() + id;
-  }
-
-  getUserByAuthId = function(auth_id){
-    return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getUserByAuthId',
-        params: {
-          parameters: {
-            auth_id: auth_id
-          }
-        }
-      })
-  }
-
-  return{
-    getUserByAuthId : getUserByAuthId
-  }
-
-});

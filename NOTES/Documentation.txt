@@ -1,0 +1,44 @@
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+App (app.js)
+------------
+Config -> growlProvider, BackandProvider
+State -> home
+
+AppController
+--------------
+Dependency -> $scope, auth, $state, growl, BackandService, USER_LINK_TYPE
+
+Operation ->
+    1. state.go("home")
+    2. Has all state defined for links in footer and header
+    3. if(auth.isAuthenticated) : initAuthenticatedUser()
+    4. initAuthenticatedUser()
+         if(userInSession != null) : initAgent and initSupplier
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Login (login.js)
+----------------
+State -> login, login_success
+
+Using Auth0
+    domain: 'wzs21.auth0.com',
+    clientID: 'j2ucVyLG1pMqGZiKsGL00QAkHbW21siH'
+
+LoginSuccessController
+----------------------
+Dependecy -> $scope, BackandService , auth, $state, growl, USER_LINK_TYPE
+
+Operation ->
+	1. watchDestroyer : until auth.profile is ready
+	2. getUserByAuthId : LoginService.getUserByAuthId
+		a. if result == null : newUser, setFooter(newUser)
+		b. else : initUserSession, setFooter(user_type)
+	3. state.go("home")
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////
+

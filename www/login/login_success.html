@@ -1,6 +1,5 @@
-<ion-list can-swipe="true">
-	Signed in as {{auth.profile.name}} =
-	{{user.id}}
-	Is New User = {{isNew}}
-
-</ion-list>
+<div class="text-center" ng-show="loading">
+	Retrieving User Information From Database. Please Wait
+	<br>
+	<img id="mySpinner" src="/img/loader.gif"/>
+</div>

@@ -21,7 +21,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
       controller: 'AddProductController',
       templateUrl: 'products/addProduct.html',
       data: {
-        requiresLogin: true
+        requiresLogin: false
       }
     });
 
@@ -86,6 +86,7 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
   $scope.showObject = {};
   $scope.productId = $stateParams.product_id;
 
+
   function getObjectById(objectName,id)
   {
     BackandService.getObjectById(objectName,id).then(function(result){
@@ -99,7 +100,10 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
 
 });
 
-myApp.controller('AddProductController', function($scope, BackandService, DropboxService, auth, $state,growl,FileReaderService){
+myApp.controller('AddProductController', function($scope, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl){
+  
+  //MB
+  $scope.imageSizeLimit = 2;
   
   $scope.newProduct = {};
   $scope.filePath = null;
@@ -112,6 +116,7 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
   var pictureUnavailable = "http://2.bp.blogspot.com/-Gbn3dT1R9Yo/VPXSJ8lih_I/AAAAAAAALDQ/24wFWdfFvu4/s1600/sorry-image-not-available.png";
 
   $scope.loading = false;
+  $scope.loadStatus = "";
 
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
@@ -130,6 +135,11 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
     }
   }
 
+  function sizeInMB(size)
+  {
+    return size / 1000000;
+  }
+
   $scope.removePicture = function () {
     $scope.filePath = null;
     $scope.fileToUpload = {};
@@ -141,15 +151,28 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
 
   $scope.previewFile = function () {
 
-    if(!$scope.file.type.includes("image"))
+    if($scope.file == null)
+    {
+      $scope.removePicture();
+      return;
+    }
+
+    else if(!$scope.file.type.includes("image"))
     {
       growl.error('File uploaded is not an image. Please try again',{title: 'Error Upload Image!'});
+      $scope.file = null;
+      return;
+    }
+    else if(sizeInMB($scope.file.size) > $scope.imageSizeLimit)
+    {
+      growl.error('Image Size is Too Large. Please try again',{title: 'Error Upload Image!'});
       $scope.file = null;
       return;
     }
 
     console.log($scope.file);
     $scope.progress = null;
+
 
     FileReaderService.readAsDataURL($scope.file, $scope).then(function(result) {
         $scope.imageSrc = result;
@@ -163,6 +186,8 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
 
 
  function getShareLinkDropbox(filePath){
+    $scope.loadStatus = "Getting link for the saved image."
+
     DropboxService.getShareLink(filePath).then(function(result){
       console.log("Result From Get Share Link From Dropbox");
       console.log(result);      
@@ -184,7 +209,9 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
  }
 
   function uploadFileDropbox(){ 
-    var filePath = "img/"+$scope.file.name;
+    $scope.loadStatus = "Saving image of your new product. Might be a while depending on the size of the image"
+
+    var filePath = "img/"+ generateProductName();
     var file = $scope.file;
     //console.log($scope.file.name);
 
@@ -202,9 +229,10 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
   }  
 
   function addRecord(){
+    $scope.loadStatus = "Creating new record in database"
 
     $scope.newProduct.supplier_id = $scope.userInSession.supplier_id;
-    $scope.newProduct.created_at = BackandService.getTimestampinMysql();
+    //$scope.newProduct.created_at = BackandService.getTimestampinMysql();
 
     console.log($scope.newProduct.supplier_id);
     console.log($scope.newProduct.name);
@@ -230,12 +258,22 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
 
   }
 
+  function generateProductName()
+  {
+    //supplier<id>_<create_at>
+    var imageType = $scope.file.type.split(/[ /]+/)[1];
+    var timeStamp = PublicService.getTimestampForFileName($scope.newProduct.created_at);
 
+    var productName = "supplier"+$scope.userInSession.supplier_id +"_"+ timeStamp + "." + imageType;
+    console.log(productName);
+    return productName
+  }
 
   $scope.createNewProduct = function (){
     
     $scope.loading = true;
-    
+
+    $scope.newProduct.created_at = BackandService.getTimestampinMysql();
     if($scope.file == null)
     {
       $scope.newProduct.picture = pictureUnavailable;
@@ -276,52 +314,4 @@ myApp.directive('fileInput', function($parse){
         }
 });
 
-myApp.service('FileReaderService', function ($q, $log){
 
-  var onLoad = function(reader, deferred, scope) {
-      return function () {
-          scope.$apply(function () {
-              deferred.resolve(reader.result);
-          });
-      };
-  };
-
-  var onError = function (reader, deferred, scope) {
-      return function () {
-          scope.$apply(function () {
-              deferred.reject(reader.result);
-          });
-      };
-  };
-
-  var onProgress = function(reader, scope) {
-      return function (event) {
-          scope.$broadcast("fileProgress",
-              {
-                  total: event.total,
-                  loaded: event.loaded
-              });
-      };
-  };
-
-  var getReader = function(deferred, scope) {
-      var reader = new FileReader();
-      reader.onload = onLoad(reader, deferred, scope);
-      reader.onerror = onError(reader, deferred, scope);
-      reader.onprogress = onProgress(reader, scope);
-      return reader;
-  };
-
-  var readAsDataURL = function (file, scope) {
-      var deferred = $q.defer();
-       
-      var reader = getReader(deferred, scope);         
-      reader.readAsDataURL(file);
-       
-      return deferred.promise;
-  };
-
-  return {
-      readAsDataURL: readAsDataURL  
-  };
-});

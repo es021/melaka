@@ -17,8 +17,8 @@
 <div class="form-group" ng-form='productform'>
   <label class="item item-input item-stacked-label">
     
-    <span class="input-label">Upload Picture For Your Product</span>
-
+    <span class="input-label">Upload Picture For Your Product <h4>(Size Limit : {{imageSizeLimit}} MB)</h4></span>
+      
       <div file-input="file" on-change="previewFile()"></div>
 
         <img ng-if="imageSrc!=null" src="{{imageSrc}}" class="img-responsive img-thumbnail center-block" width="200">
@@ -66,8 +66,8 @@
   </div>
   
   <div class="text-center" ng-show="loading">
-    Adding Product to Database. Please Wait
-    <br>
+      Adding New Product<br>
+      {{loadStatus}} <br>
     <img id="mySpinner" src="/img/loader.gif"/>
   </div>
 
