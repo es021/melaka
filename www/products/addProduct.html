@@ -1,0 +1,80 @@
+<p>
+<h2 class="title">Adding New Product</h2>
+<h4 class="title">for {{authProfile.nickname}} | Supplier Id {{userInSession.supplier_id}}</h4>
+
+
+<hr>
+
+<!--
+  <img src="http://2.bp.blogspot.com/-Gbn3dT1R9Yo/VPXSJ8lih_I/AAAAAAAALDQ/24wFWdfFvu4/s1600/sorry-image-not-available.png" class="img-responsive img-thumbnail center-block" width="100">
+
+<button ng-disabled="imageSrc == null" class="button button-block button-positive" ng-click="uploadFileDropbox()">Test Upload Dropbox</button>
+-->
+
+<div class="text-left">
+
+<form role="form" accept="image/gif, image/jpeg">
+<div class="form-group" ng-form='productform'>
+  <label class="item item-input item-stacked-label">
+    
+    <span class="input-label">Upload Picture For Your Product</span>
+
+      <div file-input="file" on-change="previewFile()"></div>
+
+        <img ng-if="imageSrc!=null" src="{{imageSrc}}" class="img-responsive img-thumbnail center-block" width="200">
+        <button ng-if="progress==100" class="button button-clear button-positive" ng-click="removePicture()">Remove Picture</button>
+
+        <div class="progress">
+          <div class="progress-bar progress-bar-striped active" role="progressbar"
+          aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress}}%">
+            {{progress}}%
+          </div>
+        </div>
+
+  </label>  
+
+
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Product Name</span>
+    <input type="text" class="form-control" id="name" placeholder="Polo Shirt" ng-model="newProduct.name" required>
+  </label>
+
+  <div class="list">
+    <label class="item item-input item-select">
+      <div class="input-label">Category</div>
+      <select ng-model="newProduct.category" required>
+        <option selected>Cloth</option>
+        <option>Shoe</option>
+        <option>Watch</option>
+        <option>Scarf</option>
+        <option>Electronic</option>
+        <option>Other</option>
+      </select>
+    </label>
+
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Price Per Unit (RM)</span>
+    <input type="number" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.price_per_unit" required>
+  </label>  
+
+
+  <label class="item item-input item-stacked-label">
+    <span class="input-label">Description</span>
+    <textarea class="form-control" placeholder="Tell more about the new product (optional)" rows="4" ng-model="newProduct.description"></textarea>
+  </label>
+
+  </div>
+  
+  <div class="text-center" ng-show="loading">
+    Adding Product to Database. Please Wait
+    <br>
+    <img id="mySpinner" src="/img/loader.gif"/>
+  </div>
+
+  <button ng-disabled="!productform.$valid || loading" type="submit" class="button button-block button-positive" ng-click="createNewProduct()">Add Product</button>
+
+</div>
+</form>
+</div>
+<hr>
+</p>

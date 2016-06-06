@@ -1,0 +1,29 @@
+<p>
+<h2 class="title">Product Details</h2>
+
+<div class="list card text-left">
+
+  <div class="item item-avatar">
+    <img src="{{showObject.picture}}">
+    <h2>{{showObject.name}}</h2>
+	<p><strong>Product Id</strong> | {{showObject.id}}</p>
+  </div>
+
+  <div class="item item-body">
+    <h3><strong>Price Per Unit</strong> | RM {{showObject.price_per_unit}}</h3>
+    <h3><strong>Category</strong> | {{showObject.category}}</h3>
+    
+    <hr>
+    <h3><strong>Description</strong></h3>
+    <p ng-if="showObject.description == ''">
+		There is no description for this product
+    </p>    
+    <p ng-if="showObject.description != ''">
+		{{showObject.description}}
+    </p>
+
+  </div>
+
+</div>
+
+</p>

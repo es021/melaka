@@ -101,6 +101,11 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
     window.localStorage.setItem("UserInSession",JSON.stringify(userInSession));    
   }
 
+  function setFooter(type)
+  {
+    var footer = "footer_"+ type;
+    document.getElementById(footer).setAttribute("style","display:default");
+  }
 
 
   // From auth0 to the real database
@@ -117,6 +122,8 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
         console.log("New User - > " + authId);
         $scope.isNew = true; 
 
+        setFooter("newUser");
+
         growl.success("New Member" ,{title: 'Login Success!'});
         $state.go('home');    
       }
@@ -124,9 +131,10 @@ myApp.controller('LoginSuccessController', function($scope, LoginService, auth, 
       {
         initUserSession(result);
         $scope.isNew = false; 
+
+        setFooter($scope.user_type);
         
         growl.success($scope.user_type ,{title: 'Login Success!'});
-        
         $state.go('home');    
 
       }
