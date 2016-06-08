@@ -2,11 +2,12 @@
 <h2 class="title">My Products</h2>
     <button class="button button-clear button-positive" ng-click="addProduct()">Add Product</button>
 
+
     <div class="text-left">
 		<div class="list">
           <div ng-repeat="item in myProductsObject">
 		    <a class="item item-thumbnail-left" ng-click="showProduct({{item.id}})">
-		      <img src="{{item.picture}}">
+		      <img src="{{item.picture}}" class="image-fit">
 		      <h2>{{item.name}}</h2>
 		      <p>{{item.category}}</p>
 		      <p>RM {{item.price_per_unit}} / unit</p>
@@ -14,6 +15,7 @@
           </div>
 		</div>
 	</div>
+
 
     <div ng-if="myProductsObject.length == 0">
     	No products available

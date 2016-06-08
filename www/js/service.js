@@ -197,20 +197,34 @@ myApp.service('DropboxService', function ($http){
         url: 'https://api-content.dropbox.com/1/files_put/dropbox/' + pathFile+ '?access_token=' + access_token,
         data: data
     }).success(function(data, status, headers, config) {
-        //console.log(data);
         console.log('file uploaded successfully');
+        console.log(data);           
+        console.log(status);           
+        console.log(headers);           
+        console.log(config);  
     }).error(function(data, status, headers, config) {
 
     });
   }
 
+https://api.dropboxapi.com/1/shares/auto/<path>
   getShareLink = function(pathFile){
     return $http({
           method: 'POST',
-          url: 'https://api.dropboxapi.com/1/media/auto/' + pathFile+ '?access_token=' + access_token
+          url: 'https://api.dropboxapi.com/1/shares/auto/' + pathFile
+                +'?access_token=' + access_token
+                +'&short_url=false'
+
       }).success(function(data, status, headers, config) {
-          console.log('share link successfully');           
+          console.log('share link successfully'); 
+          console.log(config);
+          
       }).error(function(data, status, headers, config) {
+          console.log('file share failed');
+          console.log(data);           
+          console.log(status);           
+          console.log(headers);           
+          console.log(config);           
     });
   }
 

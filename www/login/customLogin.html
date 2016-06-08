@@ -1,0 +1,16 @@
+<form id="login">
+  <fieldset>
+    <legend>Log in</legend>
+    <p>
+      <input type="email" ng-model="email" placeholder="Email" required/>
+    </p>
+    <p>
+      <input type="password" ng-model="password" placeholder="Password"
+             required/>
+    </p>
+    <input type="submit" ng-click="login()" value="Log in and inspect token"/>
+  </fieldset>
+</form>
+
+
+  <button  class="button button-block button-positive" ng-click="logout()">logout</button>

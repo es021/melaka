@@ -79,8 +79,7 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
 
   $scope.agents = [];
   $scope.suppliers = [];
-  $scope.name = "init";
-  $scope.showObject = $stateParams.showObject;
+  //$scope.showObject = $stateParams.showObject;
 
   $scope.auth = auth;
 

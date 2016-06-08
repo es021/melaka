@@ -1,15 +1,34 @@
 <p>
-<h2 class="title">Product Details</h2>
+<h3 class="title">{{showObject.name}}</h3>
+<h6><strong>Product ID</strong> {{showObject.id}}</h6>
 
 <div class="list card text-left">
 
-  <div class="item item-avatar">
-    <img src="{{showObject.picture}}">
-    <h2>{{showObject.name}}</h2>
-	<p><strong>Product Id</strong> | {{showObject.id}}</p>
+<!-- Product Tabs For Supplier -->
+  <div class="item tabs">
+
+    <a ng-show="!loading" class="tab-item" ng-click="editProduct()">
+      Edit
+    </a>
+    
+    <div ng-show="loading">
+      <img  id="mySpinner" src="/img/loader.gif"/>
+    </div>
+    
+    <a ng-show="!loading" class="tab-item"  ng-click="deleteProduct()">
+      Delete
+    </a>
+
   </div>
 
   <div class="item item-body">
+    <div class="text-center">
+
+    <a href="{{showObject.picture}}" target="_blank">
+        <img href="{{showObject.picture}}" class="full-image image-fit" src="{{showObject.picture}}">
+    </a>
+  
+    </div>
     <h3><strong>Price Per Unit</strong> | RM {{showObject.price_per_unit}}</h3>
     <h3><strong>Category</strong> | {{showObject.category}}</h3>
     
@@ -21,11 +40,6 @@
     <p ng-if="showObject.description != ''">
 		{{showObject.description}}
     </p>
-
-    <div class="button-bar">
-      <a class="button disable button-block button-calm" ng-click="editProduct()">Edit</a>
-      <a class="button disable button-block button-assertive" ng-click="deleteProduct()">Delete</a>
-    </div>
 
   </div>
 

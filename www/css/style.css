@@ -4,3 +4,10 @@
 	font-family: Courier;
 	color: red;
 }
+
+.image-fit {
+  object-fit: cover;
+  
+  max-width: 250px;
+  max-height: 250px;
+}

@@ -11,7 +11,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
       controller: 'ProductController',
       templateUrl: 'products/myProducts.html',
       data: {
-        requiresLogin: true
+        requiresLogin: false
       }
     });
 
@@ -82,25 +82,45 @@ myApp.controller('ProductController', function(auth, $scope, $state, BackandServ
 
 });
 
-myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams){
+myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams, growl){
   $scope.showObject = {};
   $scope.productId = $stateParams.product_id;
-
+  $scope.loading = false;
 
   function getObjectById(objectName,id)
   {
     BackandService.getObjectById(objectName,id).then(function(result){
     console.log("Data from show object");
     $scope.showObject = result.data;
+    console.log($scope.showObject);
 
     });
   }
 
   getObjectById("products",$scope.productId);
 
+  $scope.editProduct = function(){
+    $scope.loading = true;
+  };
+
+  $scope.deleteProduct = function(){ 
+    $scope.loading = true;
+    BackandService.deleteObject("products",$scope.showObject.id).then(function(result){
+      console.log("Data from delete products object");
+      console.log(result);
+
+      if(result.status == 200)
+      {
+        growl.success($scope.showObject.name+" Deleted" ,{title: 'Successfully Delete One Product!'});
+        $scope.loading = true;
+        $state.go('myProducts');
+      }
+    });
+  };
+
 });
 
-myApp.controller('AddProductController', function($scope, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl){
+myApp.controller('AddProductController', function($scope, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
   
   //MB
   $scope.imageSizeLimit = 2;
@@ -112,8 +132,6 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
   $scope.file = null;
   $scope.imageSrc = null;
   $scope.progress = null;
-
-  var pictureUnavailable = "http://2.bp.blogspot.com/-Gbn3dT1R9Yo/VPXSJ8lih_I/AAAAAAAALDQ/24wFWdfFvu4/s1600/sorry-image-not-available.png";
 
   $scope.loading = false;
   $scope.loadStatus = "";
@@ -195,11 +213,14 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
       if(result.status == 200)
       {
         //console.log(result.data.url);
-        $scope.newProduct.picture = result.data.url+"?raw=1";
+        //result.data.url -> https://www.dropbox.com/s/a2hhhx67zuwol7f/supplier1_2016-06-07-09-12-55.jpeg?dl=0
+        var temp = result.data.url.split(/[ ?]+/)[0];
+        $scope.newProduct.picture = temp+"?raw=1"; //picture <- https://www.dropbox.com/s/a2hhhx67zuwol7f/supplier1_2016-06-07-09-12-55.jpeg?raw=1
+        console.log($scope.newProduct.picture);
       }
       else
       {
-        $scope.newProduct.picture = pictureUnavailable;
+        $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
       }
       
       addRecord();
@@ -276,7 +297,7 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
     $scope.newProduct.created_at = BackandService.getTimestampinMysql();
     if($scope.file == null)
     {
-      $scope.newProduct.picture = pictureUnavailable;
+      $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
       addRecord();
     }
     else
@@ -287,31 +308,3 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
 
 
 });
-
-myApp.directive('fileInput', function($parse){
-  console.log("init directive");
-
-  return {
-          restrict: "EA",
-          template: "<input type='file' />",
-          replace: true,          
-          link: function (scope, element, attrs) {
-   
-              var modelGet = $parse(attrs.fileInput);
-              var modelSet = modelGet.assign;
-              var onChange = $parse(attrs.onChange);
-   
-              var updateModel = function () {
-                  console.log("update model");
-                  scope.$apply(function () {
-                      modelSet(scope, element[0].files[0]);
-                      onChange(scope);
-                  });                    
-              };
-               
-              element.bind('change', updateModel);
-          }
-        }
-});
-
-
