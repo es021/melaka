@@ -1,5 +1,4 @@
     <!--FOOTER-->
-      <div ng-if="auth.isAuthenticated">
         <div class="bar bar-footer bar-stable" >
 
           <!--FOOTER FOR AGENT--> 
@@ -56,13 +55,13 @@
 
           <!--FOOTER FOR NEW USER--> 
           <!--FOOTER FOR NEW USER--> 
-          <div class="tabs tabs-icon-top" id="footer_newUser" style="display:none">
+          <div class="tabs tabs-icon-top" id="footer_newUser" style="display:default">
             <a class="tab-item">
               <i class="icon ion-home" ng-click="home()"></i>
                 <div>Home</div>
             </a>
             <a class="tab-item">
-              <i class="icon ion-person-stalker" ng-click=""></i>
+              <i class="icon ion-person-stalker" ng-click="signup()"></i>
                 Sign Up
             </a>
 
@@ -75,13 +74,11 @@
 
         </div>
 
-        <div class="bar bar-footer bar-stable" ng-if="user_type == 'new'" >
-        </div>
 
+<!---------------------------------------------------------------------------------------------------------------->
+<!---------------------------------------------------------------------------------------------------------------->
 
-    </div>
-
-      <div class="bar bar-footer bar-stable" ng-if="!auth.isAuthenticated">
+      <div class="bar bar-footer bar-stable" id="footer_new" style="display:none">
 
         <div class="tabs tabs-icon-top">
           <a class="tab-item">

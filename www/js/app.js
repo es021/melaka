@@ -69,13 +69,25 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl, BackandService, USER_LINK_TYPE) {
-  $scope.auth = auth;
+myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl, BackandService,PublicService, USER_LINK_TYPE) {
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  console.log($scope.authProfile);
+ 
 
-  if(auth.isAuthenticated)
+  if($scope.authProfile != null)
   {
+    PublicService.setHeader("logout");
     $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-    $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+
+    if($scope.userInSession != null)
+    {
+      PublicService.setFooter($scope.userInSession.user_type);
+    }
+    else
+    {
+      PublicService.setFooter("newUser");
+    }
+
     initAuthenticatedUser($scope);
 
     /*
@@ -194,8 +206,12 @@ myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl,
 
   $scope.logout = function() {
     auth.signout();
+    $scope.authProfile = null;
+    $scope.userInSession = null;
     window.localStorage.removeItem("UserInSession");
     window.localStorage.removeItem("AuthProfile");
+    PublicService.setHeader("login");
+    PublicService.setFooter("newUser");
     $state.go('login');
   };
 
@@ -206,6 +222,11 @@ myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl,
   $scope.login = function() {
 
     $state.go('login');    
+  };  
+
+  $scope.signup = function() {
+
+    $state.go('signup');    
   };
 
   $scope.transactions = function() {

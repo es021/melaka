@@ -1,16 +1,20 @@
-<form id="login">
-  <fieldset>
-    <legend>Log in</legend>
-    <p>
-      <input type="email" ng-model="email" placeholder="Email" required/>
-    </p>
-    <p>
-      <input type="password" ng-model="password" placeholder="Password"
-             required/>
-    </p>
-    <input type="submit" ng-click="login()" value="Log in and inspect token"/>
-  </fieldset>
-</form>
+<p>
+<h2 class="title">Login</h2>
+<div class="text-left">
+  <form role="form">
+  <div class="form-group" ng-form='loginform'>
+    <label class="item item-input item-stacked-label">
+        <span class="input-label">Email</span>
+        <input type="email" class="form-control" id="email" placeholder="john@gmail.com" ng-model="email" required>
+    </label>
+    
+    <label class="item item-input item-stacked-label">
+        <span class="input-label">Password</span>
+        <input type="password" class="form-control" id="password" placeholder="" ng-model="password" required>
+    </label>
 
-
-  <button  class="button button-block button-positive" ng-click="logout()">logout</button>
+    <button ng-disabled="!loginform.$valid" type="submit" class="button button-block button-positive" ng-click="login()">Login</button>
+  </div>
+  </form>
+</div>
+</p>

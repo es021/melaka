@@ -84,10 +84,17 @@
       <!--HEADER-->
       <div ng-controller="AppController">
         <div class="bar bar-header bar-stable">
-          <button class="button button-icon icon ion-navicon"></button>
-          <div class="h1 title">Melaka</div>
-          <button class="button button-clear button-positive" ng-click="logout()" ng-if="auth.isAuthenticated">Logout</button>
-          <button class="button button-clear button-positive" ng-click="login()" ng-if="!auth.isAuthenticated">Login</button>
+          <div id="header_logout" style="display:none">
+            <button class="button button-icon icon ion-navicon"></button>
+            <div class="h1 title">Melaka</div>
+            <button class="button button-clear button-positive" ng-click="logout()">Logout</button>
+          </div>
+
+          <div id="header_login" style="display:default">
+            <button class="button button-icon icon ion-navicon"></button>
+            <div class="h1 title">Melaka</div>
+            <button class="button button-clear button-positive" ng-click="login()">Login</button>
+          </div>
       </div>
       <!--END OF HEADER-->
 

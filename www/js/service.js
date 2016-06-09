@@ -308,9 +308,51 @@ myApp.service('PublicService', function (){
     return formatedMysqlTimestamp;
   }
 
+  setFooter = function (type)
+  {
+    var footerList = ["footer_agent","footer_supplier","footer_newUser"];
+    var footer = "footer_"+ type;
+
+    for (var i = 0; i < footerList.length; i++)
+    { 
+      if(footerList[i] == footer)
+      {
+        document.getElementById(footerList[i]).setAttribute("style","display:default");
+      }
+      else
+      {
+        document.getElementById(footerList[i]).setAttribute("style","display:none");
+      }
+    }
+  }
+
+  setHeader = function (type)
+  {
+    var headerList = ["header_logout","header_login"];
+    var header = "header_"+ type;
+
+    for (var i = 0; i < headerList.length; i++)
+    { 
+      if(headerList[i] == header)
+      {
+        document.getElementById(headerList[i]).setAttribute("style","display:default");
+      }
+      else
+      {
+        document.getElementById(headerList[i]).setAttribute("style","display:none");
+      }
+    }
+
+  }
+
+
   return {
       getTimestampForFileName : getTimestampForFileName,
-      getTimestampinMysql : getTimestampinMysql  
+      getTimestampinMysql : getTimestampinMysql ,
+      setFooter : setFooter ,
+      setHeader : setHeader
   };
+
+
   
 });

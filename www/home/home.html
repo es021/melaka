@@ -1,6 +1,6 @@
 <!--App Controller-->
 <p>
-    <div ng-if="!auth.isAuthenticated">
+    <div ng-if="authProfile == null">
 
 		<h2 class="title">Welcome to Melaka</h2>
 		<h3>Lets get started</h3>
@@ -16,7 +16,7 @@
 	FOR NEW USER
 	FOR NEW USER
 	-->
-    <div ng-if="auth.isAuthenticated && userInSession == null">
+    <div ng-if="authProfile != null && userInSession == null">
 		<h3 class="title">Hello {{authProfile.nickname}}</h3>
 		<h4>Lets get started</h4>
 
@@ -49,7 +49,7 @@
 	FOR REGISTERED USER
 	FOR REGISTERED USER
 	-->
-    <div ng-if="auth.isAuthenticated && (userInSession.user_type == 'agent' || userInSession.user_type == 'supplier')">
+    <div ng-if="authProfile != null && (userInSession.user_type == 'agent' || userInSession.user_type == 'supplier')">
 		<h3 class="title">Welcome Back {{authProfile.nickname}}</h3>
 
 		<!--
