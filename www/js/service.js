@@ -326,24 +326,36 @@ myApp.service('PublicService', function (){
 
   setFooter = function (type)
   {
-    if(type == "")
+    
+    var footer = "footer_newUser";
+    var footerList = ["footer_agent","footer_supplier","footer_newUser"];
+
+    if(type != "")
     {
-      type = "newUser";
+      footer = "footer_"+ type;
     }
 
-    var footerList = ["footer_agent","footer_supplier","footer_newUser"];
-    var footer = "footer_"+ type;
+
 
     for (var i = 0; i < footerList.length; i++)
     { 
-      if(footerList[i] == footer)
-      {
-        document.getElementById(footerList[i]).setAttribute("style","display:default");
-      }
-      else
-      {
-        document.getElementById(footerList[i]).setAttribute("style","display:none");
-      }
+
+      var element = document.getElementById(footerList[i]);
+      console.log(element);
+      if(element != null)
+
+        if(footerList[i] == footer)
+        {
+          console.log(footerList[i]);
+
+          element.setAttribute("style","display:default");
+        }
+        else
+        {
+          console.log(footerList[i]);
+
+          element.setAttribute("style","display:none");
+        }
     }
   }
 
@@ -356,6 +368,7 @@ myApp.service('PublicService', function (){
     { 
       if(headerList[i] == header)
       {
+
         document.getElementById(headerList[i]).setAttribute("style","display:default");
       }
       else
