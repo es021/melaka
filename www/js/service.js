@@ -328,9 +328,9 @@ myApp.service('PublicService', function (){
   {
     if(type == "")
     {
-      type = newUser;
+      type = "newUser";
     }
-    
+
     var footerList = ["footer_agent","footer_supplier","footer_newUser"];
     var footer = "footer_"+ type;
 
