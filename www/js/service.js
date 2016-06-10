@@ -136,6 +136,20 @@ myApp.service('BackandService', function ($http, Backand, auth){
           }
         }
       })
+  }  
+
+  getLinkByAgentIdSupplierIdType = function(agent_id,supplier_id,type){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getLinkByAgentIdSupplierIdType',
+        params: {
+          parameters: {
+            agent_id: agent_id,
+            supplier_id: supplier_id,
+            type: type
+          }
+        }
+      })
   }
 
   getTimestampinMysql = function(){
@@ -164,6 +178,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
     deleteUserLink:deleteUserLink,
     getSupplierLinkByAgentIdAndType : getSupplierLinkByAgentIdAndType,
     getAgentLinkBySupplierIdAndType : getAgentLinkBySupplierIdAndType,
+    getLinkByAgentIdSupplierIdType : getLinkByAgentIdSupplierIdType,
 
     //productQuery
     getProductBySupplierId : getProductBySupplierId

@@ -81,23 +81,38 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
   }
 });
 
-myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams, growl){
+myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams, growl,USER_LINK_TYPE){
   $scope.showObject = {};
   $scope.productId = $stateParams.product_id;
   $scope.loading = false;
   $scope.authenticated = false;
+  $scope.linkedAgent = false;
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
   function checkAuthentication()
   {
-      $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+    if($scope.userInSession.supplier_id == $scope.showObject.supplier_id)
+    {
+      $scope.authenticated = true;
+    }
+  }
 
-      if($scope.userInSession != null)
-      {
-        if($scope.userInSession.supplier_id == $scope.showObject.supplier_id)
+  function checkLinkedAgent()
+  {
+    if($scope.userInSession.user_type == "agent")
+    {
+      BackandService.getLinkByAgentIdSupplierIdType($scope.userInSession.agent_id, $scope.showObject.supplier_id, USER_LINK_TYPE.LINKED).then(function(result){
+        console.log("getLinkByAgentIdSupplierIdType");
+        if(result.status == 200)
         {
-            $scope.authenticated = true;
+          console.log(result.data.length);
+          if(result.data.length > 0)
+          {
+            $scope.linkedAgent = true;
+          }
         }
-      }
+      });      
+    }
   }
 
   function getObjectById(objectName,id)
@@ -109,7 +124,11 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
 
       if(result.status == 200 && $scope.showObject != null)
       {
-        checkAuthentication();
+        if($scope.userInSession != null)
+        {
+          checkAuthentication();
+          checkLinkedAgent();
+        }
       }
 
     });

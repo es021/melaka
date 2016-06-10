@@ -4,21 +4,27 @@
 
 <div class="list card text-left">
 
-<!-- Product Tabs For Supplier -->
+  <!-- Product Tabs For Supplier -->
   <div ng-if="authenticated" class="item tabs">
-
     <a ng-show="!loading" class="tab-item" ng-click="editProduct()">
       Edit
     </a>
-    
     <div ng-show="loading">
       <img  id="mySpinner" src="/img/loader.gif"/>
     </div>
-    
     <a ng-show="!loading" class="tab-item"  ng-click="deleteProduct()">
       Delete
     </a>
+  </div>
 
+  <!-- Product Tabs For Linked User -->
+  <div ng-if="linkedAgent" class="item tabs">
+    <a ng-show="!loading" class="tab-item" ng-click="requestProduct()">
+      Request Product
+    </a>
+    <div ng-show="loading">
+      <img  id="mySpinner" src="/img/loader.gif"/>
+    </div>
   </div>
 
   <div class="item item-body">
