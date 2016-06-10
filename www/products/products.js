@@ -27,12 +27,13 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
     .state('showProduct', {
-      url: '/showProduct',
+      url: '/showProduct?product_id',
       controller: 'ShowProductController',
       templateUrl: 'products/showProduct.html',
-      params : {
+      /*params : {
         product_id : 0
       },
+      */
       data: {
         requiresLogin: false
       }
@@ -40,14 +41,14 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
 });
 
-myApp.controller('ProductController', function(auth, $scope, $state, BackandService){
+myApp.controller('ProductController', function(auth,$location, $scope, $state, BackandService){
 
   $scope.myProductsObject = {};
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
 
-  if(auth.isAuthenticated)
+  if($scope.authProfile != null && $state.current.name == "myProducts")
   {
     $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-    $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
     getProductBySupplierId($scope.userInSession.supplier_id);
   }
 
@@ -59,7 +60,7 @@ myApp.controller('ProductController', function(auth, $scope, $state, BackandServ
 
   $scope.showProduct = function(product_id)
   {
-    $state.go('showProduct', {product_id:product_id});
+    $location.url("/showProduct?product_id="+product_id);
   };
 
   function getProductBySupplierId(supplier_id){
@@ -78,21 +79,38 @@ myApp.controller('ProductController', function(auth, $scope, $state, BackandServ
     });
 
   }
-
-
 });
 
 myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams, growl){
   $scope.showObject = {};
   $scope.productId = $stateParams.product_id;
   $scope.loading = false;
+  $scope.authenticated = false;
+
+  function checkAuthentication()
+  {
+      $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+      if($scope.userInSession != null)
+      {
+        if($scope.userInSession.supplier_id == $scope.showObject.supplier_id)
+        {
+            $scope.authenticated = true;
+        }
+      }
+  }
 
   function getObjectById(objectName,id)
   {
     BackandService.getObjectById(objectName,id).then(function(result){
-    console.log("Data from show object");
-    $scope.showObject = result.data;
-    console.log($scope.showObject);
+      console.log("Data from show object");
+      $scope.showObject = result.data;
+      console.log($scope.showObject);
+
+      if(result.status == 200 && $scope.showObject != null)
+      {
+        checkAuthentication();
+      }
 
     });
   }

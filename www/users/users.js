@@ -39,13 +39,9 @@ myApp.config(function($stateProvider) {
 
   $stateProvider
     .state('showAgent', {
-      url: '/showAgent',
+      url: '/showAgent?id&objectName',
       controller: 'ShowUserController',
       templateUrl: 'users/showAgent.html',
-      params : {
-        id : 0,
-        objectName : ""
-      },
       data: {
         requiresLogin: false
       }
@@ -53,13 +49,9 @@ myApp.config(function($stateProvider) {
 
   $stateProvider
     .state('showSupplier', {
-      url: '/showSupplier',
+      url: '/showSupplier?id&objectName',
       controller: 'ShowUserController',
       templateUrl: 'users/showSupplier.html',
-      params : {
-        id : 0,
-        objectName : ""
-      },
       data: {
         requiresLogin: false
       }
@@ -73,12 +65,13 @@ myApp.config(function($stateProvider) {
 
 
 
-myApp.controller('UserController', function($scope, BackandService, auth, $state, $stateParams){
+myApp.controller('UserController', function($scope, BackandService, auth, $state,$location, $stateParams){
   
   //console.log($state.current.name);
 
   $scope.agents = [];
   $scope.suppliers = [];
+  $scope.myProductsObject = null;
   //$scope.showObject = $stateParams.showObject;
 
   $scope.auth = auth;
@@ -114,10 +107,11 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
   $scope.showObjectFunction = function(objectName, id)
   {
     if(objectName == "agents")
-      $state.go('showAgent', {id:id, objectName:objectName});
+      $location.url("/showAgent?id="+id+"&objectName="+objectName);
 
     if(objectName == "suppliers")
-      $state.go('showSupplier', {id:id, objectName:objectName});
+      $location.url("/showSupplier?id="+id+"&objectName="+objectName);
+
   };
 
   if($state.current.name == "allUsers")
@@ -136,17 +130,24 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
     getAllObjects("suppliers");
   }
 
-
-
 });
 
 myApp.controller('ShowUserController', function($scope, BackandService, auth, growl, $state, $stateParams, USER_LINK_TYPE){
   
+  $scope.loading = false;
+  $scope.loadingProducts = false;
+  $scope.show = "info";
+
+  if($stateParams == null)
+  {
+    console.log(stateParams);
+  }
+
   $scope.id = $stateParams.id;
   $scope.objectName = $stateParams.objectName;
   $scope.showObject = $stateParams.showObject;
 
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));;
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.linkObject = {};
 
   $scope.userLinkType = USER_LINK_TYPE.NOT_REQUESTED;
@@ -154,7 +155,7 @@ myApp.controller('ShowUserController', function($scope, BackandService, auth, gr
 
   $scope.linkUser = function(operation)
   {
-
+    $scope.loading = true;
     var agent_id = 0;
     var supplier_id = 0;
 
@@ -215,6 +216,7 @@ myApp.controller('ShowUserController', function($scope, BackandService, auth, gr
     BackandService.addObject(objectName,object).then(function(result){
     console.log("Return Result from Adding to "+objectName);
     console.log(result);
+      $scope.loading = false;
 
       if(result.status == 200)
       {
@@ -246,6 +248,7 @@ myApp.controller('ShowUserController', function($scope, BackandService, auth, gr
         $scope.userLinkType = result.data[0].type;
       }
       */
+      $scope.loading = false;
 
       if(result.status == 200)
       {
@@ -268,6 +271,7 @@ myApp.controller('ShowUserController', function($scope, BackandService, auth, gr
         $scope.userLinkType = result.data[0].type;
       }
       */
+      $scope.loading = false;
 
       if(result.status == 200)
       {
@@ -329,6 +333,41 @@ myApp.controller('ShowUserController', function($scope, BackandService, auth, gr
   getUserLinkType();
 
 
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
+//// TO SHOW PRODUCT
+
+  function getProductBySupplierId(supplier_id){
+    $scope.loadingProducts = true;
+    BackandService.getProductBySupplierId(supplier_id).then(function(result){
+
+      console.log("Result From getProductBySupplierId");
+      //console.log(result);  
+      $scope.myProductsObject = result.data;    
+
+      if(result.status == 200)
+      {
+
+      }
+      $scope.loadingProducts = false;
+
+    });
+
+  }
+
+  $scope.showFunction = function(showPage)
+  {
+      console.log($scope.myProductsObject);
+     $scope.show = showPage;
+     if(showPage == "products")
+     {
+        if($scope.myProductsObject == null)
+        {
+          getProductBySupplierId($scope.id);
+        }
+     }
+  }
 
 
 });

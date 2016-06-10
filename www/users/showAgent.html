@@ -3,6 +3,82 @@
 
 <div class="list card text-left">
 
+  <div class="bar" ng-show="!loading">
+  
+  <div >
+    <!-- Not Valid To Add Request -->
+      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.NOT_AUTH">
+        <div class="tab-item">
+          <i class="icon ion-android-close"></i>
+            Not Authorized
+        </div>
+      </div>
+
+    <!-- Same User Type -->
+      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.SAME_TYPE">
+        <div class="tab-item">
+          <i class="icon ion-navicon"></i>
+            Same User Type
+        </div>
+      </div>
+
+    <!-- No Record in userLink -->
+      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.NOT_REQUESTED">
+        <a class="tab-item">
+          <i class="icon ion-android-person-add" ng-click="linkUser('sendRequest')"></i>
+            Add Agent
+        </a>
+      </div>
+
+
+    <!-- Requested-by-supplier -->
+      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.REQUESTED_BY_A">
+        <a class="tab-item">
+          <i class="icon ion-android-done" ng-click="linkUser('confirmRequest')"></i>
+            Comfirm Request
+        </a>        
+        <a class="tab-item">
+          <i class="icon ion-android-close" ng-click="linkUser('ignoreRequest')"></i>
+            Ignore Request
+        </a>
+      </div>
+
+    <!-- Requested-by-agent -->
+      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.REQUESTED_BY_S">
+        <div class="disable tab-item">
+          <i class="icon ion-android-done"></i>
+            Requested
+        </div>        
+        <a class="tab-item">
+          <i class="icon ion-android-close" ng-click="linkUser('cancelRequest')"></i>
+            Cancel Request
+        </a>
+      </div>
+
+
+    <!-- linked -->
+      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.LINKED">
+        <div class="disable tab-item">
+          <i class="icon ion-android-done"></i>
+            In Your List
+        </div>        
+        <a class="tab-item">
+          <i class="icon ion-android-close" ng-click="linkUser('removeFromList')"></i>
+            Remove From List
+        </a>
+      </div>
+  </div>
+
+</div>
+    <div class="text-center" ng-show="loading" >
+      <img  id="mySpinner" src="/img/loader.gif"/>Loading Request
+    </div>
+  <hr> 
+
+<!-------------------------------------------------------- -->
+<!-------------------------------------------------------- -->
+
+
   <div class="item item-avatar">
     <img src="{{showObject.picture}}">
     <h2>{{showObject.first_name}} {{showObject.last_name}}</h2>
@@ -24,49 +100,6 @@
     <p ng-if="showObject.about != ''">
 		{{showObject.about}}
     </p>
-
-
-    <!-- Not Valid To Add Request -->
-    <div ng-if ="userLinkType == USER_LINK_TYPE.NOT_AUTH">
-    <button class="button button-block button-positive">Not Authorized</button>
-    </div>    
-
-    <!-- Same User Type -->
-    <div ng-if ="userLinkType == USER_LINK_TYPE.SAME_TYPE">
-    <button class="button button-block button-positive" ng-click="linkUser({{showObject.id}})">Same User Type</button>
-    </div>
-
-    <!-- No Record in userLink -->
-    <div ng-if ="userLinkType == USER_LINK_TYPE.NOT_REQUESTED">
-    <button class="button button-block button-positive" ng-click="linkUser('sendRequest')">Add To Agent List</button>
-    </div>
-
-    <!-- Requested-by-agent -->
-    <div ng-if ="userLinkType == USER_LINK_TYPE.REQUESTED_BY_A">
-    <div class="button-bar">
-      <a class="button disable button-block button-balanced" ng-click="linkUser('confirmRequest')">Comfirm Request</a>
-      <a class="button disable button-block button-assertive" ng-click="linkUser('ignoreRequest')">Ignore Request</a>
-    </div>
-    </div>
-
-    <!-- Requested-by-supplier -->
-    <div ng-if ="userLinkType == USER_LINK_TYPE.REQUESTED_BY_S">
-    <div class="button-bar">
-      <a ng-disabled="true" class="button disable button-block button-balanced">Requested</a>
-      <a class="button disable button-block button-assertive" ng-click="linkUser('cancelRequest')">Cancel Request</a>
-    </div>
-    </div>
-
-    <!-- linked -->
-    <div ng-if ="userLinkType == USER_LINK_TYPE.LINKED">
-    <div class="button-bar">
-      <a ng-disabled="true" class="button disable button-block button-calm">In Your List</a>
-      <a class="button disable button-block button-assertive" ng-click="linkUser('removeFromList')">Remove From List</a>
-    </div>
-    </div>
-
-
-
 
   </div>
 

@@ -7,8 +7,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'backand',
   'ui.router',
   'restangular',
-  //'sample.login',
-  'sample.custom',
+  'sample.login-signup',
   'sample.signup',
   'sample.users',
   'sample.transactions',
@@ -48,14 +47,14 @@ myApp.run(function($ionicPlatform) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider) {
-
+myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider) {
+  //$locationProvider.html5Mode(true);
   growlProvider.globalTimeToLive(3000);
 
-    $stateProvider
-    .state('home', {
+  $stateProvider
+    .state("home", {
       url: "/home",
-      controller: 'AppController',
+      controller: 'HomeController',
       templateUrl: 'home/home.html'
     });
 
@@ -69,37 +68,107 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl, BackandService,PublicService, USER_LINK_TYPE) {
-  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
-  console.log($scope.authProfile);
- 
+myApp.controller('AppController', function ($scope, auth, $state,PublicService,$location) {
 
-  if($scope.authProfile != null)
+  var state = $location.path().replace("/", "");
+  console.log(state);
+
+  //login with sosial provider
+
+  if(state.length > 30)
   {
-    PublicService.setHeader("logout");
-    $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-
-    if($scope.userInSession != null)
-    {
-      PublicService.setFooter($scope.userInSession.user_type);
-    }
-    else
-    {
-      PublicService.setFooter("newUser");
-    }
-
-    initAuthenticatedUser($scope);
-
-    /*
-    console.log("UserInSession");
-    console.log($scope.userInSession);
-
-    console.log("AuthProfile");
-    console.log($scope.authProfile);
-    */
+    socialLoginHandler(state);
+  }
+  else if(state == "")
+  {
+    $state.go("home");
+  }
+  else
+  {
+    $state.go(state);
   }
 
-  function initAuthenticatedUser($scope)
+  function socialLoginHandler(state)
+  {
+    //access_token=qtcCiHqxEVXL4tFt&id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d6czIxLmF1dGgwLmNvbS8iLCJzdWIiOiJmYWNlYm9va3wxMDIwNjAyMTI1MDQwMTI5MCIsImF1ZCI6ImoydWNWeUxHMXBNcUdaaUtzR0wwMFFBa0hiVzIxc2lIIiwiZXhwIjoxNDY1NjExMjU2LCJpYXQiOjE0NjU1NzUyNTZ9.ot1xygGZA1QjXo3fX-P3G3USUvm6UoIrTqr5ejOdvtE&token_type=Bearer&state=NbT1JRZPbTd15Q7kU1UixCg3
+    var token = state.split("&");
+    //console.log(token);
+    var accessToken = token[0].split("=")[1];
+    var idToken =token[1].split("=")[1];
+    //console.log(accessToken);
+    //console.log(idToken);
+    $state.go('login_success', {accessToken:accessToken,idToken:idToken});
+  }
+
+
+
+  //setting header and footer
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));  
+  
+  PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
+  
+
+  
+  $scope.home = function() {    
+    $state.go('home');    
+  };
+
+  $scope.logout = function() {
+    auth.signout();
+    $scope.authProfile = null;
+    $scope.userInSession = null;
+    window.localStorage.removeItem("UserInSession");
+    window.localStorage.removeItem("AuthProfile");
+    PublicService.setHeader("login");
+    PublicService.setFooter("newUser");
+    $state.go('login');
+  };
+
+  $scope.allUsers = function() {
+    $state.go('allUsers');
+  };
+
+  $scope.login = function() {
+
+    $state.go('login');    
+  };  
+
+  $scope.signup = function() {
+
+    $state.go('signup');    
+  };
+
+  $scope.transactions = function() {
+    $state.go('transactions');
+  };
+
+  $scope.agents = function() {
+    $state.go('agents');
+  };
+
+  $scope.suppliers = function() {
+    $state.go('suppliers');
+  };  
+
+  $scope.myProducts = function() {
+    $state.go('myProducts');
+  };
+
+});
+
+
+myApp.controller('HomeController', function ($scope, $state, BackandService,PublicService, USER_LINK_TYPE) {
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
+
+  if($scope.authProfile != null )
+  {
+    initDashboard($scope);
+  }
+
+  function initDashboard($scope)
   {
     $scope.myLinkedUser = {};
     $scope.requestedToUser = {};
@@ -198,51 +267,5 @@ myApp.controller('AppController', function AppCtrl ($scope, auth, $state, growl,
     });
   }
 
-  $state.go("home");
-  
-  $scope.home = function() {    
-    $state.go('home');    
-  };
-
-  $scope.logout = function() {
-    auth.signout();
-    $scope.authProfile = null;
-    $scope.userInSession = null;
-    window.localStorage.removeItem("UserInSession");
-    window.localStorage.removeItem("AuthProfile");
-    PublicService.setHeader("login");
-    PublicService.setFooter("newUser");
-    $state.go('login');
-  };
-
-  $scope.allUsers = function() {
-    $state.go('allUsers');
-  };
-
-  $scope.login = function() {
-
-    $state.go('login');    
-  };  
-
-  $scope.signup = function() {
-
-    $state.go('signup');    
-  };
-
-  $scope.transactions = function() {
-    $state.go('transactions');
-  };
-
-  $scope.agents = function() {
-    $state.go('agents');
-  };
-
-  $scope.suppliers = function() {
-    $state.go('suppliers');
-  };  
-
-  $scope.myProducts = function() {
-    $state.go('myProducts');
-  };
 
 });

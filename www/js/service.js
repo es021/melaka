@@ -62,6 +62,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
   }  
 
   getProductBySupplierId = function (supplier_id){
+    console.log("product");
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getProductBySupplierId',
@@ -345,12 +346,30 @@ myApp.service('PublicService', function (){
 
   }
 
+  initHeaderFooter = function (authProfile,userInSession)
+  {
+    if(authProfile != null )
+    {
+      setHeader("logout");
+      //console.log($scope.authProfile);
+      if(userInSession != null)
+      {
+        setFooter(userInSession.user_type);
+      }
+      else
+      {
+        setFooter("newUser");
+      }    
+    }
+  }
+
 
   return {
       getTimestampForFileName : getTimestampForFileName,
       getTimestampinMysql : getTimestampinMysql ,
       setFooter : setFooter ,
-      setHeader : setHeader
+      setHeader : setHeader,
+      initHeaderFooter : initHeaderFooter
   };
 
 
