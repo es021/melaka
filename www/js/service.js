@@ -326,6 +326,11 @@ myApp.service('PublicService', function (){
 
   setFooter = function (type)
   {
+    if(type == "")
+    {
+      type = newUser;
+    }
+    
     var footerList = ["footer_agent","footer_supplier","footer_newUser"];
     var footer = "footer_"+ type;
 
