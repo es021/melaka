@@ -1,0 +1,82 @@
+<p>
+<h2 class="title">My Active Listing</h2>
+      <ion-list class="text-left">
+        <div ng-repeat="item in activeListing">
+            <a class="item item-icon-left item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
+		    <i class="icon ion-arrow-swap"></i>
+			Requested to Supplier {{item.supplier_id}}
+
+       	<!-- ******************************************************************************************************************************* -->
+        <!--STATUS AND PAYMENT STATUS SHOW ************************************************************************************************* -->
+		    <span class="item-note" ng-if="item.status == TRANS_STATUS.REQUESTED">
+		      Requested
+		    </span>
+		    <span class="item-note" ng-if="item.status == TRANS_STATUS.DENIED">
+		      Denied
+		    </span>
+		   	<span class="item-note" ng-if="item.status == TRANS_STATUS.APPROVED">
+		      Approved
+		    </span>
+		    <span class="item-note" ng-if="item.status == TRANS_STATUS.DELIVERED">
+		      Delivered
+		    </span>
+		   	<span class="item-note" ng-if="item.status == TRANS_STATUS.RECEIVED">
+		      Package Received
+		    </span>
+
+		    <span class="item-note" ng-if="item.payment_status == TRANS_STATUS.NOT_PAID">
+		      Not Paid/
+		    </span>
+		   	<span class="item-note" ng-if="item.payment_status == TRANS_STATUS.PAID">
+		      Paid/
+		    </span>
+		   	<span class="item-note" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
+		      Payment Comfirmed/
+		    </span>
+		    <!--<i class="icon ion-ios-telephone-outline"></i>-->
+		  	</a>
+		
+		<!-- ******************************************************************************************************************************* -->
+		<!-- ******************************************************************************************************************************* -->
+        <!--EXPAND ************************************************************************************************************************* -->
+          <ion-item ng-show="isItemShown(item)">
+			    <h2 ><strong>{{showProduct.name}}</strong></h2>
+				    <h3>by 
+				    	<a ng-controller="UserController" ng-click="showObjectFunction('suppliers',{{item.supplier_id}})">Supplier {{item.supplier_id}}</a>
+					</h3>
+			    <hr>
+
+			    <div class="row">
+			   
+			    <!--- TRANSACTION INFO ************************************************************************************************************* -->
+				  <div class="col col-50">
+				    <h3><strong>Price Per Unit</strong> | RM {{showProduct.price_per_unit}}</h3>
+				    <h3><strong>Quantity</strong> | {{item.quantity}}</h3>
+				    <h3><strong>Type</strong> | {{item.type}}</h3>
+				    <h3><strong>Total Price</strong> | RM {{item.total_price}} </h3>  
+
+				    <h3><strong>Category</strong> | {{showProduct.category}}</h3>
+				    
+				    <h3><strong>Last Activity</strong> | {{item.created_at}} </h3>  
+				  </div>
+
+				  <!-- ******************************************************************************************************************************* -->
+				  <!--- STATUS AND PAYMENT STATUS FOR AGENT ****************************************************************************************** -->
+				  <div ng-if="userInSession.user_type == 'agent' "class="col col-50 text-right">
+					<button class="button button-small button-outline button-royal icon-right ion-home">Comfirm Package Received</button><br><br>		  
+					<button class="button button-small button-outline button-balanced icon-right ion-cash">Pay Now</button>				  
+				  </div>
+				  <!-- ******************************************************************************************************************************* -->
+				</div>
+
+
+          </ion-item>
+
+
+        </div>
+      </ion-list>
+
+    <div ng-if="activeListing.length == 0">
+    	No active listing available
+    </div>
+</p>

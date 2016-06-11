@@ -139,8 +139,8 @@ myApp.controller('AppController', function ($scope, auth, $state,PublicService,$
     $state.go('signup');    
   };
 
-  $scope.transactions = function() {
-    $state.go('transactions');
+  $scope.myActiveListing = function() {
+    $state.go('myActiveListing');
   };
 
   $scope.agents = function() {

@@ -22,12 +22,10 @@ myApp.constant("TRANS_STATUS", {
         "DENIED": 2,
         "APPROVED": 3,
         "DELIVERED": 4,
-        "RECEIVED": 5
-});
-
-myApp.constant("PAYMENT_STATUS", {
-        "PAID": 1,
-        "COMFIRMED": 2
+        "RECEIVED": 5,
+        "NOT_PAID" : 6,
+        "PAID": 7,
+        "COMFIRMED": 8
 });
 
 myApp.constant("PICTURE_CONSTANT", {

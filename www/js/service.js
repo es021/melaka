@@ -150,6 +150,30 @@ myApp.service('BackandService', function ($http, Backand, auth){
           }
         }
       })
+  }  
+
+  getAgentActiveListing = function(agent_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getAgentActiveListing',
+        params: {
+          parameters: {
+            agent_id: agent_id
+          }
+        }
+      })
+  }  
+
+  getSupplierActiveListing = function(supplier_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getSupplierActiveListing',
+        params: {
+          parameters: {
+            supplier_id: supplier_id
+          }
+        }
+      })
   }
 
   getTimestampinMysql = function(){
@@ -181,7 +205,11 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getLinkByAgentIdSupplierIdType : getLinkByAgentIdSupplierIdType,
 
     //productQuery
-    getProductBySupplierId : getProductBySupplierId
+    getProductBySupplierId : getProductBySupplierId,
+
+    //transactionQuery
+    getAgentActiveListing : getAgentActiveListing,
+    getSupplierActiveListing : getSupplierActiveListing
   }
 
 });
@@ -341,21 +369,20 @@ myApp.service('PublicService', function (){
     { 
 
       var element = document.getElementById(footerList[i]);
-      console.log(element);
+      //console.log(element);
       if(element != null)
-
+      {
         if(footerList[i] == footer)
         {
-          console.log(footerList[i]);
-
+          //console.log(footerList[i]);
           element.setAttribute("style","display:default");
         }
         else
         {
-          console.log(footerList[i]);
-
+          //console.log(footerList[i]);
           element.setAttribute("style","display:none");
         }
+      }
     }
   }
 
@@ -368,7 +395,6 @@ myApp.service('PublicService', function (){
     { 
       if(headerList[i] == header)
       {
-
         document.getElementById(headerList[i]).setAttribute("style","display:default");
       }
       else

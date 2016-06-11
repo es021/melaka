@@ -6,43 +6,109 @@ var myApp = angular.module('sample.transactions', [
 
 myApp.config(function($stateProvider, BackandProvider) {
   $stateProvider
-    .state('transactions', {
-      url: "/transactions",
+    .state('myActiveListing', {
+      url: "/myActiveListing",
       controller: 'TransactionsController',
-      templateUrl: 'transactions/transactions.html',
+      templateUrl: 'transactions/myActiveListing.html',
       data: {
         requiresLogin: true
       }
     });
-
-  BackandProvider.setAppName('wzs21testapp');
-  BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
-  
 });
 
 
-myApp.controller('TransactionsController', function($scope, TransactionsService, auth){
-  $scope.transactions = [];
-  $scope.auth = auth;
-  var userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  $scope.agentId = userInSession.agent_id;
-  $scope.supplierId = userInSession.supplier_id;
-  $scope.userType = userInSession.user_type;
+myApp.controller('TransactionsController', function($state,$scope, BackandService, auth,TRANS_STATUS){
   
-  function getAllTransactions(id,user_type){
-      TransactionsService.getAllTransaction(id,user_type).then(function(result){
-        $scope.transactions = result.data;
-        console.log(result.status);
-        //console.log($scope.transactions);
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////// my Active Listing /////////////////////////////////////////////////////////////////////////
+  $scope.activeListing = {};
+  $scope.showProduct = {};
+  $scope.TRANS_STATUS = TRANS_STATUS;
+
+  if($scope.authProfile != null && $scope.userInSession != null)
+  {
+    if($state.current.name == "myActiveListing")
+    {
+      if($scope.userInSession.user_type == "agent")
+        getAgentActiveListing($scope.userInSession.agent_id);
+
+      if($scope.userInSession.user_type == "supplier")
+        getSupplierActiveListing($scope.userInSession.supplier_id);
+    }
+
+  }
+
+
+  function getAgentActiveListing(agent_id){
+      BackandService.getAgentActiveListing(agent_id).then(function(result){
+        $scope.activeListing  = result.data;
+        
+        if(result.status == 200)
+        {
+
+        }
+
+        for(var i; i < $scope.activeListing.length; i++)
+        {
+            $scope.activeListing[i].show = false;
+        }
+
+      });
+
+
+  }  
+
+  function getSupplierActiveListing(supplier_id){
+      BackandService.getSupplierActiveListing(supplier_id).then(function(result){
+        $scope.activeListing = result.data;
+        if(result.status == 200)
+        {
+
+        }
       });
   }
-  
-  if($scope.userType == "agent")
-    getAllTransactions($scope.agentId, $scope.userType);
-  
-  if($scope.userType == "supplier")
-    getAllTransactions($scope.supplierId, $scope.userType);
 
+  function getProductbyId(product_id){
+      BackandService.getObjectById("products",product_id).then(function(result){
+        $scope.showProduct = result.data;
+        console.log($scope.showProduct);
+        if(result.status == 200)
+        {
+
+        }
+      });
+  }
+
+  $scope.toggleItem = function(item) {
+    //console.log(item.product_id);
+    //getProductbyId(item.product_id);
+
+    if ($scope.isItemShown(item)) 
+    {
+      $scope.shownItem = null;
+    } 
+    else 
+    {
+      if($scope.showProduct.id != item.product_id)
+      {
+        $scope.showProduct = null;
+        getProductbyId(item.product_id);
+      }
+      $scope.shownItem = item;
+    }
+
+  };
+
+  $scope.isItemShown = function(item) {
+    return $scope.shownItem === item;
+  };
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////// my History ////// /////////////////////////////////////////////////////////////////////////
+  
 });
 
 

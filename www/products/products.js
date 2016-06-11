@@ -81,14 +81,62 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
   }
 });
 
-myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams, growl,USER_LINK_TYPE){
+myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
   $scope.showObject = {};
+
   $scope.productId = $stateParams.product_id;
   $scope.loading = false;
-  $scope.authenticated = false;
-  $scope.linkedAgent = false;
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
+  ///// FOR REQUEST FORM /////////////////////////////////////////////////////////////////////////
+  $scope.newRequest = {};
+  $scope.newRequest.total_price = 0;
+  $scope.loadingRequest = false;
+  $scope.updateTotalPrice = function()
+  { 
+    $scope.newRequest.total_price = $scope.newRequest.quantity * $scope.showObject.price_per_unit;
+    $scope.newRequest.total_price = $scope.newRequest.total_price.toFixed(2);
+    
+    if(isNaN($scope.newRequest.total_price))
+    {
+      $scope.newRequest.total_price = 0;
+    }
+  }
+
+  $scope.requestProduct = function()
+  {
+    $scope.loadingRequest = true;
+    $scope.newRequest.agent_id = $scope.userInSession.agent_id;
+    $scope.newRequest.supplier_id = $scope.showObject.supplier_id;
+    $scope.newRequest.product_id = $scope.productId;
+    $scope.newRequest.status = TRANS_STATUS.REQUESTED;
+    $scope.newRequest.payment_status = TRANS_STATUS.NOT_PAID;
+    $scope.newRequest.created_at = BackandService.getTimestampinMysql();
+
+    //$scope.newRequest.total_price
+    //$scope.newRequest.type
+    //$scope.newRequest.quantity
+    //$scope.newRequest.note
+
+    BackandService.addObject("transactions",$scope.newRequest).then(function(result){
+      console.log("Result From Creating new Request");
+      console.log(result);      
+
+      if(result.status == 200)
+      {
+        growl.success("Redirecting to Listing Page" ,{title: 'Successfully Added New Request!'});              
+        $state.go("myActiveListing");
+      }
+
+      $scope.loadingRequest = false;
+    });
+
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////
+  ///// FOR TAB /////////////////////////////////////////////////////////////////////////////////
+  $scope.show = "info";
+  $scope.authenticated = false;
+  $scope.linkedAgent = false;
   function checkAuthentication()
   {
     if($scope.userInSession.supplier_id == $scope.showObject.supplier_id)
@@ -105,7 +153,7 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
         console.log("getLinkByAgentIdSupplierIdType");
         if(result.status == 200)
         {
-          console.log(result.data.length);
+          //console.log(result.data.length);
           if(result.data.length > 0)
           {
             $scope.linkedAgent = true;
@@ -114,6 +162,13 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
       });      
     }
   }
+
+  $scope.showFunction = function(show)
+  {
+    $scope.show = show;   
+  }
+  ///////////////////////////////////////////////////////////////////////////////////////////////
+
 
   function getObjectById(objectName,id)
   {

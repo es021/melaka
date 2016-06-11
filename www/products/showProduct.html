@@ -4,6 +4,7 @@
 
 <div class="list card text-left">
 
+<!-- ***************************************************************************************************************** -->
   <!-- Product Tabs For Supplier -->
   <div ng-if="authenticated" class="item tabs">
     <a ng-show="!loading" class="tab-item" ng-click="editProduct()">
@@ -17,17 +18,20 @@
     </a>
   </div>
 
+<!-- ***************************************************************************************************************** -->
   <!-- Product Tabs For Linked User -->
   <div ng-if="linkedAgent" class="item tabs">
-    <a ng-show="!loading" class="tab-item" ng-click="requestProduct()">
-      Request Product
-    </a>
+    <a ng-show="!loading" ng-click="showFunction('info')" class="button icon-left ion-information-circled button-clear button-dark">Show Info</a>
+    <a ng-show="!loading" ng-click="showFunction('request')" class="button icon-left ion-paper-airplane button-clear button-dark">Request Product</a>
+
     <div ng-show="loading">
       <img  id="mySpinner" src="/img/loader.gif"/>
     </div>
   </div>
 
-  <div class="item item-body">
+<!-- ***************************************************************************************************************** -->
+<!-- ***************************** INFO ****************************************************************************** -->
+  <div ng-if="show=='info'" class="item item-body">
     <div class="text-center">
 
     <a href="{{showObject.picture}}" target="_blank">
@@ -46,6 +50,55 @@
     <p ng-if="showObject.description != ''">
 		{{showObject.description}}
     </p>
+  </div>
+
+<!-- ********************************************************************************************************************** -->
+<!-- **************************** REQUEST FORM **************************************************************************** -->
+  <div ng-if="show=='request'" class="item item-body">
+    <h4><strong>Price Per Unit</strong> | RM {{showObject.price_per_unit}}</h4>
+    <h4><strong>Category</strong> | {{showObject.category}}</h4>
+    <hr>
+    <div class="text-left">
+
+    <form role="form">
+    <div class="form-group" ng-form='requestform'>
+      
+      <!-- Total Price -->
+      <div class="text-center">
+          <h4>Total Price For This Request</h4>RM {{newRequest.total_price}}
+      </div>
+
+      <div class="list">
+        <label class="item item-input item-select">
+          <div class="input-label">Request Type</div>
+          <select ng-model="newRequest.type" required>
+            <option selected>Delivery</option>
+            <option>Pick Up</option>
+          </select>
+        </label>
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Quantity</span>
+        <input type="number" value="1000" min="0" step="1" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
+      </label>  
+
+
+      <label class="item item-input item-stacked-label">
+        <span class="input-label">Additional Note</span>
+        <textarea class="form-control" placeholder="Optional" rows="4" ng-model="newRequest.note"></textarea>
+      </label>
+      </div>
+      
+      <div class="text-center" ng-show="loadingRequest">
+          Requesting Product<br>
+        <img id="mySpinner" src="/img/loader.gif"/>
+      </div>
+
+      <button ng-disabled="!requestform.$valid || loadingRequest" type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
+
+    </div>
+    </form>
+    </div>
 
   </div>
 
