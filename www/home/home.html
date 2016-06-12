@@ -82,7 +82,11 @@
 		<hr>
 		<h4 class="title" ng-if = "userInSession.user_type == 'supplier'">My Linked Agents</h4>
 		<h4 class="title" ng-if = "userInSession.user_type == 'agent'">My Linked Suppliers</h4>
-
+		  
+		  <div class="text-center" ng-show="myLinkedUserLoad">
+		    <img id="mySpinner" src="/img/loader.gif"/>
+		  </div>
+	    
 	    <div class="text-left">
 			<div class="list">
 	          <div ng-repeat="item in myLinkedUser">
@@ -116,6 +120,10 @@
 		<h4 class="title" ng-if = "userInSession.user_type == 'supplier'">Link Request To Me</h4>
 		<h4 class="title" ng-if = "userInSession.user_type == 'agent'">Link Request To Me</h4>
 
+		  <div class="text-center" ng-show="requestedToUserLoad">
+		    <img id="mySpinner" src="/img/loader.gif"/>
+		  </div>
+
 	    <div class="text-left">
 			<div class="list">
 	          <div ng-repeat="item in requestedToUser">
@@ -148,6 +156,10 @@
 		<hr>
 		<h4 class="title" ng-if = "userInSession.user_type == 'supplier'">Link Request From Me</h4>
 		<h4 class="title" ng-if = "userInSession.user_type == 'agent'">Link Request From Me</h4>
+
+		  <div class="text-center" ng-show="requestedFromUserLoad">
+		    <img id="mySpinner" src="/img/loader.gif"/>
+		  </div>
 
 	    <div class="text-left">
 			<div class="list">

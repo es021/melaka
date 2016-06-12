@@ -12,10 +12,10 @@
     <!-- w3 data to include html inside html js -->
     <script src="lib/w3/w3data.js"></script>
 
-    <!-- image-upload js -->
-    <script src="lib/image-upload/image-upload.js"></script>
-    <script src="lib/image-upload/image-upload.bundle.min.js"></script>
-    <script src="lib/image-upload/image-upload.min.js"></script>
+    <!-- time ago -->
+    <script src="lib/timeago/jquery-3.0.0.min.js"></script>
+    <script src="lib/timeago/jquery.timeago.js"></script>
+    
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
@@ -43,11 +43,12 @@
     <script src="lib/auth0-lock/build/auth0-lock.js"></script>
 
     
-    <!-- Growl Notification -->
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     
+    <!-- Growl Notification -->
     <link href="lib/growl/angular-growl.min.css" rel="stylesheet" media="screen"/> 
     <script src="lib/growl/angular-growl.min.js"></script>
 
@@ -86,7 +87,7 @@
           <div id="header_logout" style="display:none">
             <button class="button button-icon icon ion-navicon"></button>
             <div class="h1 title">Melaka</div>
-            <button class="button button-clear button-positive" ng-click="logout()">Logout</button>
+            <button class="button button-clear button-positive" ng-click="comfirmLogout()">Logout</button>
           </div>
 
           <div id="header_login" style="display:default">
@@ -98,7 +99,7 @@
       <!--END OF HEADER-->
 
       <!--CONTENT-->
-      <ion-content class="has-header padding" >
+      <ion-content class="has-header has-footer padding" >
         <div class="text-center">
           <div class="container" ui-view=""></div>
         </div>
@@ -112,7 +113,6 @@
       <!-- *************************************************************************************************************************** --> 
       
           <!--FOOTER-->
-        <div class="bar bar-footer bar-stable" >
 
           <!--FOOTER FOR AGENT--> 
           <!--FOOTER FOR AGENT--> 
@@ -179,18 +179,17 @@
                 <div>Home</div>
             </a>
             <a class="tab-item">
-              <i class="icon ion-person-stalker" ng-click="allUsers()"></i>
-                  Find Agents/Suppliers
+              <i class="icon ion-help-circled" ng-click="why()"></i>
+                  Why Melaka
             </a>
 
             <a class="tab-item">
-              <i class="icon ion-gear-a" ng-click="settings()"></i>
-                Settings
+              <i class="icon ion-email" ng-click="contact()"></i>
+                Contact Us
             </a>
           </div>
 
 
-        </div>
     <!--END OF FOOTER-->
 
       <!-- *************************************************************************************************************************** --> 

@@ -68,7 +68,7 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope, auth, $state,PublicService,$location) {
+myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,PublicService,$location) {
 
   var state = $location.path().replace("/", "");
   console.log(state);
@@ -108,21 +108,34 @@ myApp.controller('AppController', function ($scope, auth, $state,PublicService,$
   
   PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
   
+ $scope.comfirmLogout = function()
+  {
+    function logout(){
+      auth.signout();
+      $scope.authProfile = null;
+      $scope.userInSession = null;
+      window.localStorage.removeItem("UserInSession");
+      window.localStorage.removeItem("AuthProfile");
+      PublicService.setHeader("login");
+      PublicService.setFooter("newUser");
+      $state.go('login');
+    }
 
+    var confirmPopup = $ionicPopup.confirm({
+       title: 'Log Out From Melaka',
+       template: 'Are you sure?'
+     });
+     
+    confirmPopup.then(function(result) {
+        if(result)
+        {
+          logout();
+        }
+     });
+  }
   
   $scope.home = function() {    
     $state.go('home');    
-  };
-
-  $scope.logout = function() {
-    auth.signout();
-    $scope.authProfile = null;
-    $scope.userInSession = null;
-    window.localStorage.removeItem("UserInSession");
-    window.localStorage.removeItem("AuthProfile");
-    PublicService.setHeader("login");
-    PublicService.setFooter("newUser");
-    $state.go('login');
   };
 
   $scope.allUsers = function() {
@@ -173,6 +186,10 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
     $scope.myLinkedUser = {};
     $scope.requestedToUser = {};
     $scope.requestedFromUser = {};
+
+    $scope.myLinkedUserLoad = true;
+    $scope.requestedToUserLoad = true;
+    $scope.requestedFromUserLoad = true;
     
     if($scope.userInSession != null)
     {
@@ -220,6 +237,7 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
       if(type == USER_LINK_TYPE.LINKED)
       {
         $scope.myLinkedUser = result.data;
+        $scope.myLinkedUserLoad = false;
       }      
 
       //User : Agent
@@ -227,6 +245,7 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
       if(type == USER_LINK_TYPE.REQUESTED_BY_S)
       {
         $scope.requestedToUser = result.data;
+        $scope.requestedToUserLoad = false;
       }
 
 
@@ -235,6 +254,7 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
       if(type == USER_LINK_TYPE.REQUESTED_BY_A)
       {
         $scope.requestedFromUser = result.data;
+        $scope.requestedFromUserLoad = false;
       }
 
     });
@@ -248,6 +268,7 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
       if(type == USER_LINK_TYPE.LINKED)
       {
         $scope.myLinkedUser = result.data;
+        $scope.myLinkedUserLoad = false;
       }
 
       //User : Supplier
@@ -255,6 +276,7 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
       if(type == USER_LINK_TYPE.REQUESTED_BY_A)
       {
         $scope.requestedToUser = result.data;
+        $scope.requestedToUserLoad = false;
       }
 
       //User : Supplier
@@ -262,6 +284,8 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
       if(type == USER_LINK_TYPE.REQUESTED_BY_S)
       {
         $scope.requestedFromUser = result.data;
+        $scope.requestedFromUserLoad = false;
+
       }
 
     });

@@ -1,6 +1,6 @@
 <p>
 <h3 class="title">{{showObject.name}}</h3>
-<h6><strong>Product {{showObject.id}} </strong> by Supplier {{showObject.supplier_id}}</h6>
+<h5>by <a  ng-click="showSupplier()">{{showObject.supplier_name}}</a></h5>
 
 <div class="list card text-left">
 
@@ -13,7 +13,9 @@
     <div ng-show="loading">
       <img  id="mySpinner" src="/img/loader.gif"/>
     </div>
-    <a ng-show="!loading" class="tab-item"  ng-click="deleteProduct()">
+    <a ng-show="!loading" class="tab-item" data-toggle="tooltip" 
+    title="Note that you cannot delete product that is already associated with any active listing or transactions!" 
+    ng-click="comfirmDeleteProduct()">
       Delete
     </a>
   </div>

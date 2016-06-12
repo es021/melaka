@@ -13,6 +13,10 @@
 		</div>
 	</div>
 
+  <div class="text-center" ng-show="loading">
+    <img id="mySpinner" src="/img/loader.gif"/>
+  </div>
+  
     <div ng-if="agents.length == 0">
     	No registered agent
     </div>

@@ -174,6 +174,70 @@ myApp.service('BackandService', function ($http, Backand, auth){
           }
         }
       })
+  }    
+
+  getAgentCompletedTransaction = function(agent_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getAgentCompletedTransaction',
+        params: {
+          parameters: {
+            agent_id: agent_id
+          }
+        }
+      })
+  }    
+
+  getSupplierCompletedTransaction = function(supplier_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getSupplierCompletedTransaction',
+        params: {
+          parameters: {
+            supplier_id: supplier_id
+          }
+        }
+      })
+  }  
+
+  getSupplierNameById = function(supplier_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getSupplierNameById',
+        params: {
+          parameters: {
+            supplier_id: supplier_id
+          }
+        }
+      })
+  }  
+
+  editTransactionStatus = function(id,status,timeUpdated){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/editTransactionStatus',
+        params: {
+          parameters: {
+            id: id,
+            status : status,
+            timeUpdated : timeUpdated
+          }
+        }
+      })
+  }  
+
+  editTransactionPaymentStatus = function(id,payment_status,timeUpdated){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/editTransactionPaymentStatus',
+        params: {
+          parameters: {
+            id: id,
+            payment_status : payment_status,
+            timeUpdated : timeUpdated
+          }
+        }
+      })
   }
 
   getTimestampinMysql = function(){
@@ -203,13 +267,19 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getSupplierLinkByAgentIdAndType : getSupplierLinkByAgentIdAndType,
     getAgentLinkBySupplierIdAndType : getAgentLinkBySupplierIdAndType,
     getLinkByAgentIdSupplierIdType : getLinkByAgentIdSupplierIdType,
+    getSupplierNameById : getSupplierNameById,
 
     //productQuery
     getProductBySupplierId : getProductBySupplierId,
 
     //transactionQuery
     getAgentActiveListing : getAgentActiveListing,
-    getSupplierActiveListing : getSupplierActiveListing
+    getSupplierActiveListing : getSupplierActiveListing,
+    editTransactionStatus : editTransactionStatus,
+    editTransactionPaymentStatus : editTransactionPaymentStatus,
+    getAgentCompletedTransaction : getAgentCompletedTransaction,
+    getSupplierCompletedTransaction : getSupplierCompletedTransaction
+
   }
 
 });
@@ -342,6 +412,7 @@ myApp.service('FileReaderService', function ($q, $log){
 
 myApp.service('PublicService', function (){
 
+
   getTimestampForFileName = function(timestamp)
   {
     return timestamp.replace(':', '-').replace(':', '-').replace(' ','-');
@@ -351,6 +422,59 @@ myApp.service('PublicService', function (){
     var formatedMysqlTimestamp = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
     return formatedMysqlTimestamp;
   }
+
+  getAgoTime = function(timestamp)
+  {
+    var ago = jQuery.timeago(timestamp);
+    return ago; 
+  }
+
+  function monthNumToString(month)
+  {
+    var toReturn;
+    
+    if(month == "01")
+      toReturn = "January";    
+    if(month == "02")
+      toReturn = "February";    
+    if(month == "03")
+      toReturn = "March";    
+    if(month == "04")
+      toReturn = "April";    
+    if(month == "05")
+      toReturn = "May";    
+    if(month == "06")
+      toReturn = "June";    
+    if(month == "07")
+      toReturn = "July";    
+    if(month == "08")
+      toReturn = "August";    
+    if(month == "09")
+      toReturn = "September";    
+    if(month == "10")
+      toReturn = "October";    
+    if(month == "11")
+      toReturn = "November";    
+    if(month == "12")
+      toReturn = "December";
+
+    return toReturn;
+  }
+
+  getDate = function(timestamp)
+  {
+    //2016-06-04T21:06:16
+    var date =  timestamp;
+    var dateArr = date.split("T")[0].split("-");
+  
+    var year = dateArr[0];
+    var month =  monthNumToString(dateArr[1]);
+    var day = Number(dateArr[2]);
+
+    var date = month + " " + day + " , " + year;
+
+    return date;
+   }
 
   setFooter = function (type)
   {
@@ -428,7 +552,9 @@ myApp.service('PublicService', function (){
       getTimestampinMysql : getTimestampinMysql ,
       setFooter : setFooter ,
       setHeader : setHeader,
-      initHeaderFooter : initHeaderFooter
+      initHeaderFooter : initHeaderFooter,
+      getAgoTime : getAgoTime,
+      getDate : getDate
   };
 
 

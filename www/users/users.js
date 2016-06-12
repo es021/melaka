@@ -69,23 +69,11 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
   
   //console.log($state.current.name);
 
-  $scope.agents = [];
-  $scope.suppliers = [];
+  $scope.agents = {};
+  $scope.suppliers = {};
   $scope.myProductsObject = null;
-  //$scope.showObject = $stateParams.showObject;
-
+  $scope.loading = false;
   $scope.auth = auth;
-
-  if(auth.isAuthenticated)
-  {
-    var userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-    if(userInSession != null)
-    {
-      $scope.agentId = userInSession.agent_id;
-      $scope.supplierId = userInSession.supplier_id;
-      $scope.userType = userInSession.user_type;
-    }
-  }
 
   function getAllObjects(objectName){
       BackandService.getAllObjects(objectName).then(function(result){
@@ -95,12 +83,8 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
 
         if(objectName == "suppliers")
           $scope.suppliers = result.data.data;
-
-
-        //console.log(result.status);
-        //console.log("Data from returned objects");
-        //console.log(result.data.data);
-
+       
+        $scope.loading = false;
       });
     }
 
@@ -113,6 +97,8 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
       $location.url("/showSupplier?id="+id+"&objectName="+objectName);
 
   };
+
+  $scope.loading = true;
 
   if($state.current.name == "allUsers")
   {
@@ -132,7 +118,7 @@ myApp.controller('UserController', function($scope, BackandService, auth, $state
 
 });
 
-myApp.controller('ShowUserController', function($scope, BackandService, auth, growl, $state, $stateParams, USER_LINK_TYPE){
+myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicService,BackandService, auth, growl, $state, $stateParams, USER_LINK_TYPE){
   
   $scope.loading = false;
   $scope.loadingProducts = false;
@@ -193,7 +179,20 @@ myApp.controller('ShowUserController', function($scope, BackandService, auth, gr
 
     if(operation == "cancelRequest" || operation == "ignoreRequest" || operation == "removeFromList")
     {
-      deleteUserLink(agent_id, supplier_id);
+      $scope.loading = false;
+      var confirmPopup = $ionicPopup.confirm({
+        title: 'Are You Sure?',
+        template: 'This action cannot be undone.'
+      });
+           
+      confirmPopup.then(function(result) {
+        if(result)
+        {
+          $scope.loading = true;
+          deleteUserLink(agent_id, supplier_id);
+        }
+
+      });
     }    
 
     if(operation == "confirmRequest")
@@ -230,8 +229,12 @@ myApp.controller('ShowUserController', function($scope, BackandService, auth, gr
   function getObjectById(objectName, id)
   {
     BackandService.getObjectById(objectName,id).then(function(result){
-    console.log("Data from show object");
-    $scope.showObject = result.data;
+      console.log("Data from show object");
+      $scope.showObject = result.data;
+      if(result.status == 200)
+      {
+        $scope.showObject.created_at = PublicService.getDate($scope.showObject.created_at);
+      }
 
     });
   }

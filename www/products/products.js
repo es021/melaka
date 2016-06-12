@@ -45,9 +45,11 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
 
   $scope.myProductsObject = {};
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.loading = false;
 
   if($scope.authProfile != null && $state.current.name == "myProducts")
   {
+    $scope.loading = true;
     $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
     getProductBySupplierId($scope.userInSession.supplier_id);
   }
@@ -70,23 +72,21 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
       console.log("Result From getProductBySupplierId");
       console.log(result);  
       $scope.myProductsObject = result.data;    
-
-      if(result.status == 200)
-      {
-
-      }
+      $scope.loading = false;
 
     });
 
   }
 });
 
-myApp.controller('ShowProductController', function($scope, BackandService, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
+myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, BackandService, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
   $scope.showObject = {};
 
   $scope.productId = $stateParams.product_id;
   $scope.loading = false;
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+
 
   ///// FOR REQUEST FORM /////////////////////////////////////////////////////////////////////////
   $scope.newRequest = {};
@@ -112,6 +112,10 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
     $scope.newRequest.status = TRANS_STATUS.REQUESTED;
     $scope.newRequest.payment_status = TRANS_STATUS.NOT_PAID;
     $scope.newRequest.created_at = BackandService.getTimestampinMysql();
+    $scope.newRequest.updated_at = BackandService.getTimestampinMysql();
+    $scope.newRequest.supplier_name = $scope.showObject.supplier_name;
+    $scope.newRequest.agent_name = $scope.authProfile.nickname;
+    $scope.newRequest.product_name = $scope.showObject.name;
 
     //$scope.newRequest.total_price
     //$scope.newRequest.type
@@ -132,6 +136,13 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
     });
 
   }
+  ///////////////////////////////////////////////////////////////////////////////////////////////
+  ///// FOR TITLE /////////////////////////////////////////////////////////////////////////////////  
+  $scope.showSupplier = function()
+  {
+    $location.url("/showSupplier?id="+$scope.showObject.supplier_id+"&objectName=suppliers");
+  }
+
   ///////////////////////////////////////////////////////////////////////////////////////////////
   ///// FOR TAB /////////////////////////////////////////////////////////////////////////////////
   $scope.show = "info";
@@ -174,18 +185,19 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
   {
     BackandService.getObjectById(objectName,id).then(function(result){
       console.log("Data from show object");
-      $scope.showObject = result.data;
-      console.log($scope.showObject);
 
-      if(result.status == 200 && $scope.showObject != null)
-      {
-        if($scope.userInSession != null)
+        $scope.showObject = result.data;
+        console.log($scope.showObject);
+
+        if(result.status == 200 && $scope.showObject != null)
         {
-          checkAuthentication();
-          checkLinkedAgent();
+          if($scope.userInSession != null)
+          {
+            checkAuthentication();
+            checkLinkedAgent();
+          }
         }
-      }
-
+      
     });
   }
 
@@ -195,20 +207,43 @@ myApp.controller('ShowProductController', function($scope, BackandService, $stat
     $scope.loading = true;
   };
 
-  $scope.deleteProduct = function(){ 
-    $scope.loading = true;
-    BackandService.deleteObject("products",$scope.showObject.id).then(function(result){
+  $scope.comfirmDeleteProduct = function(){
+      $scope.loading = false;
+      var confirmPopup = $ionicPopup.confirm({
+        title: 'Are You Sure?',
+        template: 'This action cannot be undone.'
+      });
+           
+      confirmPopup.then(function(result) {
+        if(result)
+        {
+          $scope.loading = true;
+          deleteProduct();
+        }
+
+      });
+  };
+
+  function deleteProduct(){ 
+    BackandService.deleteObject("products",$scope.showObject.id).then(function successCallback (result){
       console.log("Data from delete products object");
       console.log(result);
 
       if(result.status == 200)
       {
         growl.success($scope.showObject.name+" Deleted" ,{title: 'Successfully Delete One Product!'});
-        $scope.loading = true;
         $state.go('myProducts');
       }
+
+      $scope.loading = false;
+    
+    }, function errorCallback (result){
+        growl.error("There is one or more transactions associated with this product" ,{title: 'Failed to delete this product'});
+        console.log(result);
+        $scope.loading = false;
     });
   };
+
 
 });
 
@@ -216,7 +251,7 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
   
   //MB
   $scope.imageSizeLimit = 2;
-  
+  $scope.supplierName = "";
   $scope.newProduct = {};
   $scope.filePath = null;
   $scope.fileToUpload = {};
@@ -242,6 +277,10 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
     {
       growl.error("Redirecting to home" ,{title: 'Agent Could Not Add New Product'});              
       $state.go("home");
+    }
+    else //supplierName
+    {
+      getSupplierNameById($scope.userInSession.supplier_id);
     }
   }
 
@@ -345,9 +384,11 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
     $scope.loadStatus = "Creating new record in database"
 
     $scope.newProduct.supplier_id = $scope.userInSession.supplier_id;
+    $scope.newProduct.supplier_name = $scope.supplierName;
     //$scope.newProduct.created_at = BackandService.getTimestampinMysql();
 
     console.log($scope.newProduct.supplier_id);
+    console.log($scope.newProduct.supplier_name);
     console.log($scope.newProduct.name);
     console.log($scope.newProduct.category);
     console.log($scope.newProduct.description);
@@ -398,5 +439,19 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
     }
   };
 
+  function getSupplierNameById(id)
+  {
+        BackandService.getSupplierNameById(id).then(function(result){
+
+        console.log("Result From getSupplierNameById");
+        console.log(result);      
+
+        if(result.status == 200)
+        {
+          $scope.supplierName = result.data[0].first_name +" "+result.data[0].last_name;
+        }
+
+      });
+  }
 
 });
