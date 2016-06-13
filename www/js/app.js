@@ -68,7 +68,7 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,PublicService,$location) {
+myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,PublicService,$location,AUTH_CONSTANT) {
 
   var state = $location.path().replace("/", "");
 
@@ -111,14 +111,16 @@ myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,Pub
  $scope.comfirmLogout = function()
   {
     function logout(){
-      auth.signout();
+
       $scope.authProfile = null;
       $scope.userInSession = null;
       window.localStorage.removeItem("UserInSession");
       window.localStorage.removeItem("AuthProfile");
       PublicService.setHeader("login");
       PublicService.setFooter("newUser");
-      $state.go('login');
+
+      PublicService.logout();
+      //$state.go('login');
     }
 
     var confirmPopup = $ionicPopup.confirm({

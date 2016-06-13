@@ -43,7 +43,6 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
 myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $state, $stateParams, growl,AUTH_CONSTANT){
   $scope.users = [];
-  $scope.email = [];
   $scope.user = [];
   $scope.isNew = null;
   $scope.user_type = "new";
@@ -154,25 +153,28 @@ myApp.controller('LoginSignupController', function(auth, $scope, $state, Backand
     var auth0 = new Auth0({
         domain: AUTH_CONSTANT.AUTH0_DOMAIN,
         clientID: AUTH_CONSTANT.AUTH0_CLIENT_ID,
-        callbackOnLocationHash: true
+        callbackOnLocationHash: true,
+        sso : true
     });
 
 
    
     $scope.logout = function () {
         auth0.logout();
-        $scope.go('login');
+        $state.go('login');
     }
+
+    $scope.loginInfo = {};
 
     $scope.login = function (e) {
     
-       console.log($scope.email);
-       console.log($scope.password);
+       //console.log($scope.loginInfo.email);
+       //console.log($scope.loginInfo.password);
         
         auth0.login({
             connection: AUTH_CONSTANT.AUTH0_DB_CONNECTION_NAME,
-            email: $scope.email,
-            password: $scope.password
+            email:   $scope.loginInfo.email,
+            password:   $scope.loginInfo.password,
         },
         function (err, result) {
             if(err)
@@ -186,6 +188,7 @@ myApp.controller('LoginSignupController', function(auth, $scope, $state, Backand
                 $state.go('login_success', {accessToken:result.accessToken,idToken:result.idToken});
             }
         });
+
     };
 
     $scope.loginFacebook = function (e) {

@@ -37,5 +37,5 @@ myApp.constant("AUTH_CONSTANT",{
     "AUTH0_DOMAIN" : 'wzs21.auth0.com',
     "AUTH0_CLIENT_ID" :'j2ucVyLG1pMqGZiKsGL00QAkHbW21siH',
     "AUTH0_DB_CONNECTION_NAME" : 'Username-Password-Authentication',
-    "CALLBACK_URL" : "http://localhost:8100"
+    "CALLBACK_URL" : "localhost:8100"
 });

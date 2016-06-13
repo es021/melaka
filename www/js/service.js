@@ -321,7 +321,7 @@ myApp.service('DropboxService', function ($http){
     });
   }
 
-https://api.dropboxapi.com/1/shares/auto/<path>
+//https://api.dropboxapi.com/1/shares/auto/<path>
   getShareLink = function(pathFile){
     return $http({
           method: 'POST',
@@ -340,7 +340,9 @@ https://api.dropboxapi.com/1/shares/auto/<path>
           console.log(headers);           
           console.log(config);           
     });
-  }
+  }  
+
+
 
   return{
     //basic query
@@ -410,7 +412,7 @@ myApp.service('FileReaderService', function ($q, $log){
 ///////////////////// PublicService ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////// PublicService ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.service('PublicService', function (){
+myApp.service('PublicService', function ($http){
 
 
   getTimestampForFileName = function(timestamp)
@@ -546,6 +548,9 @@ myApp.service('PublicService', function (){
     }
   }
 
+  logout = function(){
+    window.location = 'https://wzs21.auth0.com/v2/logout';
+  }
 
   return {
       getTimestampForFileName : getTimestampForFileName,
@@ -554,7 +559,8 @@ myApp.service('PublicService', function (){
       setHeader : setHeader,
       initHeaderFooter : initHeaderFooter,
       getAgoTime : getAgoTime,
-      getDate : getDate
+      getDate : getDate,
+      logout : logout,
   };
 
 
