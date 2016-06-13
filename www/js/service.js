@@ -549,7 +549,9 @@ myApp.service('PublicService', function ($http){
   }
 
   logout = function(){
-    window.location = 'https://wzs21.auth0.com/v2/logout';
+    var returnUrl = window.location.href.split("#")[0];
+    //console.log(returnUrl);
+    window.location = 'https://wzs21.auth0.com/v2/logout?returnTo='+returnUrl;
   }
 
   return {
