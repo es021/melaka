@@ -71,10 +71,10 @@ myApp.run(function(auth) {
 myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,PublicService,$location) {
 
   var state = $location.path().replace("/", "");
+
   console.log(state);
 
   //login with sosial provider
-
   if(state.length > 30)
   {
     socialLoginHandler(state);

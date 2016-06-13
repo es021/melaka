@@ -1,3 +1,5 @@
+<ion-view>
+<ion-content class="text-center has-header has-footer padding">
 <p>
 <h3 class="title">{{showObject.name}}</h3>
 <h5>by <a  ng-click="showSupplier()">{{showObject.supplier_name}}</a></h5>
@@ -35,10 +37,8 @@
 <!-- ***************************** INFO ****************************************************************************** -->
   <div ng-if="show=='info'" class="item item-body">
     <div class="text-center">
-
-    <a href="{{showObject.picture}}" target="_blank">
-        <img href="{{showObject.picture}}" class="full-image image-fit" src="{{showObject.picture}}">
-    </a>
+      
+        <img src="{{showObject.picture}}" class="full-image image-fit">
   
     </div>
     <h3><strong>Price Per Unit</strong> | RM {{showObject.price_per_unit}}</h3>
@@ -108,3 +108,6 @@
 </div>
 
 </p>
+
+</ion-view>
+</ion-content>
