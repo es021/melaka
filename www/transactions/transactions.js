@@ -28,7 +28,7 @@ myApp.config(function($stateProvider, BackandProvider) {
 });
 
 
-myApp.controller('TransactionsController', function($state,growl,$scope, BackandService,PublicService, auth, TRANS_STATUS){
+myApp.controller('TransactionsController', function($state,growl, $ionicPopup,$scope, BackandService,PublicService, auth, TRANS_STATUS){
   
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
@@ -41,29 +41,33 @@ myApp.controller('TransactionsController', function($state,growl,$scope, Backand
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////  Main Listing /////////////////////////////////////////////////////////////////////////
- 
-  if($scope.authProfile != null && $scope.userInSession != null)
+
+  main();
+
+  function main()
   {
-    $scope.loading = true;
-    if($state.current.name == "myActiveListing")
+      if($scope.authProfile != null && $scope.userInSession != null)
     {
-      if($scope.userInSession.user_type == "agent")
-        getAgentActiveListing($scope.userInSession.agent_id);
+      $scope.loading = true;
+      if($state.current.name == "myActiveListing")
+      {
+        if($scope.userInSession.user_type == "agent")
+          getAgentActiveListing($scope.userInSession.agent_id);
 
-      if($scope.userInSession.user_type == "supplier")
-        getSupplierActiveListing($scope.userInSession.supplier_id);
-    }
+        if($scope.userInSession.user_type == "supplier")
+          getSupplierActiveListing($scope.userInSession.supplier_id);
+      }
 
-    if($state.current.name == "myCompletedTransaction")
-    {
-      if($scope.userInSession.user_type == "agent")
-        getAgentCompletedTransaction($scope.userInSession.agent_id);
+      if($state.current.name == "myCompletedTransaction")
+      {
+        if($scope.userInSession.user_type == "agent")
+          getAgentCompletedTransaction($scope.userInSession.agent_id);
 
-      if($scope.userInSession.user_type == "supplier")
-        getSupplierCompletedTransaction($scope.userInSession.supplier_id);
+        if($scope.userInSession.user_type == "supplier")
+          getSupplierCompletedTransaction($scope.userInSession.supplier_id);
+      }
     }
   }
-  
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////// my Active Listing /////////////////////////////////////////////////////////////////////////
@@ -116,6 +120,32 @@ myApp.controller('TransactionsController', function($state,growl,$scope, Backand
     }
   }
 
+  $scope.confirmDeleteTrans = function(id){
+
+    function deleteTrans(id){
+      BackandService.deleteObject("transactions",id).then(function(result){
+          if(result.status == 200)
+          {
+            growl.success("Deleted Transaction "+id,{title: 'Successfully Removed Request!'});
+            main();
+          }
+
+        });
+    }
+
+    var confirmPopup = $ionicPopup.confirm({
+       title: 'Remove This Request',
+       template: 'Are you sure?'
+     });
+     
+    confirmPopup.then(function(result) {
+        if(result)
+        {
+          deleteTrans(id);
+        }
+     });
+  }
+
   function editTransactionStatus(id,status,timeUpdated){
     BackandService.editTransactionStatus(id,status,timeUpdated).then(function(result){
         callback(id,result.status);
@@ -151,6 +181,7 @@ myApp.controller('TransactionsController', function($state,growl,$scope, Backand
           growl.error("Failed to update transactions "+id+". Please try again." ,{title: 'Error!'});
       }
   }
+
 
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
