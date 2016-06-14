@@ -228,6 +228,8 @@ myApp.controller('LoginSignupController', function(auth, $scope, $state, Backand
     };
 
 
+    $scope.signupInfo = {};
+
     $scope.signup = function (e) {
        // e.preventDefault();
         function signupCallback (err, profile, id_token) {
@@ -254,8 +256,8 @@ myApp.controller('LoginSignupController', function(auth, $scope, $state, Backand
             sso: false,
             auto_login: true,
             connection: AUTH_CONSTANT.AUTH0_DB_CONNECTION_NAME,
-            email: $scope.email,
-            password: $scope.password
+            email: $scope.signupInfo.email,
+            password: $scope.signupInfo.password
         }, signupCallback);
 
     };

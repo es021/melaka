@@ -1,0 +1,33 @@
+<ion-view>
+<ion-content class="text-center has-header has-footer padding">
+
+<h2 class="title"><small>Follow Us On</small></h2>
+<a class="button button-small button-positive icon-left ion-social-facebook" 
+ng-click="goTo('facebook')">InnovaSeeds</a>
+
+<a class="button button-small button-dark icon-left ion-social-instagram-outline" 
+ng-click="goTo('instagram')">innova_seeds</a>
+
+<hr>
+<h2 class="title"><small>Send Us Message</small></h2>
+<div class="text-left">
+  <form role="form">
+  <div class="form-group" ng-form='contactform'>
+    <label class="item item-input item-stacked-label">
+        <span class="input-label">Email</span>
+        <input type="email" class="form-control" id="email" placeholder="Enter Your Email (optional)" ng-model="contact.email">
+    </label>
+    
+    <label class="item item-input item-stacked-label">
+        <span class="input-label">Message</span>
+        <textarea class="form-control" placeholder="Your message here" rows="4" ng-model="contact.message" required></textarea>
+    </label>
+
+    <button ng-disabled="!contactform.$valid" type="submit" class="button button-block button-positive" ng-click="submit()">Submit</button>
+  </div>
+  </form>
+</div>
+</p>
+
+</ion-view>
+</ion-content>

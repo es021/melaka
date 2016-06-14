@@ -3,6 +3,16 @@ var myApp = angular.module('sample.constant', [
   'backand'
 ]);
 
+myApp.constant("APP_CONSTANT",{
+        "EMAIL": "zulsarhan.shaari@gmail.com",
+        "NAME" : "InnovaSeeds",
+        "TAGLINE" : "Something",
+        "LOGO" : "img/logo.png",
+        "FACEBOOK": "",
+        "INSTAGRAM": "",
+
+});
+
 myApp.constant("USER_LINK_TYPE", {
         "LINKED": 1,
         "NOT_REQUESTED": 2,

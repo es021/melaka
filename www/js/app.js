@@ -12,6 +12,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'sample.users',
   'sample.transactions',
   'sample.products',
+  'sample.contact',
   'sample.service',
   'sample.constant',
   'sample.directive',
@@ -138,6 +139,10 @@ myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,Pub
   
   $scope.home = function() {    
     $state.go('home');    
+  };
+  
+  $scope.contact = function() {    
+    $state.go('contact');    
   };
 
   $scope.allUsers = function() {

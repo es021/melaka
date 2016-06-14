@@ -1,6 +1,12 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 <h2 class="title">Login</h2>
+
+<a class="button button-small button-positive icon-right ion-social-facebook" ng-click="loginFacebook()">Login With</a>
+<a class="button button-small button-assertive icon-right ion-social-googleplus" ng-click="loginGoogle()">Login With</a>
+
+<hr>
+
 <div class="text-left">
   <form role="form">
   <div class="form-group" ng-form='loginform'>
@@ -18,19 +24,7 @@
     <button ng-disabled="!loginform.$valid" type="submit" class="button button-block button-positive" ng-click="login()">Login</button>
   </div>
   </form>
-
-{{user_email}}
-{{password}}
-
 </div>  
-
-<hr>
-  or
-<h4 class="title">Login With</h4>
-<div class="button-bar">
-  <a class="button disable button-block button-positive" ng-click="loginFacebook()">Facebook</a>
-  <a class="button disable button-block button-royal" ng-click="loginGoogle()">Google</a>
-</div>
 
 </ion-view>
 </ion-content>

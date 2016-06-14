@@ -2,17 +2,23 @@
 <ion-content class="text-center has-header has-footer padding">
 
 <h2 class="title">Signup</h2>
+
+<a class="button button-small button-positive icon-right ion-social-facebook" ng-click="loginFacebook()">Signup With</a>
+<a class="button button-small button-assertive icon-right ion-social-googleplus" ng-click="loginGoogle()">Signup With</a>
+
+<hr>
+
 <div class="text-left">
   <form role="form">
   <div class="form-group" ng-form='signupform'>
     <label class="item item-input item-stacked-label">
         <span class="input-label">Email</span>
-        <input type="email" class="form-control" id="email" placeholder="Enter Your Email" ng-model="email" required>
+        <input type="email" class="form-control" id="email" placeholder="Enter Your Email" ng-model="signupInfo.email" required>
     </label>
     
     <label class="item item-input item-stacked-label">
         <span class="input-label">Password</span>
-        <input type="password" class="form-control" id="password" placeholder="Create A Password" ng-model="password" required>
+        <input type="password" class="form-control" id="password" placeholder="Create A Password" ng-model="signupInfo.password" required>
     </label>
 
     <button ng-disabled="!signupform.$valid" type="submit" class="button button-block button-positive" ng-click="signup()">Sign Up</button>
@@ -20,14 +26,6 @@
   </form>
 </div>
 </p>
-
-<hr>
-  or
-<h4 class="title">Signup With</h4>
-<div class="button-bar">
-  <a class="button disable button-block button-positive" ng-click="loginFacebook()">Facebook</a>
-  <a class="button disable button-block button-royal" ng-click="loginGoogle()">Google</a>
-</div>
 
 </ion-view>
 </ion-content>
