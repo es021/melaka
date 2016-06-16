@@ -298,8 +298,26 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
     $scope.progress = null;
   }
 
-  $scope.previewFile = function () {
+$scope.loadImage = false;
 
+$scope.add = function(){
+
+  $scope.loadImage = true;
+
+  var f = document.getElementById('file').files[0];
+  var r = new FileReader();
+
+  r.onloadend = function(e){
+    var data = e.target.result;
+    $scope.file = f;
+    $scope.loadImage = false;
+    previewFile();
+  }
+  
+  r.readAsBinaryString(f);
+}
+
+  function previewFile(){
     if($scope.file == null)
     {
       $scope.removePicture();
@@ -319,7 +337,7 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
       return;
     }
 
-    console.log($scope.file);
+    //console.log($scope.file);
     $scope.progress = null;
 
 

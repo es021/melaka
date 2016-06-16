@@ -187,13 +187,21 @@ myApp.controller('AppController', function ($scope,$ionicPopup,$ionicSideMenuDel
   
   ///////////////////////////////////////////////
   //SIDE MENU BAR //////////////////////////////////
-  $scope.toggleSideMenu = function(){
+  $scope.toggleSideMenuLeft = function(){
     $ionicSideMenuDelegate.toggleLeft();
+  };  
+
+  $scope.toggleSideMenuRight = function(){
+    $ionicSideMenuDelegate.toggleRight();
   };
 
   function closeSideMenuBar(){
     if($ionicSideMenuDelegate.isOpenLeft()){
       $ionicSideMenuDelegate.toggleLeft();
+    }    
+
+    if($ionicSideMenuDelegate.isOpenRight()){
+      $ionicSideMenuDelegate.toggleRight();
     }
   }
 

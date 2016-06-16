@@ -3,7 +3,7 @@ var myApp = angular.module('sample.directive', [
   'backand'
 ]);
 
-myApp.directive('fileInput', function($parse){
+myApp.directive('fileInput', ['$parse',function($parse){
   console.log("init directive");
 
   return {
@@ -21,12 +21,13 @@ myApp.directive('fileInput', function($parse){
                   scope.$apply(function () {
                       modelSet(scope, element[0].files[0]);
                       onChange(scope);
+                      //console.log(scope.file);
                   });                    
               };
                
               element.bind('change', updateModel);
           }
         }
-});
+}]);
 
 

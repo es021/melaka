@@ -85,9 +85,9 @@
       <!--HEADER-->
         <div class="bar bar-header bar-stable">
           <div id="header_logout" style="display:none">
-            <button class="button button-icon icon ion-navicon" ng-click="toggleSideMenu()"></button>
+            <button class="button button-icon icon ion-navicon" ng-click="toggleSideMenuLeft()"></button>
             <div class="h1 title">InnovaSeeds</div>
-            <button class="button button-clear button-positive" ng-click="comfirmLogout()">Logout</button>
+            <button class="button button-icon icon ion-person" ng-click="toggleSideMenuRight()"></button>
           </div>
 
           <div id="header_login" style="display:default">
@@ -109,15 +109,6 @@
         <br>
         <br>
 
-        <div class="profile text-center">
-          <img src="" alt="profile-image" class="image"/><img>
-                
-          <br>
-                
-          <h3 id="name">Name</h3>
-          <h5 id="user_type">User Type</h5>
-
-        </div> 
 
         <ion-list>
           <a class="item item-icon-left" ng-click="myLinkedUser()">
@@ -151,6 +142,11 @@
                 Contact Us
           </a>
 
+          <a class="item item-icon-left" ng-click="comfirmLogout()">
+              <i class="icon ion-android-exit"></i>
+                Log Out
+          </a>
+
         </ion-list>
 
         </ion-side-menu>
@@ -162,6 +158,20 @@
 
         <!-- Right menu -->
         <ion-side-menu side="right">
+
+         <br>
+        <br>
+        <br>
+
+        <div class="profile text-center">
+          <img src="" alt="profile-image" class="image"/><img>
+                
+          <br>
+                
+          <h3 id="name">Name</h3>
+          <h5 id="user_type">User Type</h5>
+
+        </div> 
           </ion-side-menu>
 
       </ion-side-menus>
