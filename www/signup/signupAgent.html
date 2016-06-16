@@ -68,7 +68,13 @@
 
   </div>
 
-  <button ng-disabled="!agentform.$valid" type="submit" class="button button-block button-positive" ng-click="addAgent()">Submit</button>
+  <div class="text-center" ng-show="loading">
+      Registering Your Account as Supplier<br>
+      {{loadMessage}}<br>
+    <img id="mySpinner" src="/img/loader.gif"/>
+  </div>
+  
+  <button ng-disabled="!agentform.$valid || loading" type="submit" class="button button-block button-positive" ng-click="addAgent()">Submit</button>
 
 </div>
 </form>

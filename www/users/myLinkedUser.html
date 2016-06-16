@@ -1,0 +1,38 @@
+<ion-view>
+<ion-content class="text-center has-header has-footer padding">
+<p>
+    <h2 class="title" ng-if = "userInSession.user_type == 'supplier'">My Linked Agents</h2>
+    <h2 class="title" ng-if = "userInSession.user_type == 'agent'">My Linked Suppliers</h2>
+
+    <button class="button button-small button-clear button-positive" ng-click="myPendingLinkRequest()">See My Pending Link Request</button>
+      
+      <div class="text-center" ng-show="myLinkedUserLoad">
+        <img id="mySpinner" src="/img/loader.gif"/>
+      </div>
+      
+      <div class="text-left">
+      <div class="list">
+            <div ng-repeat="item in myLinkedUser">
+              <div ng-controller = "UserController">
+            <a class="item item-avatar" ng-if = "userInSession.user_type == 'supplier'" ng-click="showObjectFunction('agents',{{item.id}})">
+            <img src="{{item.picture}}">
+                <h2>{{item.first_name}} {{item.last_name}}</h2>
+                <p><strong>Agent Id</strong> {{item.id}}</p>
+            </a>
+            <a class="item item-avatar" ng-if = "userInSession.user_type == 'agent'" ng-click="showObjectFunction('suppliers',{{item.id}})">
+              <img src="{{item.picture}}">
+                <h2>{{item.first_name}} {{item.last_name}}</h2>
+                <p><strong>Supplier Id</strong> {{item.id}}</p>
+            </a>
+        </div>
+            </div>
+      </div>
+    </div>
+
+      <div ng-if="myLinkedUser.length == 0">
+        <span ng-if = "userInSession.user_type == 'supplier'">No linked agents</span>
+        <span ng-if = "userInSession.user_type == 'agent'">No linked suppliers</span>
+      </div>
+</p>
+</ion-view>
+</ion-content>

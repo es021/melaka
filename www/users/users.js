@@ -55,10 +55,27 @@ myApp.config(function($stateProvider) {
       data: {
         requiresLogin: false
       }
+  });   
+
+  $stateProvider
+    .state('myLinkedUser', {
+      url: '/myLinkedUser',
+      controller: 'UserLinkController',
+      templateUrl: 'users/myLinkedUser.html',
+      data: {
+        requiresLogin: true
+      }
   }); 
 
-
-
+  $stateProvider
+    .state('myPendingLinkRequest', {
+      url: '/myPendingLinkRequest',
+      controller: 'UserLinkController',
+      templateUrl: 'users/myPendingLinkRequest.html',
+      data: {
+        requiresLogin: true
+      }
+  }); 
 
   
 });
@@ -210,6 +227,23 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
     });
   }
 
+  function userLinkErrorCallback(result,operation)
+  {
+    var error = "";
+    if(result.data.includes("Duplicate entry"))
+    {
+       error = "The email is already taken by another " +type;
+    }
+    else
+    {
+      error = "Please try again";
+    }
+
+    growl.error(error ,{title: operation+" Failed!"});
+    console.log(result);
+    $scope.loading = false;
+  }
+
   function addObject(objectName, object)
   {
     BackandService.addObject(objectName,object).then(function(result){
@@ -223,6 +257,8 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
         refreshPage();
       }
 
+    }, function errorCallback (result){
+          userLinkErrorCallback(result,"Request");
     });
   }
 
@@ -236,6 +272,8 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
         $scope.showObject.created_at = PublicService.getDate($scope.showObject.created_at);
       }
 
+    }, function errorCallback (result){
+          userLinkErrorCallback(result,"Retrieving Info");
     });
   }
 
@@ -259,6 +297,8 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
         refreshPage();
       }
 
+    }, function errorCallback (result){
+          userLinkErrorCallback(result,"Comfirm Request");
     });
   }
 
@@ -282,6 +322,8 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
         refreshPage();
       }
 
+    }, function errorCallback (result){
+          userLinkErrorCallback(result,"Remove Request");
     });
   }
 
@@ -295,6 +337,8 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
         $scope.linkObject = result.data[0];
         $scope.userLinkType = result.data[0].type;
       }
+    }, function errorCallback (result){
+
     });
   }
 
@@ -370,6 +414,173 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
           getProductBySupplierId($scope.id);
         }
      }
+  }
+
+
+});
+
+
+myApp.controller('UserLinkController', function ($scope, $state, BackandService,PublicService, USER_LINK_TYPE) {
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  main();
+
+  $scope.myPendingLinkRequest = function()
+  {
+    $state.go('myPendingLinkRequest');
+  }  
+
+  $scope.myLinkedUser = function()
+  {
+    $state.go('myLinkedUser');
+  }
+
+  function defineScopeLinked()
+  {
+    $scope.myLinkedUser = {};
+    $scope.myLinkedUserLoad = true;
+  }
+
+  function defineScopePending()
+  {
+    $scope.requestedToUser = {};
+    $scope.requestedFromUser = {};
+    $scope.requestedToUserLoad = true;
+    $scope.requestedFromUserLoad = true;
+  }
+
+  function main()
+  {
+    if($scope.userInSession != null)
+    {
+      if($scope.userInSession.user_type == "agent")
+      {
+        if($state.current.name == "myLinkedUser")
+        {
+          initAgentLinked();
+        }
+
+        if($state.current.name == "myPendingLinkRequest")
+        {
+          initAgentPending();
+        }
+      }
+      else if($scope.userInSession.user_type == "supplier")
+      {
+        if($state.current.name == "myLinkedUser")
+        {
+          initSupplierLinked();
+        }
+
+        if($state.current.name == "myPendingLinkRequest")
+        {
+          initSupplierPending();
+        }
+      }
+    }
+    else
+    {
+      $state.go("login");
+    }
+
+  }
+
+
+  function initAgentLinked()
+  {
+    console.log("initAgentLinked");
+    defineScopeLinked();
+    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.LINKED);
+  }  
+
+  function initAgentPending()
+  {
+    console.log("initAgentPending");
+    defineScopePending();
+    //requestedToUser
+    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_S);
+    //requestedFromUser
+    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_A);
+  
+  }
+
+  function initSupplierLinked()
+  {
+    console.log("initSupplierLinked");
+    defineScopeLinked();
+    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.LINKED);
+  }  
+
+  function initSupplierPending()
+  {
+    console.log("initSupplierPending");
+    defineScopePending();
+    //requestedToUser
+    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_A); 
+    //requestedFromUser
+    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_S);
+  }
+
+  function getSupplierLinkByAgentIdAndType(agent_id,type){
+    BackandService.getSupplierLinkByAgentIdAndType(agent_id,type).then(function(result){
+      console.log("Getting all getSupplierLinkByAgentIdAndType | Type : "+type);
+      //console.log(result);
+
+      if(type == USER_LINK_TYPE.LINKED)
+      {
+        $scope.myLinkedUser = result.data;
+        $scope.myLinkedUserLoad = false;
+      }      
+
+      //User : Agent
+      //Kita nak supplier, request by supplier => requestedToUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
+      {
+        $scope.requestedToUser = result.data;
+        $scope.requestedToUserLoad = false;
+      }
+
+
+      //User : Agent
+      //Kita nak supplier, request by agent => requestedFromUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
+      {
+        $scope.requestedFromUser = result.data;
+        $scope.requestedFromUserLoad = false;
+      }
+
+    });
+  }
+
+  function getAgentLinkBySupplierIdAndType(supplier_id,type){
+    BackandService.getAgentLinkBySupplierIdAndType(supplier_id,type).then(function(result){
+      console.log("Getting all getAgentLinkBySupplierIdAndType | Type : "+type);
+      //console.log(result);
+
+      if(type == USER_LINK_TYPE.LINKED)
+      {
+        $scope.myLinkedUser = result.data;
+        $scope.myLinkedUserLoad = false;
+      }
+
+      //User : Supplier
+      //Kita nak agent, request by agent => requestedToUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
+      {
+        $scope.requestedToUser = result.data;
+        $scope.requestedToUserLoad = false;
+      }
+
+      //User : Supplier
+      //Kita nak agent, request by supplier => requestedFromUser
+      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
+      {
+        $scope.requestedFromUser = result.data;
+        $scope.requestedFromUserLoad = false;
+
+      }
+
+    });
   }
 
 

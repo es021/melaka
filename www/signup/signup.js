@@ -40,10 +40,12 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
 });
 
-myApp.controller('SignupControllerHelper', function($scope, SignupService, auth, $state){
+myApp.controller('SignupControllerHelper', function($scope, growl,SignupService, auth, $state){
   
   $scope.newAgent = {};
   $scope.newSupplier = {};
+  $scope.loading = false;
+  $scope.loadMessage = "Please Wait For Registration To Complete";
 
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
 
@@ -60,6 +62,7 @@ myApp.controller('SignupControllerHelper', function($scope, SignupService, auth,
 
   function createNewUser (resultData, user_type){
     //Creating new User
+    $scope.loadMessage = "Almost There!";
     var newUser = {};
     if(user_type == "agent")
     {
@@ -95,17 +98,24 @@ myApp.controller('SignupControllerHelper', function($scope, SignupService, auth,
         var userInSession = {};
         userInSession.user_id = result.data.id;
         userInSession.agent_id = newUser.agent_id;
+        userInSession.supplier_id = newUser.supplier_id;
         userInSession.user_type = user_type;
         window.localStorage.setItem("UserInSession",JSON.stringify(userInSession));
-              
+        
+        growl.success("Redirecting to Home Page" ,{title: 'Registration Completed!'});
+
         $state.go("home");
       }
+    }, function errorCallback (result){
+        growl.error(""+result ,{title: 'Registration Failed!'});
+        console.log(result);
+        $scope.loading = false;
     });
   }
 
   $scope.addAgent = function(){
     //console.log($scope.userId);
-    
+    $scope.loading = true;
     $scope.newAgent.created_at = getTimestampinMysql();
     $scope.newAgent.picture = $scope.authProfile.picture;
 
@@ -130,13 +140,35 @@ myApp.controller('SignupControllerHelper', function($scope, SignupService, auth,
         console.log(result.data.created_at);
         createNewUser(result.data,"agent");
       }
+
+        $scope.loading = false;
+    }, function errorCallback (result){
+        signupErrorCallback(result,"agent");
     });
 
+  }
+
+  function signupErrorCallback(result,type)
+  {
+    var error = "";
+    if(result.data.includes("Duplicate entry"))
+    {
+       error = "The email is already taken by another " +type;
+    }
+    else
+    {
+      error = "Please try again";
+    }
+
+    growl.error(error ,{title: 'Registration Failed!'});
+    console.log(result);
+    $scope.loading = false;
   }
 
   $scope.addSupplier = function(){
     //console.log($scope.userId);
     //$scope.newSupplier.email = authProfile.email;
+    $scope.loading = true;
     $scope.newSupplier.created_at = getTimestampinMysql();
     $scope.newSupplier.picture = $scope.authProfile.picture;
 
@@ -157,9 +189,13 @@ myApp.controller('SignupControllerHelper', function($scope, SignupService, auth,
       if(result.status == 200)
       {
         console.log("New record successfully created in 'supplier' table. ID : " + result.data.id);
-        console.log(result.data.created_at);
+        //console.log(result.data.created_at);
         createNewUser(result.data,"supplier");
       }
+
+      $scope.loading = false;
+    }, function errorCallback (result){
+        signupErrorCallback(result,"supplier");
     });
 
   }

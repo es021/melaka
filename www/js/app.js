@@ -1,3 +1,7 @@
+String.prototype.capitalize = function() {
+    return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 // Ionic Starter App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
@@ -55,6 +59,7 @@ myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpP
   $stateProvider
     .state("home", {
       url: "/home",
+      cache: false,
       controller: 'HomeController',
       templateUrl: 'home/home.html'
     });
@@ -69,7 +74,7 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,PublicService,$location,AUTH_CONSTANT) {
+myApp.controller('AppController', function ($scope,$ionicPopup,$ionicSideMenuDelegate, auth, $state,PublicService,$location,AUTH_CONSTANT) {
 
   var state = $location.path().replace("/", "");
 
@@ -108,7 +113,11 @@ myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,Pub
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));  
   
   PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
-  
+  if($scope.authProfile != null)
+  {
+    PublicService.initSideMenu();
+  }
+
  $scope.comfirmLogout = function()
   {
     function logout(){
@@ -138,42 +147,75 @@ myApp.controller('AppController', function ($scope,$ionicPopup, auth, $state,Pub
   }
   
   $scope.home = function() {    
+    closeSideMenuBar();
     $state.go('home');    
-  };
-  
-  $scope.contact = function() {    
-    $state.go('contact');    
   };
 
   $scope.allUsers = function() {
+    closeSideMenuBar();
     $state.go('allUsers');
   };
 
   $scope.login = function() {
-
     $state.go('login');    
   };  
 
   $scope.signup = function() {
-
     $state.go('signup');    
   };
 
   $scope.myActiveListing = function() {
+    closeSideMenuBar();
     $state.go('myActiveListing');
   };
+  
 
   $scope.agents = function() {
+    closeSideMenuBar();
     $state.go('agents');
   };
 
   $scope.suppliers = function() {
+    closeSideMenuBar();
     $state.go('suppliers');
   };  
 
   $scope.myProducts = function() {
+    closeSideMenuBar();
     $state.go('myProducts');
   };
+  
+  ///////////////////////////////////////////////
+  //SIDE MENU BAR //////////////////////////////////
+  $scope.toggleSideMenu = function(){
+    $ionicSideMenuDelegate.toggleLeft();
+  };
+
+  function closeSideMenuBar(){
+    if($ionicSideMenuDelegate.isOpenLeft()){
+      $ionicSideMenuDelegate.toggleLeft();
+    }
+  }
+
+  $scope.myLinkedUser = function() {
+    closeSideMenuBar();
+    $state.go('myLinkedUser');
+  };  
+
+  $scope.myCompletedTransaction = function() {
+    closeSideMenuBar();
+    $state.go('myCompletedTransaction');
+  };
+
+
+  $scope.contact = function() {   
+    closeSideMenuBar();
+    $state.go('contact');    
+  };
+
+
+
+
 
 });
 
@@ -186,6 +228,7 @@ myApp.controller('HomeController', function ($scope, $state, BackandService,Publ
   if($scope.authProfile != null )
   {
     initDashboard($scope);
+    PublicService.initSideMenu();
   }
 
   function initDashboard($scope)

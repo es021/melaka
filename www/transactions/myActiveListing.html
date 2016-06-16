@@ -10,7 +10,6 @@
     <button class="button button-small button-clear button-positive" ng-click="goTo('myActiveListing')">See My Active Listing</button>
 </div>
       <!-- ******************************************************************************************************************************* -->
-
       <ion-list class="text-left">
         <div ng-repeat="item in activeListing">
             <a class="item item-icon-left item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
@@ -20,38 +19,52 @@
 			
 			{{item.product_name}} 
 
-			<h5 ng-if="userInSession.user_type=='agent'" class="text-muted"> requested to {{item.supplier_name}}</h5>
-			<h5 ng-if="userInSession.user_type=='supplier'" class="text-muted"> requested from {{item.agent_name}}</h5>
+			<!--<h5 ng-if="userInSession.user_type=='agent'" class="text-muted"> requested to {{item.supplier_name}}</h5>
+			<h5 ng-if="userInSession.user_type=='supplier'" class="text-muted"> requested from {{item.agent_name}}</h5>-->
 
        	<!-- ******************************************************************************************************************************* -->
         <!--STATUS AND PAYMENT STATUS SHOW ************************************************************************************************* -->
-		    <span ng-if="stateName=='myActiveListing'" class="badge">
-		    <span  ng-if="item.status == TRANS_STATUS.REQUESTED">
-		      Requested/ 
-		    </span>
-		    <span ng-if="item.status == TRANS_STATUS.DENIED">
-		      Denied/
-		    </span>
-		   	<span ng-if="item.status == TRANS_STATUS.APPROVED">
-		      Approved/
-		    </span>
-		    <span ng-if="item.status == TRANS_STATUS.DELIVERED">
-		      Delivered/
-		    </span>
-		   	<span ng-if="item.status == TRANS_STATUS.RECEIVED">
-		      Package Received/
-		    </span>
+		  
+		    <h5><strong>
+			    <span  class="text-success" ng-if="item.status == TRANS_STATUS.REQUESTED">
+			      Requested 
+			    </span>
+			    <span class="text-danger" ng-if="item.status == TRANS_STATUS.DENIED">
+			      Denied
+			    </span>
+			   	<span class="text-success" ng-if="item.status == TRANS_STATUS.APPROVED">
+			      Approved
+			    </span>
+			    <span class="text-success" ng-if="item.status == TRANS_STATUS.DELIVERED">
+			      Delivered
+			    </span>
+			   	<span  class="text-primary" ng-if="item.status == TRANS_STATUS.RECEIVED">
+			      Package Received
+			    </span>
+				/
+			    <span class="text-danger" ng-if="item.payment_status == TRANS_STATUS.NOT_PAID">
+			      Not Paid
+			    </span>
+			   	<span class="text-success" ng-if="item.payment_status == TRANS_STATUS.PAID">
+			      Paid
+			    </span>
+			   	<span class="text-primary" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
+			      Payment Comfirmed
+			    </span>
+			</strong>
+		    </h5>
 
-		    <span ng-if="item.payment_status == TRANS_STATUS.NOT_PAID">
-		      Not Paid
+		    <span class="badge">
+		    	{{item.quantity}}
 		    </span>
-		   	<span ng-if="item.payment_status == TRANS_STATUS.PAID">
-		      Paid
-		    </span>
-		   	<span ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
+		<!--
+		    <div ng-if="stateName=='myActiveListing'">
+		   	<h5 class="text-success" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
 		      Payment Comfirmed
-		    </span>
-		    </span>
+		    </h5>
+			</div>
+		-->
+
 		    <!--<i class="icon ion-ios-telephone-outline"></i>-->
 		  	</a>
 		

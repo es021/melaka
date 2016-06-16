@@ -554,6 +554,25 @@ myApp.service('PublicService', function ($http){
     window.location = 'https://wzs21.auth0.com/v2/logout?returnTo='+returnUrl;
   }
 
+  initSideMenu = function()
+  {
+    console.log("init side bar");
+    var authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+    var userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+    
+    $( ".profile .image" ).attr( "src", authProfile.picture );
+    $( ".profile #name" ).text(authProfile.nickname );
+
+    if(userInSession != null)
+    {
+      $(".profile #user_type").text(userInSession.user_type.capitalize());
+    }
+    else{
+      $( ".profile #user_type").text("New User");
+    }
+  }
+
+
   return {
       getTimestampForFileName : getTimestampForFileName,
       getTimestampinMysql : getTimestampinMysql ,
@@ -563,6 +582,7 @@ myApp.service('PublicService', function ($http){
       getAgoTime : getAgoTime,
       getDate : getDate,
       logout : logout,
+      initSideMenu : initSideMenu
   };
 
 

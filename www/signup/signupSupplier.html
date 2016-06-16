@@ -60,8 +60,14 @@
     </label>
 
   </div>
+  
+  <div class="text-center" ng-show="loading">
+      Registering Your Account as Supplier<br>
+      {{loadMessage}}<br>
+    <img id="mySpinner" src="/img/loader.gif"/>
+  </div>
 
-  <button ng-disabled="!supplierForm.$valid" type="submit" class="button button-block button-positive" ng-click="addSupplier()">Submit</button>
+  <button ng-disabled="!supplierForm.$valid || loading" type="submit" class="button button-block button-positive" ng-click="addSupplier()">Submit</button>
 
 </div>
 </form>

@@ -80,13 +80,12 @@
 
   </head>
 
-  <body ng-app = "sample">
+  <body ng-app = "sample" ng-controller="AppController">
 
       <!--HEADER-->
-      <div ng-controller="AppController">
         <div class="bar bar-header bar-stable">
           <div id="header_logout" style="display:none">
-            <button class="button button-icon icon ion-navicon"></button>
+            <button class="button button-icon icon ion-navicon" ng-click="toggleSideMenu()"></button>
             <div class="h1 title">InnovaSeeds</div>
             <button class="button button-clear button-positive" ng-click="comfirmLogout()">Logout</button>
           </div>
@@ -97,18 +96,80 @@
             <button class="button button-clear button-positive" ng-click="login()">Login</button>
           </div>
       </div>
+      
+      <div growl></div>
+
       <!--END OF HEADER-->
 
-      <!--CONTENT-->
-          <div growl></div>
-          <!--
-          <ion-nav-view>
-          </ion-nav-view>
-          -->
-          <div class="container" ui-view>
-          </div>
+      <ion-side-menus>
+        <!-- Left menu -->
+        <ion-side-menu side="left">
+                
+        <br>
+        <br>
+        <br>
 
-     
+        <div class="profile text-center">
+          <img src="" alt="profile-image" class="image"/><img>
+                
+          <br>
+                
+          <h3 id="name">Name</h3>
+          <h5 id="user_type">User Type</h5>
+
+        </div> 
+
+        <ion-list>
+          <a class="item item-icon-left" ng-click="myLinkedUser()">
+            <i class="icon ion-android-contacts"></i>
+              My Linked User
+            <span class="item-note">
+              
+            </span>
+          </a>                
+
+          <a class="item item-icon-left" ng-click="myCompletedTransaction()">
+            <i class="icon ion-clock"></i>
+              Transaction History
+            <span class="item-note">
+              
+            </span>
+          </a> 
+
+          <a class="item item-icon-left" ng-click="settings()">
+              <i class="icon ion-gear-a" ></i>
+                Profile Settings
+          </a>    
+
+          <a class="item item-icon-left" ng-click="why()">
+              <i class="icon ion-help-circled" ></i>
+                  Why InnovaSeeds
+            </a>
+
+          <a class="item item-icon-left" ng-click="contact()">
+              <i class="icon ion-email"></i>
+                Contact Us
+          </a>
+
+        </ion-list>
+
+        </ion-side-menu>
+
+        <ion-side-menu-content>
+            <ion-nav-view>   
+            </ion-nav-view>
+        </ion-side-menu-content>
+
+        <!-- Right menu -->
+        <ion-side-menu side="right">
+          </ion-side-menu>
+
+      </ion-side-menus>
+
+
+      <!--CONTENT-->
+          
+          <!--<div class="container" ui-view>-->
       <!--END OF CONTENT-->
 
       <!-- The title of the ion-view will be shown on the navbar -->
@@ -134,11 +195,6 @@
             <a class="tab-item">
               <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
                 My Active Listing
-            </a>
-
-            <a class="tab-item">
-              <i class="icon ion-gear-a" ng-click="settings"></i>
-                Settings
             </a>
 
           </div>          
@@ -167,10 +223,6 @@
                 My Products
             </a>
 
-            <a class="tab-item">
-              <i class="icon ion-gear-a" ng-click="settings"></i>
-                Settings
-            </a>
           </div>
 
 
@@ -204,7 +256,7 @@
 
 
 
-    </div>
+
 
   </body>
 
