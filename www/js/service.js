@@ -585,6 +585,8 @@ myApp.service('PublicService', function ($http,growl){
 
   initHeaderFooter = function (authProfile,userInSession)
   {
+    console.log(userInSession);
+    console.log(authProfile);
     if(authProfile != null )
     {
       setHeader("logout");
