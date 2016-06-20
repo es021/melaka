@@ -111,8 +111,8 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
   //to clear off from previous production
   if(typeof($scope.userInSession.user_type) == "string")
   {
-    $scope.userInSession = null;
-    $scope.authProfile = null; 
+      window.localStorage.removeItem("UserInSession");
+      window.localStorage.removeItem("AuthProfile");
   }
 
   $scope.USER_TYPE = USER_TYPE;
