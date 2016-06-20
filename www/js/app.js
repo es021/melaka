@@ -113,6 +113,8 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
   {
       window.localStorage.removeItem("UserInSession");
       window.localStorage.removeItem("AuthProfile");
+      $scope.userInSession = null;
+      $scope.authProfile = null;
   }
 
   $scope.USER_TYPE = USER_TYPE;
