@@ -88,22 +88,6 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     }
   }
 
-  $scope.main();
-
-  function socialLoginHandler(state)
-  {
-    //access_token=qtcCiHqxEVXL4tFt&id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d6czIxLmF1dGgwLmNvbS8iLCJzdWIiOiJmYWNlYm9va3wxMDIwNjAyMTI1MDQwMTI5MCIsImF1ZCI6ImoydWNWeUxHMXBNcUdaaUtzR0wwMFFBa0hiVzIxc2lIIiwiZXhwIjoxNDY1NjExMjU2LCJpYXQiOjE0NjU1NzUyNTZ9.ot1xygGZA1QjXo3fX-P3G3USUvm6UoIrTqr5ejOdvtE&token_type=Bearer&state=NbT1JRZPbTd15Q7kU1UixCg3
-    var token = state.split("&");
-    //console.log(token);
-    var accessToken = token[0].split("=")[1];
-    var idToken =token[1].split("=")[1];
-    //console.log(accessToken);
-    //console.log(idToken);
-    $state.go('login_success', {accessToken:accessToken,idToken:idToken});
-  }
-
-
-
   //setting header and footer
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));  
@@ -119,7 +103,20 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
         $scope.authProfile = null;
     }
   }
+  
+  $scope.main();
 
+  function socialLoginHandler(state)
+  {
+    //access_token=qtcCiHqxEVXL4tFt&id_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwczovL3d6czIxLmF1dGgwLmNvbS8iLCJzdWIiOiJmYWNlYm9va3wxMDIwNjAyMTI1MDQwMTI5MCIsImF1ZCI6ImoydWNWeUxHMXBNcUdaaUtzR0wwMFFBa0hiVzIxc2lIIiwiZXhwIjoxNDY1NjExMjU2LCJpYXQiOjE0NjU1NzUyNTZ9.ot1xygGZA1QjXo3fX-P3G3USUvm6UoIrTqr5ejOdvtE&token_type=Bearer&state=NbT1JRZPbTd15Q7kU1UixCg3
+    var token = state.split("&");
+    //console.log(token);
+    var accessToken = token[0].split("=")[1];
+    var idToken =token[1].split("=")[1];
+    //console.log(accessToken);
+    //console.log(idToken);
+    $state.go('login_success', {accessToken:accessToken,idToken:idToken});
+  }
 
   $scope.USER_TYPE = USER_TYPE;
 
