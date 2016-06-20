@@ -286,6 +286,30 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
+  getUserActiveListing = function(user_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getUserActiveListing',
+        params: {
+          parameters: {
+            user_id: user_id
+          }
+        }
+      })
+  }
+
+  getUserCompletedTransaction = function(user_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getUserCompletedTransaction',
+        params: {
+          parameters: {
+            user_id: user_id
+          }
+        }
+      })
+  }
+
   getTimestampinMysql = function(){
     var formatedMysqlTimestamp = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
     return formatedMysqlTimestamp;
@@ -325,13 +349,10 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getShowProductById : getShowProductById,
 
     //transactionQuery
-    getAgentActiveListing : getAgentActiveListing,
-    getSupplierActiveListing : getSupplierActiveListing,
+    getUserActiveListing : getUserActiveListing,
     editTransactionStatus : editTransactionStatus,
     editTransactionPaymentStatus : editTransactionPaymentStatus,
-    getAgentCompletedTransaction : getAgentCompletedTransaction,
-    getSupplierCompletedTransaction : getSupplierCompletedTransaction
-
+    getUserCompletedTransaction : getUserCompletedTransaction
   }
 
 });

@@ -66,7 +66,7 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,PublicService,$location,AUTH_CONSTANT,USER_TYPE) {
+myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT,USER_TYPE) {
   
   $scope.main = function(){
     var state = $location.path().replace("/", "");
@@ -222,6 +222,7 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.myPendingLinkRequest = function()
   {
+    closeSideMenuBar();
     $state.go('myPendingLinkRequest');
   } 
 

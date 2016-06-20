@@ -74,12 +74,12 @@
           <ion-item ng-show="isItemShown(item)">
 			    <h2 ><strong>{{item.product_name}}</strong></h2>
 				    
-				    <h3 ng-if="userInSession.user_type=='agent'">requested to 
-				    	<a ng-controller="UserController" ng-click="showObjectFunction('suppliers',{{item.supplier_id}})">{{item.supplier_name}}</a>
+				    <h3 ng-if="userInSession.user_id == item.from_user_id">requested to 
+				    	<a ng-click="showUser({{item.to_user_id}})">{{item.other_user_name}}</a>
 					</h3 ng-if="userInSession.user_type=='supplier'">
 
-					<h3 ng-if="userInSession.user_type=='supplier'">requested from 
-				    	<a ng-controller="UserController" ng-click="showObjectFunction('agents',{{item.agent_id}})">{{item.agent_name}}</a>
+					<h3 ng-if="userInSession.user_id == item.to_user_id">requested from 
+				    	<a ng-click="showUser({{item.from_user_id}})">{{item.other_user_name}}</a>
 					</h3>
 					
 					<h4>

@@ -51,20 +51,12 @@ myApp.controller('TransactionsController', function($state,growl, $ionicPopup,$s
       $scope.loading = true;
       if($state.current.name == "myActiveListing")
       {
-        if($scope.userInSession.user_type == "agent")
-          getAgentActiveListing($scope.userInSession.agent_id);
-
-        if($scope.userInSession.user_type == "supplier")
-          getSupplierActiveListing($scope.userInSession.supplier_id);
+        getUserActiveListing($scope.userInSession.user_id);
       }
 
       if($state.current.name == "myCompletedTransaction")
       {
-        if($scope.userInSession.user_type == "agent")
-          getAgentCompletedTransaction($scope.userInSession.agent_id);
-
-        if($scope.userInSession.user_type == "supplier")
-          getSupplierCompletedTransaction($scope.userInSession.supplier_id);
+        getUserCompletedTransaction($scope.userInSession.user_id);
       }
     }
   }
@@ -72,15 +64,8 @@ myApp.controller('TransactionsController', function($state,growl, $ionicPopup,$s
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////// my Active Listing /////////////////////////////////////////////////////////////////////////
  
-  function getAgentActiveListing(agent_id){
-      BackandService.getAgentActiveListing(agent_id).then(function(result){
-        $scope.activeListing = result.data;
-        $scope.loading = false;
-      });
-  }
-
-  function getSupplierActiveListing(supplier_id){
-      BackandService.getSupplierActiveListing(supplier_id).then(function(result){
+  function getUserActiveListing(user_id){
+      BackandService.getUserActiveListing(user_id).then(function(result){
         $scope.activeListing = result.data;
         $scope.loading = false;
       });
@@ -89,15 +74,8 @@ myApp.controller('TransactionsController', function($state,growl, $ionicPopup,$s
   ////////// my COMPLETED TRANSACTION  /////////////////////////////////////////////////////////////////////////
 
 
-  function getAgentCompletedTransaction(agent_id){
-      BackandService.getAgentCompletedTransaction(agent_id).then(function(result){
-        $scope.activeListing  = result.data;
-        $scope.loading = false;
-      });
-  }  
-
-  function getSupplierCompletedTransaction(supplier_id){
-      BackandService.getSupplierCompletedTransaction(supplier_id).then(function(result){
+  function getUserCompletedTransaction(user_id){
+      BackandService.getUserCompletedTransaction(user_id).then(function(result){
         $scope.activeListing  = result.data;
         $scope.loading = false;
       });

@@ -7,8 +7,8 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
     .state('myProducts', {
-      url: '/myProducts',
-      controller: 'ProductController',
+      url: '/myProducts?refresh',
+      controller: 'MyProductController',
       templateUrl: 'products/myProducts.html',
       data: {
         requiresLogin: false
@@ -17,7 +17,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
     .state('showProductList', {
-      url: '/showProductList?user_id',
+      url: '/showProductList?user_id?refresh',
       controller: 'ShowProductListController',
       templateUrl: 'products/showProductList.html',
       data: {
@@ -28,8 +28,18 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
   $stateProvider
     .state('addProduct', {
       url: '/addProduct',
-      controller: 'AddProductController',
-      templateUrl: 'products/addProduct.html',
+      controller: 'AddEditProductController',
+      templateUrl: 'products/addEditProduct.html',
+      data: {
+        requiresLogin: false
+      }
+    });
+
+  $stateProvider
+    .state('editProduct', {
+      url: '/editProduct?id?user_id',
+      controller: 'AddEditProductController',
+      templateUrl: 'products/addEditProduct.html',
       data: {
         requiresLogin: false
       }
@@ -47,9 +57,14 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
 });
 
-myApp.controller('ProductController', function(auth,$location, $scope, $state, BackandService,USER_TYPE){
+myApp.controller('MyProductController', function(auth,PublicService,$location,$stateParams, $scope, $state, BackandService,USER_TYPE){
 
-  $scope.myProductsObject = {};
+  if($stateParams.refresh == 'y')
+  {
+    console.log("Refresh");
+    getAllProductByUserId($scope.userInSession.user_id);
+  }
+
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.loading = false;
 
@@ -64,29 +79,63 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
     }
   }
 
+
   $scope.addProduct = function(){
     console.log("Add Product Page");
     $state.go("addProduct");
   }
 
+  $scope.editProduct = function(id,user_id){
+    console.log("Edit Product Page");
+    $state.go("editProduct",{id:id , user_id:user_id});
+  }
 
-  $scope.showProduct = function(product_id)
-  {
-    $location.url("/showProduct?product_id="+product_id);
-  };
-
-  function getAllProductByUserId(user_id){
+ function getAllProductByUserId(user_id){
 
     BackandService.getAllProductByUserId(user_id).then(function(result){
 
       console.log("Result From getAllProductByUserId");
       console.log(result);  
-      $scope.myProductsObject = result.data;    
+      $scope.productList = result.data;    
       $scope.loading = false;
 
     });
 
   }
+
+  $scope.authenticated = null;
+
+  function checkAuthentication()
+  {
+    if($scope.userInSession.user_id == $scope.showItem.user_id)
+    {
+      $scope.authenticated = true;
+    }
+  }
+
+  $scope.toggleItem = function(item) {
+    
+    if ($scope.isItemShown(item)) 
+    {
+      $scope.showItem = null;
+    } 
+    else 
+    {
+      $scope.showItem = item;
+      $scope.timeAgo = PublicService.getAgoTime(item.updated_at);
+    }
+
+    if($scope.authenticated == null)
+    {
+      checkAuthentication();
+    }
+
+  };
+
+  $scope.isItemShown = function(item) {
+    return $scope.showItem === item;
+  };
+
 });
 
 myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, PublicService,BackandService, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
@@ -104,6 +153,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
   $scope.newRequest = {};
   $scope.newRequest.total_price = 0;
   $scope.loadingRequest = false;
+
   $scope.updateTotalPrice = function()
   { 
     $scope.newRequest.total_price = $scope.newRequest.quantity * $scope.showObject.price_per_unit;
@@ -247,7 +297,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
       if(result.status == 200)
       {
         growl.success($scope.showObject.name+" Deleted" ,{title: 'Successfully Delete One Product!'});
-        $state.go('myProducts');
+        $state.go('myProducts',{refresh:"y"});
       }
 
       $scope.loading = false;
@@ -262,9 +312,22 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
 });
 
-myApp.controller('AddProductController', function($scope, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
+myApp.controller('AddEditProductController', function($scope, $stateParams, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
   
   //MB
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  
+  $scope.state = $state.current.name;
+
+  if($scope.state == "editProduct")
+  {
+    $scope.editId =  $stateParams.id;
+    $scope.product_user_id =  $stateParams.user_id;
+
+    initEditProduct($scope.editId);
+  }
+
   $scope.imageSizeLimit = 2;
 
   $scope.newProduct = {};
@@ -277,9 +340,6 @@ myApp.controller('AddProductController', function($scope, USER_TYPE, BackandServ
 
   $scope.loading = false;
   $scope.loadStatus = "";
-
-  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
   if($scope.userInSession == null)
   {
@@ -295,6 +355,108 @@ myApp.controller('AddProductController', function($scope, USER_TYPE, BackandServ
     }
   }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+ 
+  function initEditProduct(id)
+  {
+    if(checkAuthentication())
+    {
+      getShowProductById(id); 
+    }
+    else
+    {
+      growl.error('Redirecting..',{title: 'You are not authenticated to edit this product!'});
+      $state.go("myProducts");
+    }
+  }
+  
+  function checkAuthentication()
+  {
+    if($scope.userInSession.user_id == $scope.product_user_id)
+    {
+      return true;
+    }
+  }
+
+  function getShowProductById(id)
+  {
+    BackandService.getShowProductById(id).then(function(result){
+      console.log("Data from show object");
+
+      $scope.newProduct = result.data[0];
+      $scope.oldProduct = result.data[0];
+
+      $scope.oldImageSrc = $scope.newProduct.picture;
+      $scope.imageSrc = $scope.newProduct.picture;
+      
+      $scope.progress = 100;
+
+    },function errorCallback(error){
+      PublicService.errorCallbackFunction(error,"Failed to open product editor!");
+    });
+  }
+
+  $scope.editProduct = function(){
+
+    //kena check for all attributes
+    /*name
+    category
+    price_per_unit
+    description*/
+
+    $scope.loading = true;
+    $scope.newProduct.updated_at = BackandService.getTimestampinMysql();
+
+    if($scope.oldImageSrc == $scope.imageSrc) 
+    {
+      editRecord();
+    }
+    else
+    {
+      if($scope.file == null)
+      {
+        $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
+        editRecord();
+      }
+      else
+      {
+        uploadFileDropbox();
+      }
+    }
+
+
+  }
+
+  function editRecord(){
+    $scope.loadStatus = "Editing old record in database"
+
+    //$scope.newProduct.user_id = $scope.userInSession.user_id;
+    console.log($scope.newProduct);
+    //$scope.loading = false;
+
+/*    BackandService.addObject("products",$scope.newProduct).then(function(result){
+
+      console.log("Result From Creating new Product");
+      console.log(result);      
+
+      if(result.status == 200)
+      {
+        growl.success("Redirecting to product page" ,{title: 'Successfully Added New Product!'});              
+        $state.go("myProducts");
+      }
+      $scope.loading = false;
+
+    });
+*/
+  }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
   function sizeInMB(size)
   {
     return size / 1000000;
@@ -383,8 +545,16 @@ $scope.add = function(){
         $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
       }
       
-      addRecord();
 
+      if($scope.state == "editProduct")
+      {
+        editRecord();
+      }
+
+      if($scope.state == "addProduct")
+      {
+        addRecord();
+      }
 
     });  
  }
@@ -444,7 +614,7 @@ $scope.add = function(){
     var imageType = $scope.file.type.split(/[ /]+/)[1];
     var timeStamp = PublicService.getTimestampForFileName($scope.newProduct.created_at);
 
-    var productName = "supplier"+$scope.userInSession.supplier_id +"_"+ timeStamp + "." + imageType;
+    var productName = "user"+$scope.userInSession.user_id +"_"+ timeStamp + "." + imageType;
     console.log(productName);
     return productName
   }

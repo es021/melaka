@@ -54,7 +54,7 @@ myApp.config(function($stateProvider) {
 
   $stateProvider
     .state('myLinkedUser', {
-      url: '/myLinkedUser',
+      url: '/myLinkedUser?refresh',
       controller: 'LinkedUserController',
       templateUrl: 'users/myLinkedUser.html',
       data: {
@@ -64,7 +64,7 @@ myApp.config(function($stateProvider) {
 
   $stateProvider
     .state('myPendingLinkRequest', {
-      url: '/myPendingLinkRequest',
+      url: '/myPendingLinkRequest?refresh',
       controller: 'PendingLinkController',
       templateUrl: 'users/myPendingLinkRequest.html',
       data: {
@@ -393,6 +393,10 @@ myApp.controller('LinkedUserController', function ($scope, $state,UserService, B
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
+  $scope.refresh = function(){
+    initLinkedUser();
+  };
+  
  if($scope.userInSession != null)
   {
     initLinkedUser();
@@ -433,9 +437,13 @@ myApp.controller('LinkedUserController', function ($scope, $state,UserService, B
 
 });
 
-myApp.controller('PendingLinkController', function ($scope, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+myApp.controller('PendingLinkController', function ($scope, $state, $stateParams, UserService, BackandService,PublicService, USER_LINK_TYPE) {
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  $scope.refresh = function(){
+    initPendingUser(); 
+  };
 
  if($scope.userInSession != null)
   {

@@ -24,7 +24,3 @@ Number.prototype.getUserTypeLower = function() {
     if(this == 3)
       return "dropship";
 }
-
-String.prototype.getUserTypeLower = function() {
-    return "huhu";
-}
