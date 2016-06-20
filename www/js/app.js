@@ -107,6 +107,14 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
   //setting header and footer
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));  
+
+  //to clear off from previous production
+  if(typeof($scope.userInSession.user_type) == "string")
+  {
+    $scope.userInSession = null;
+    $scope.authProfile = null; 
+  }
+
   $scope.USER_TYPE = USER_TYPE;
 
   PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
