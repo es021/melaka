@@ -2,7 +2,7 @@
 <ion-content class="text-center has-header has-footer padding">
 <p>
 <h3 class="title">{{showObject.name}}</h3>
-<h5>by <a  ng-click="showSupplier()">{{showObject.supplier_name}}</a></h5>
+<h5>by <a  ng-click="showUser(showObject.user_id)"> {{showObject.user_name}}</a></h5>
 
 <div class="list card text-left">
 
@@ -24,7 +24,7 @@
 
 <!-- ***************************************************************************************************************** -->
   <!-- Product Tabs For Linked User -->
-  <div ng-if="linkedAgent" class="item tabs">
+  <div ng-if="linked" class="item tabs">
     <a ng-show="!loading" ng-click="showFunction('info')" class="button icon-left ion-information-circled button-clear button-dark">Show Info</a>
     <a ng-show="!loading" ng-click="showFunction('request')" class="button icon-left ion-paper-airplane button-clear button-dark">Request Product</a>
 

@@ -41,7 +41,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
 });
 
-myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $state, $stateParams, growl,AUTH_CONSTANT){
+myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $state, $stateParams, growl,AUTH_CONSTANT,USER_TYPE){
   $scope.users = [];
   $scope.user = [];
   $scope.isNew = null;
@@ -53,25 +53,10 @@ myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $
     var userInSession = {};
 
     userInSession.user_id = result.data[0].id;
-    userInSession.agent_id = result.data[0].agent_id;
-    userInSession.supplier_id = result.data[0].supplier_id;
+    userInSession.user_type = result.data[0].user_type;
+    userInSession.first_name = result.data[0].first_name;
+    userInSession.last_name = result.data[0].last_name;
     
-    console.log("initUserSession");
-
-    if(userInSession.agent_id > 0 && userInSession.supplier_id == 0)
-    {
-      userInSession.user_type = "agent";
-      $scope.user_type = "agent";
-    }
-    else if(userInSession.agent_id == 0 && userInSession.supplier_id > 0)
-    {
-      userInSession.user_type = "supplier";
-      $scope.user_type = "supplier";
-    }
-    else
-    {
-        $scope.user_type = "newUser";
-    }
 
     console.log("User In Session")
     console.log(userInSession);    
@@ -86,14 +71,13 @@ myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $
     BackandService.getUserByAuthId(authId).then(function(result){
 
       $scope.user = result.data[0];
-      console.log(result.data);
+      //console.log(result.data);
       console.log(result.data[0]);
       
       if (result.data[0] == null)
       {
         console.log("New User - > " + authId);
         $scope.isNew = true; 
-
       }
       else
       {
@@ -150,6 +134,8 @@ myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $
 
 myApp.controller('LoginSignupController', function(auth, $scope, $state, BackandService,growl,AUTH_CONSTANT){
     
+    console.log("aaa");
+
     var auth0 = new Auth0({
         domain: AUTH_CONSTANT.AUTH0_DOMAIN,
         clientID: AUTH_CONSTANT.AUTH0_CLIENT_ID,

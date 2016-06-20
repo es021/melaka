@@ -46,7 +46,7 @@ myApp.controller('TransactionsController', function($state,growl, $ionicPopup,$s
 
   function main()
   {
-      if($scope.authProfile != null && $scope.userInSession != null)
+    if($scope.authProfile != null && $scope.userInSession != null)
     {
       $scope.loading = true;
       if($state.current.name == "myActiveListing")

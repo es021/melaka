@@ -9,9 +9,6 @@
     <link href="css/style.css" rel="stylesheet">
     <link href="css/ionic.app.css" rel="stylesheet">
 
-    <!-- w3 data to include html inside html js -->
-    <script src="lib/w3/w3data.js"></script>
-
     <!-- time ago -->
     <script src="lib/timeago/jquery-3.0.0.min.js"></script>
     <script src="lib/timeago/jquery.timeago.js"></script>
@@ -33,8 +30,10 @@
     <script src="js/service.js"></script>
     <script src="js/constant.js"></script>
     <script src="js/directive.js"></script>
+    <script src="js/prototype.js"></script>
+    <script type="text/javascript" src="home/home.js"></script>
     <script type="text/javascript" src="login/login-signup.js"></script>
-    <script type="text/javascript" src="signup/signup.js"></script>
+    <script type="text/javascript" src="register/register.js"></script>
     <script type="text/javascript" src="users/users.js"></script>
     <script type="text/javascript" src="transactions/transactions.js"></script>
     <script type="text/javascript" src="products/products.js"></script>
@@ -100,9 +99,9 @@
       <div growl></div>
 
       <!--END OF HEADER-->
+          
 
       <ion-side-menus>
-        <!-- Left menu -->
         <ion-side-menu side="left">
                 
         <br>
@@ -125,12 +124,7 @@
             <span class="item-note">
               
             </span>
-          </a> 
-
-          <a class="item item-icon-left" ng-click="settings()">
-              <i class="icon ion-gear-a" ></i>
-                Profile Settings
-          </a>    
+          </a>  
 
           <a class="item item-icon-left" ng-click="why()">
               <i class="icon ion-help-circled" ></i>
@@ -142,10 +136,7 @@
                 Contact Us
           </a>
 
-          <a class="item item-icon-left" ng-click="comfirmLogout()">
-              <i class="icon ion-android-exit"></i>
-                Log Out
-          </a>
+
 
         </ion-list>
 
@@ -156,7 +147,6 @@
             </ion-nav-view>
         </ion-side-menu-content>
 
-        <!-- Right menu -->
         <ion-side-menu side="right">
 
          <br>
@@ -172,6 +162,17 @@
           <h5 id="user_type">User Type</h5>
 
         </div> 
+
+          <a class="item item-icon-left" ng-click="myProfile()">
+            <i class="icon ion-gear-a" ></i>
+              Profile Settings
+          </a>
+          
+          <a class="item item-icon-left" ng-click="comfirmLogout()">
+              <i class="icon ion-android-exit"></i>
+                Log Out
+          </a>
+
           </ion-side-menu>
 
       </ion-side-menus>
@@ -179,7 +180,7 @@
 
       <!--CONTENT-->
           
-          <!--<div class="container" ui-view>-->
+        <!--<div class="container" ui-view></div>-->
       <!--END OF CONTENT-->
 
       <!-- The title of the ion-view will be shown on the navbar -->
@@ -190,16 +191,16 @@
       
           <!--FOOTER-->
 
-          <!--FOOTER FOR AGENT--> 
-          <!--FOOTER FOR AGENT--> 
-          <div class="tabs tabs-icon-top" id="footer_agent" style="display:none">
+          <!--FOOTER FOR DROPSHIP--> 
+          <!--FOOTER FOR DROPSHIP--> 
+          <div class="tabs tabs-icon-top" id="footer_dropship" style="display:none">
             <a class="tab-item">
               <i class="icon ion-home" ng-click="home()"></i>
                 <div>Home</div>
             </a>
             <a class="tab-item">
-              <i class="icon ion-person-stalker" ng-click="suppliers()"></i>
-                Find Suppliers
+              <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.DROPSHIP)"></i>
+                Connect
             </a>
 
             <a class="tab-item">
@@ -211,6 +212,32 @@
           
       <!-- *************************************************************************************************************************** --> 
 
+          <!--FOOTER FOR STOCKIST--> 
+          <!--FOOTER FOR STOCKIST--> 
+          <div class="tabs tabs-icon-top" id="footer_stockist" style="display:none">
+            <a class="tab-item">
+              <i class="icon ion-home" ng-click="home()"></i>
+                <div>Home</div>
+            </a>
+            <a class="tab-item">
+              <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.STOCKIST)"></i>
+                Connect
+            </a>
+
+            <a class="tab-item">
+              <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
+                My Active Listing
+            </a>            
+
+            <a class="tab-item">
+              <i class="icon ion-bag" ng-click="myProducts()"></i>
+                My Products
+            </a>
+
+          </div>    
+
+      <!-- *************************************************************************************************************************** --> 
+
           <!--FOOTER FOR SUPPLIER--> 
           <!--FOOTER FOR SUPPLIER--> 
           <div class="tabs tabs-icon-top" id="footer_supplier" style="display:none">
@@ -219,8 +246,8 @@
                 <div>Home</div>
             </a>
             <a class="tab-item">
-              <i class="icon ion-person-stalker" ng-click="agents()"></i>
-                Find Agents
+              <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.SUPPLIER)"></i>
+                Connect
             </a>
 
             <a class="tab-item">

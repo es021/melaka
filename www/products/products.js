@@ -16,6 +16,16 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
     });
 
   $stateProvider
+    .state('showProductList', {
+      url: '/showProductList?user_id',
+      controller: 'ShowProductListController',
+      templateUrl: 'products/showProductList.html',
+      data: {
+        requiresLogin: false
+      }
+    });
+
+  $stateProvider
     .state('addProduct', {
       url: '/addProduct',
       controller: 'AddProductController',
@@ -27,13 +37,9 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
     .state('showProduct', {
-      url: '/showProduct?product_id',
+      url: '/showProduct?product_id?show',
       controller: 'ShowProductController',
       templateUrl: 'products/showProduct.html',
-      /*params : {
-        product_id : 0
-      },
-      */
       data: {
         requiresLogin: false
       }
@@ -41,7 +47,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
 });
 
-myApp.controller('ProductController', function(auth,$location, $scope, $state, BackandService){
+myApp.controller('ProductController', function(auth,$location, $scope, $state, BackandService,USER_TYPE){
 
   $scope.myProductsObject = {};
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
@@ -51,7 +57,11 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
   {
     $scope.loading = true;
     $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-    getProductBySupplierId($scope.userInSession.supplier_id);
+
+    if($scope.userInSession.user_type < USER_TYPE.DROPSHIP)
+    {
+      getAllProductByUserId($scope.userInSession.user_id);
+    }
   }
 
   $scope.addProduct = function(){
@@ -65,11 +75,11 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
     $location.url("/showProduct?product_id="+product_id);
   };
 
-  function getProductBySupplierId(supplier_id){
+  function getAllProductByUserId(user_id){
 
-    BackandService.getProductBySupplierId(supplier_id).then(function(result){
+    BackandService.getAllProductByUserId(user_id).then(function(result){
 
-      console.log("Result From getProductBySupplierId");
+      console.log("Result From getAllProductByUserId");
       console.log(result);  
       $scope.myProductsObject = result.data;    
       $scope.loading = false;
@@ -79,10 +89,12 @@ myApp.controller('ProductController', function(auth,$location, $scope, $state, B
   }
 });
 
-myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, BackandService, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
-  $scope.showObject = {};
+myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, PublicService,BackandService, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
+  $scope.showObject = null;
 
   $scope.productId = $stateParams.product_id;
+  $scope.show = $stateParams.show;
+
   $scope.loading = false;
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
@@ -106,16 +118,22 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
   $scope.requestProduct = function()
   {
     $scope.loadingRequest = true;
-    $scope.newRequest.agent_id = $scope.userInSession.agent_id;
-    $scope.newRequest.supplier_id = $scope.showObject.supplier_id;
+    
+    if($scope.showObject == null)
+    {
+      PublicService.errorCallbackFunction(null,"Failed to Send Request");
+      $scope.loadingRequest = false;
+      return;
+    }
+
+    $scope.newRequest.from_user_id = $scope.userInSession.user_id;
+    $scope.newRequest.to_user_id = $scope.showObject.user_id;
+    //$scope.newRequest.supplier_id = $scope.showObject.supplier_id;
     $scope.newRequest.product_id = $scope.productId;
     $scope.newRequest.status = TRANS_STATUS.REQUESTED;
     $scope.newRequest.payment_status = TRANS_STATUS.NOT_PAID;
     $scope.newRequest.created_at = BackandService.getTimestampinMysql();
     $scope.newRequest.updated_at = BackandService.getTimestampinMysql();
-    $scope.newRequest.supplier_name = $scope.showObject.supplier_name;
-    $scope.newRequest.agent_name = $scope.authProfile.nickname;
-    $scope.newRequest.product_name = $scope.showObject.name;
 
     //$scope.newRequest.total_price
     //$scope.newRequest.type
@@ -133,45 +151,42 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
       }
 
       $scope.loadingRequest = false;
+    },function errorCallback(error){
+        PublicService.errorCallbackFunction(error,"Failed to Send Request");
+        $scope.loadingRequest = false;
     });
 
-  }
-  ///////////////////////////////////////////////////////////////////////////////////////////////
-  ///// FOR TITLE /////////////////////////////////////////////////////////////////////////////////  
-  $scope.showSupplier = function()
-  {
-    $location.url("/showSupplier?id="+$scope.showObject.supplier_id+"&objectName=suppliers");
   }
 
   ///////////////////////////////////////////////////////////////////////////////////////////////
   ///// FOR TAB /////////////////////////////////////////////////////////////////////////////////
-  $scope.show = "info";
   $scope.authenticated = false;
-  $scope.linkedAgent = false;
+  $scope.linked = false;
   function checkAuthentication()
   {
-    if($scope.userInSession.supplier_id == $scope.showObject.supplier_id)
+    if($scope.userInSession.user_id == $scope.showObject.user_id)
     {
       $scope.authenticated = true;
     }
   }
 
-  function checkLinkedAgent()
+  function checkIsUserLinked(user1,user2)
   {
-    if($scope.userInSession.user_type == "agent")
-    {
-      BackandService.getLinkByAgentIdSupplierIdType($scope.userInSession.agent_id, $scope.showObject.supplier_id, USER_LINK_TYPE.LINKED).then(function(result){
-        console.log("getLinkByAgentIdSupplierIdType");
-        if(result.status == 200)
+    BackandService.getLinkByFromIdToIdType(user1, user2, USER_LINK_TYPE.LINKED).then(function(result){
+      console.log("getLinkByFromIdToIdType");
+      if(result.status == 200)
+      {
+        //console.log(result.data.length);
+        if(result.data.length > 0)
         {
-          //console.log(result.data.length);
-          if(result.data.length > 0)
-          {
-            $scope.linkedAgent = true;
-          }
+          $scope.linked = true;
         }
-      });      
-    }
+        else
+        {
+          $scope.linked = false;
+        }
+      }
+    });      
   }
 
   $scope.showFunction = function(show)
@@ -181,12 +196,12 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
   ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
-  function getObjectById(objectName,id)
+  function getShowProductById(id)
   {
-    BackandService.getObjectById(objectName,id).then(function(result){
+    BackandService.getShowProductById(id).then(function(result){
       console.log("Data from show object");
 
-        $scope.showObject = result.data;
+        $scope.showObject = result.data[0];
         console.log($scope.showObject);
 
         if(result.status == 200 && $scope.showObject != null)
@@ -194,14 +209,14 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
           if($scope.userInSession != null)
           {
             checkAuthentication();
-            checkLinkedAgent();
+            checkIsUserLinked($scope.userInSession.user_id,$scope.showObject.user_id);
           }
         }
       
     });
   }
 
-  getObjectById("products",$scope.productId);
+  getShowProductById($scope.productId);
 
   $scope.editProduct = function(){
     $scope.loading = true;
@@ -247,11 +262,11 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
 });
 
-myApp.controller('AddProductController', function($scope, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
+myApp.controller('AddProductController', function($scope, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
   
   //MB
   $scope.imageSizeLimit = 2;
-  $scope.supplierName = "";
+
   $scope.newProduct = {};
   $scope.filePath = null;
   $scope.fileToUpload = {};
@@ -273,14 +288,10 @@ myApp.controller('AddProductController', function($scope, BackandService, Dropbo
   }
   if($scope.userInSession != null)
   {
-    if($scope.userInSession.user_type != "supplier")
+    if($scope.userInSession.user_type > USER_TYPE.STOCKIST)
     {
-      growl.error("Redirecting to home" ,{title: 'Agent Could Not Add New Product'});              
+      growl.error("Redirecting to home" ,{title: 'You Could Not Add New Product'});              
       $state.go("home");
-    }
-    else //supplierName
-    {
-      getSupplierNameById($scope.userInSession.supplier_id);
     }
   }
 
@@ -401,12 +412,9 @@ $scope.add = function(){
   function addRecord(){
     $scope.loadStatus = "Creating new record in database"
 
-    $scope.newProduct.supplier_id = $scope.userInSession.supplier_id;
-    $scope.newProduct.supplier_name = $scope.supplierName;
-    //$scope.newProduct.created_at = BackandService.getTimestampinMysql();
+    $scope.newProduct.user_id = $scope.userInSession.user_id;
 
-    console.log($scope.newProduct.supplier_id);
-    console.log($scope.newProduct.supplier_name);
+    console.log($scope.newProduct.user_id);
     console.log($scope.newProduct.name);
     console.log($scope.newProduct.category);
     console.log($scope.newProduct.description);
@@ -446,6 +454,8 @@ $scope.add = function(){
     $scope.loading = true;
 
     $scope.newProduct.created_at = BackandService.getTimestampinMysql();
+    $scope.newProduct.updated_at = BackandService.getTimestampinMysql();
+
     if($scope.file == null)
     {
       $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
@@ -457,19 +467,84 @@ $scope.add = function(){
     }
   };
 
-  function getSupplierNameById(id)
-  {
-        BackandService.getSupplierNameById(id).then(function(result){
+});
 
-        console.log("Result From getSupplierNameById");
-        console.log(result);      
 
-        if(result.status == 200)
-        {
-          $scope.supplierName = result.data[0].first_name +" "+result.data[0].last_name;
-        }
+myApp.controller('ShowProductListController', function($scope,USER_TYPE,USER_LINK_TYPE,$stateParams, BackandService,PublicService,$state){
 
-      });
+  $scope.userObject = {};
+  $scope.userObject.id = $stateParams.user_id;
+  $scope.productList = {};
+  $scope.showItem = {};
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  getUserNameById($scope.userObject.id);
+  getAllProductByUserId($scope.userObject.id);
+
+  function getUserNameById(id){
+    BackandService.getUserNameById(id).then(function(result){
+      console.log(result);
+      $scope.userObject.user_name = result.data[0].user_name;
+
+    });
   }
 
+  function getAllProductByUserId(user_id){
+
+    BackandService.getAllProductByUserId(user_id).then(function(result){
+
+      console.log("Result From getAllProductByUserId");
+      console.log(result);  
+      $scope.productList = result.data;    
+      $scope.loading = false;
+
+    });
+
+  }
+
+  $scope.toggleItem = function(item) {
+    //getProductbyId(item.product_id);
+    if($scope.linked == null)
+    {
+      checkIsUserLinked($scope.userObject.id,$scope.userInSession.user_id);
+    }
+
+    if ($scope.isItemShown(item)) 
+    {
+      $scope.showItem = null;
+    } 
+    else 
+    {
+      $scope.showItem = item;
+      $scope.timeAgo = PublicService.getAgoTime(item.updated_at);
+    }
+
+  };
+
+  $scope.isItemShown = function(item) {
+    return $scope.showItem === item;
+  };
+
+  /////////////////////// action button
+  $scope.linked = null;
+
+  function checkIsUserLinked(user1,user2)
+  {
+    BackandService.getLinkByFromIdToIdType(user1, user2, USER_LINK_TYPE.LINKED).then(function(result){
+      console.log("getLinkByFromIdToIdType");
+      if(result.status == 200)
+      {
+        //console.log(result.data.length);
+        if(result.data.length > 0)
+        {
+          $scope.linked = true;
+        }
+        else
+        {
+          $scope.linked = false;
+        }
+      }
+    });      
+  }
+  
 });

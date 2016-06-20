@@ -6,25 +6,18 @@ var myApp = angular.module('sample.users', [
 ]);
 
 myApp.config(function($stateProvider) {
+
+
   $stateProvider
-    .state('agents', {
-      url: '/agents',
-      controller: 'UserController',
-      templateUrl: 'users/agents.html',
+    .state('findUser', {
+      url: '/findUser?user_type_request',
+      controller: 'FindUserController',
+      templateUrl: 'users/findUser.html',
       data: {
         requiresLogin: false
       }
     });
 
-  $stateProvider
-    .state('suppliers', {
-      url: '/suppliers',
-      controller: 'UserController',
-      templateUrl: 'users/suppliers.html',
-      data: {
-        requiresLogin: false
-      }
-  });
 
   $stateProvider
     .state('allUsers', {
@@ -37,30 +30,32 @@ myApp.config(function($stateProvider) {
   });
 
 
+
   $stateProvider
-    .state('showAgent', {
-      url: '/showAgent?id&objectName',
+    .state('showUser', {
+      url: '/showUser?id',
       controller: 'ShowUserController',
-      templateUrl: 'users/showAgent.html',
+      templateUrl: 'users/showUser.html',
       data: {
         requiresLogin: false
       }
   });
 
   $stateProvider
-    .state('showSupplier', {
-      url: '/showSupplier?id&objectName',
-      controller: 'ShowUserController',
-      templateUrl: 'users/showSupplier.html',
+    .state('myProfile', {
+      url: '/myProfile',
+      controller: 'MyProfileController',
+      templateUrl: 'users/myProfile.html',
       data: {
-        requiresLogin: false
+        requiresLogin: true
       }
-  });   
+  });
+
 
   $stateProvider
     .state('myLinkedUser', {
       url: '/myLinkedUser',
-      controller: 'UserLinkController',
+      controller: 'LinkedUserController',
       templateUrl: 'users/myLinkedUser.html',
       data: {
         requiresLogin: true
@@ -70,7 +65,7 @@ myApp.config(function($stateProvider) {
   $stateProvider
     .state('myPendingLinkRequest', {
       url: '/myPendingLinkRequest',
-      controller: 'UserLinkController',
+      controller: 'PendingLinkController',
       templateUrl: 'users/myPendingLinkRequest.html',
       data: {
         requiresLogin: true
@@ -80,60 +75,50 @@ myApp.config(function($stateProvider) {
   
 });
 
-
-
-myApp.controller('UserController', function($scope, BackandService, auth, $state,$location, $stateParams){
+myApp.controller('FindUserController', function($scope, USER_TYPE,UserService, BackandService, auth, $state,$location, $stateParams){
   
-  //console.log($state.current.name);
+  $scope.user_type_request = $stateParams.user_type_request;
+  $scope.USER_TYPE = USER_TYPE;
 
-  $scope.agents = {};
-  $scope.suppliers = {};
-  $scope.myProductsObject = null;
-  $scope.loading = false;
-  $scope.auth = auth;
+  console.log($scope.user_type_request);
+  
+  $scope.suppliers = {};  
+  $scope.stockists = {};
+  $scope.dropships = {};
 
-  function getAllObjects(objectName){
-      BackandService.getAllObjects(objectName).then(function(result){
-        console.log("Getting all "+objectName);
-        if(objectName == "agents")
-          $scope.agents = result.data.data;
+  $scope.loadSupplier = false;
+  $scope.loadStockist = false;
+  $scope.loadDropship = false;
 
-        if(objectName == "suppliers")
-          $scope.suppliers = result.data.data;
-       
-        $scope.loading = false;
+
+
+  function getUserByType(user_type){
+      BackandService.getUserByType(user_type).then(function(result){
+        console.log("getUserByType");
+        console.log(result);
+
+        if(user_type == 1)
+          $scope.suppliers = result.data;
+
+        if(user_type == 2)
+          $scope.stockists = result.data;
+
+        if(user_type == 3)
+          $scope.dropships = result.data;
+
       });
     }
 
-  $scope.showObjectFunction = function(objectName, id)
+  for(var i=1; i<=3 ;i++)
   {
-    if(objectName == "agents")
-      $location.url("/showAgent?id="+id+"&objectName="+objectName);
-
-    if(objectName == "suppliers")
-      $location.url("/showSupplier?id="+id+"&objectName="+objectName);
-
-  };
-
-  $scope.loading = true;
-
-  if($state.current.name == "allUsers")
-  {
-    getAllObjects("agents");
-    getAllObjects("suppliers");
-  }
-
-  if($state.current.name == "agents")
-  {
-    getAllObjects("agents");
-  }
-
-  if($state.current.name == "suppliers")
-  {
-    getAllObjects("suppliers");
+    if($scope.user_type_request != i)
+    {
+      getUserByType(i);
+    }
   }
 
 });
+
 
 myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicService,BackandService, auth, growl, $state, $stateParams, USER_LINK_TYPE){
   
@@ -141,57 +126,91 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
   $scope.loadingProducts = false;
   $scope.show = "info";
 
-  if($stateParams == null)
+  $scope.showObject = {};
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  $scope.linkObject = {};
+  $scope.show_user_id = $stateParams.id;
+  $scope.session_user_id = $scope.userInSession.user_id;
+
+  $scope.USER_LINK_TYPE = USER_LINK_TYPE;
+
+
+  $scope.user_link_id = null;
+
+  $scope.userLinkType = null;
+  $scope.isRequestToUser = false;
+  $scope.isRequestByUser = false;
+
+  if($scope.userInSession.user_id == $scope.show_user_id)
   {
-    console.log(stateParams);
+    $state.go('myProfile');
+    return;
   }
 
-  $scope.id = $stateParams.id;
-  $scope.objectName = $stateParams.objectName;
-  $scope.showObject = $stateParams.showObject;
+  getObjectById("users", $scope.show_user_id);
+  initLink();
 
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  $scope.linkObject = {};
+  function initLink()
+  {
+    //requestedByUser
+    getUserLink($scope.session_user_id ,$scope.show_user_id, USER_LINK_TYPE.REQUESTED_BY_USER);
 
-  $scope.userLinkType = USER_LINK_TYPE.NOT_REQUESTED;
-  $scope.USER_LINK_TYPE = USER_LINK_TYPE;
+    //requestedToUser
+    getUserLink($scope.show_user_id ,$scope.session_user_id, USER_LINK_TYPE.REQUESTED_TO_USER);
+
+    if($scope.userInSession.user_type == $scope.showObject.user_type)
+    {
+      $scope.userLinkType = USER_LINK_TYPE.SAME_TYPE;
+    }
+  }
+
+  function getUserLink(from_user_id, to_user_id, user_link_type)
+  {
+      BackandService.getUserLink(from_user_id,to_user_id).then(function(result){
+      console.log("Data from get link object");
+      console.log(result);
+      if(result.data.length > 0)
+      {
+        $scope.linkObject = result.data[0];
+
+        if(result.data[0].id != null)
+        {
+          $scope.user_link_id = result.data[0].id;
+        }
+
+        if(result.data[0].type == USER_LINK_TYPE.REQUESTED && user_link_type == USER_LINK_TYPE.REQUESTED_BY_USER)
+        {
+          $scope.isRequestByUser = true; 
+        }
+        if(result.data[0].type == USER_LINK_TYPE.REQUESTED && user_link_type == USER_LINK_TYPE.REQUESTED_TO_USER)
+        {
+           $scope.isRequestToUser = true; 
+        }
+        else
+        {
+          $scope.userLinkType = result.data[0].type;
+        }
+      }
+
+    }, function errorCallback (result){
+
+    });
+  }
 
   $scope.linkUser = function(operation)
   {
     $scope.loading = true;
-    var agent_id = 0;
-    var supplier_id = 0;
-
-    if($scope.userInSession.user_type == "supplier")
-    {
-      agent_id = $scope.id;
-      supplier_id= $scope.userInSession.supplier_id;
-    }
-    else if($scope.userInSession.user_type == "agent")
-    {
-      agent_id = $scope.userInSession.agent_id;
-      supplier_id = $scope.id;
-    }
 
     if(operation == "sendRequest")
     {
       var newLink = {};
-      newLink.agent_id = agent_id;
-      newLink.supplier_id = supplier_id;
-
-      if($scope.userInSession.user_type == "supplier")
-      {
-        //sendRequestBySupplier
-        newLink.type = USER_LINK_TYPE.REQUESTED_BY_S;
-      }
-      else if($scope.userInSession.user_type == "agent")
-      {
-        //sendRequestByAgent
-        newLink.type = USER_LINK_TYPE.REQUESTED_BY_A;
-      }
-
+      newLink.to_user_id =  $scope.show_user_id;
+      newLink.from_user_id = $scope.session_user_id;
+      newLink.type = USER_LINK_TYPE.REQUESTED;
       newLink.created_at = BackandService.getTimestampinMysql();
-      addObject("userLinks",newLink);
+      newLink.update_at = BackandService.getTimestampinMysql();
+      addObject("userLinks",newLink,"Request Sent!");
     }
 
     if(operation == "cancelRequest" || operation == "ignoreRequest" || operation == "removeFromList")
@@ -206,7 +225,7 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
         if(result)
         {
           $scope.loading = true;
-          deleteUserLink(agent_id, supplier_id);
+          deleteUserLink($scope.user_link_id);
         }
 
       });
@@ -214,7 +233,7 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
 
     if(operation == "confirmRequest")
     {
-      editUserLink(agent_id, supplier_id, USER_LINK_TYPE.LINKED);
+      editUserLink($scope.user_link_id, USER_LINK_TYPE.LINKED);
     }
   }
 
@@ -244,7 +263,7 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
     $scope.loading = false;
   }
 
-  function addObject(objectName, object)
+  function addObject(objectName, object, successMessage)
   {
     BackandService.addObject(objectName,object).then(function(result){
     console.log("Return Result from Adding to "+objectName);
@@ -253,8 +272,11 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
 
       if(result.status == 200)
       {
-        growl.success("" ,{title: 'Successfully Added New Record!'});
-        refreshPage();
+        growl.success("" ,{title: ""+successMessage});
+        $scope.userLinkType = USER_LINK_TYPE.REQUESTED;
+        $scope.user_link_id = result.data.id;
+        $scope.isRequestToUser = false;
+        $scope.isRequestByUser = true;
       }
 
     }, function errorCallback (result){
@@ -273,28 +295,25 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
       }
 
     }, function errorCallback (result){
-          userLinkErrorCallback(result,"Retrieving Info");
+          userLinkErrorCallback(result,"Error in Retrieving Info");
     });
   }
 
-  function editUserLink(agent_id, supplier_id,type)
+  function editUserLink(id,type)
   {
-      BackandService.editUserLink(agent_id,supplier_id,type).then(function(result){
+      var updated_at = PublicService.getTimestampinMysql();
+      BackandService.editUserLinkById(id,type,updated_at).then(function(result){
       console.log("Data from edit link object");
       console.log(result);
-      /*
-      if(result.data.length > 0)
-      {
-        $scope.linkObject = result.data[0];
-        $scope.userLinkType = result.data[0].type;
-      }
-      */
+
       $scope.loading = false;
 
       if(result.status == 200)
       {
         growl.success("" ,{title: 'Successfully Edit Record!'});
-        refreshPage();
+        $scope.userLinkType = type;
+        $scope.isRequestToUser = false;
+        $scope.isRequestByUser = false;
       }
 
     }, function errorCallback (result){
@@ -302,9 +321,9 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
     });
   }
 
-  function deleteUserLink(agent_id, supplier_id)
+  function deleteUserLink(id)
   {
-      BackandService.deleteUserLink(agent_id,supplier_id).then(function(result){
+      BackandService.deleteObject("userLinks",id).then(function(result){
       console.log("Data from delete link object");
       console.log(result);
       /*
@@ -319,65 +338,15 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
       if(result.status == 200)
       {
         growl.success("" ,{title: 'Successfully Delete Record!'});
-        refreshPage();
+        $scope.userLinkType = USER_LINK_TYPE.NOT_REQUESTED;
+        $scope.isRequestToUser = false;
+        $scope.isRequestByUser = false;
       }
 
     }, function errorCallback (result){
           userLinkErrorCallback(result,"Remove Request");
     });
   }
-
-  function getUserLink(agent_id, supplier_id)
-  {
-      BackandService.getUserLink(agent_id,supplier_id).then(function(result){
-      console.log("Data from get link object");
-      console.log(result);
-      if(result.data.length > 0)
-      {
-        $scope.linkObject = result.data[0];
-        $scope.userLinkType = result.data[0].type;
-      }
-    }, function errorCallback (result){
-
-    });
-  }
-
-  function getUserLinkType()
-  {
-    if($scope.userInSession == null)
-    {
-      $scope.userLinkType = USER_LINK_TYPE.NOT_AUTH;
-      return;
-    }
-
-
-     if($state.current.name == "showAgent")
-     {
-        if($scope.userInSession.user_type == "supplier")
-        {
-            getUserLink($scope.id, $scope.userInSession.supplier_id);
-        }
-        else if($scope.userInSession.user_type == "agent")
-        {
-          $scope.userLinkType = USER_LINK_TYPE.SAME_TYPE;
-        }
-     } 
-
-     if($state.current.name == "showSupplier")
-     {
-        if($scope.userInSession.user_type == "agent")
-        {
-            getUserLink($scope.userInSession.agent_id, $scope.id);
-        }
-        else if($scope.userInSession.user_type == "supplier")
-        {
-          $scope.userLinkType = USER_LINK_TYPE.SAME_TYPE;
-        }
-     }
-  }
-
-  getObjectById($scope.objectName,$scope.id);
-  getUserLinkType();
 
 
 ////////////////////////////////////////////////////////////////////////////
@@ -420,25 +389,61 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
 });
 
 
-myApp.controller('UserLinkController', function ($scope, $state, BackandService,PublicService, USER_LINK_TYPE) {
+myApp.controller('LinkedUserController', function ($scope, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  main();
 
-  $scope.myPendingLinkRequest = function()
+ if($scope.userInSession != null)
   {
-    $state.go('myPendingLinkRequest');
-  }  
-
-  $scope.myLinkedUser = function()
+    initLinkedUser();
+  }
+  else
   {
-    $state.go('myLinkedUser');
+    $state.go("login");
   }
 
   function defineScopeLinked()
   {
     $scope.myLinkedUser = {};
     $scope.myLinkedUserLoad = true;
+  }
+
+  function initLinkedUser()
+  {
+    console.log("initAgentLinked");
+    defineScopeLinked();
+    getLinkedUserById($scope.userInSession.user_id);
+  }  
+
+  function getLinkedUserById(user_id){
+    BackandService.getLinkedUserById(user_id).then(function(result){
+      console.log("Getting all getLinkedUserById");
+      //console.log(result);
+
+      if(result.status == 200)
+      {
+        $scope.myLinkedUser = result.data;
+        $scope.myLinkedUserLoad = false;
+      }      
+
+    },function errorCallback(error){
+      PublicService.errorCallbackFunction(error,"Failed : getLinkedUserById");
+    });
+  }    
+
+});
+
+myApp.controller('PendingLinkController', function ($scope, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+ if($scope.userInSession != null)
+  {
+    initPendingUser(); 
+  }
+  else
+  {
+    $state.go("login");
   }
 
   function defineScopePending()
@@ -449,139 +454,48 @@ myApp.controller('UserLinkController', function ($scope, $state, BackandService,
     $scope.requestedFromUserLoad = true;
   }
 
-  function main()
-  {
-    if($scope.userInSession != null)
-    {
-      if($scope.userInSession.user_type == "agent")
-      {
-        if($state.current.name == "myLinkedUser")
-        {
-          initAgentLinked();
-        }
-
-        if($state.current.name == "myPendingLinkRequest")
-        {
-          initAgentPending();
-        }
-      }
-      else if($scope.userInSession.user_type == "supplier")
-      {
-        if($state.current.name == "myLinkedUser")
-        {
-          initSupplierLinked();
-        }
-
-        if($state.current.name == "myPendingLinkRequest")
-        {
-          initSupplierPending();
-        }
-      }
-    }
-    else
-    {
-      $state.go("login");
-    }
-
-  }
-
-
-  function initAgentLinked()
-  {
-    console.log("initAgentLinked");
-    defineScopeLinked();
-    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.LINKED);
-  }  
-
-  function initAgentPending()
+  function initPendingUser()
   {
     console.log("initAgentPending");
     defineScopePending();
-    //requestedToUser
-    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_S);
-    //requestedFromUser
-    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_A);
-  
-  }
-
-  function initSupplierLinked()
-  {
-    console.log("initSupplierLinked");
-    defineScopeLinked();
-    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.LINKED);
+    getRequestToUserById($scope.userInSession.user_id);
+    getRequestFromUserById($scope.userInSession.user_id);  
   }  
 
-  function initSupplierPending()
-  {
-    console.log("initSupplierPending");
-    defineScopePending();
-    //requestedToUser
-    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_A); 
-    //requestedFromUser
-    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_S);
-  }
-
-  function getSupplierLinkByAgentIdAndType(agent_id,type){
-    BackandService.getSupplierLinkByAgentIdAndType(agent_id,type).then(function(result){
-      console.log("Getting all getSupplierLinkByAgentIdAndType | Type : "+type);
+  function getRequestToUserById(user_id){
+    BackandService.getRequestToUserById(user_id).then(function(result){
+      console.log("Getting all getRequestToUserById");
       //console.log(result);
 
-      if(type == USER_LINK_TYPE.LINKED)
+      if(result.status == 200)
       {
-        $scope.myLinkedUser = result.data;
-        $scope.myLinkedUserLoad = false;
+        $scope.requestedToUser = result.data;
+        $scope.requestedToUserLoad = false;
       }      
 
-      //User : Agent
-      //Kita nak supplier, request by supplier => requestedToUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
-      {
-        $scope.requestedToUser = result.data;
-        $scope.requestedToUserLoad = false;
-      }
-
-
-      //User : Agent
-      //Kita nak supplier, request by agent => requestedFromUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
-      {
-        $scope.requestedFromUser = result.data;
-        $scope.requestedFromUserLoad = false;
-      }
-
+    },function errorCallback(error){
+      PublicService.errorCallbackFunction(error,"Failed : getRequestToUserById");
     });
-  }
+  }  
 
-  function getAgentLinkBySupplierIdAndType(supplier_id,type){
-    BackandService.getAgentLinkBySupplierIdAndType(supplier_id,type).then(function(result){
-      console.log("Getting all getAgentLinkBySupplierIdAndType | Type : "+type);
+  function getRequestFromUserById(user_id){
+    BackandService.getRequestFromUserById(user_id).then(function(result){
+      console.log("Getting all getRequestFromUserById");
       //console.log(result);
 
-      if(type == USER_LINK_TYPE.LINKED)
-      {
-        $scope.myLinkedUser = result.data;
-        $scope.myLinkedUserLoad = false;
-      }
-
-      //User : Supplier
-      //Kita nak agent, request by agent => requestedToUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
-      {
-        $scope.requestedToUser = result.data;
-        $scope.requestedToUserLoad = false;
-      }
-
-      //User : Supplier
-      //Kita nak agent, request by supplier => requestedFromUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
+      if(result.status == 200)
       {
         $scope.requestedFromUser = result.data;
         $scope.requestedFromUserLoad = false;
+      }      
 
-      }
-
+    },function errorCallback(error){
+      PublicService.errorCallbackFunction(error,"Failed : getRequestFromUserById");
     });
-  }
+  }  
+
+});
 
 
+myApp.controller('MyProfileController', function ($scope, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
 });

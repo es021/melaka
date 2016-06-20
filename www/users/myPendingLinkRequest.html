@@ -4,8 +4,7 @@
     <h2 class="title">My Pending Link Request</h2>
     <button class="button button-small button-clear button-positive" ng-click="myLinkedUser()">See My Linked User</button>
     
-    <h4 class="title" ng-if = "userInSession.user_type == 'supplier'">Link Request To Me</h4>
-    <h4 class="title" ng-if = "userInSession.user_type == 'agent'">Link Request To Me</h4>
+    <h4 class="title">Link Request To Me</h4>
 
       <div class="text-center" ng-show="requestedToUserLoad">
         <img id="mySpinner" src="/img/loader.gif"/>
@@ -14,25 +13,20 @@
       <div class="text-left">
       <div class="list">
             <div ng-repeat="item in requestedToUser">
-              <div ng-controller = "UserController">
-            <a class="item item-avatar" ng-if = "userInSession.user_type == 'supplier'" ng-click="showObjectFunction('agents',{{item.id}})">
+            <a class="item item-avatar" ng-click="showUser({{item.id}})">
             <img src="{{item.picture}}">
                 <h2>{{item.first_name}} {{item.last_name}}</h2>
-                <p><strong>Agent Id</strong> {{item.id}}</p>
+                <p>{{item.state}}</p>
+                <span class="badge">
+                  {{item.user_type.getUserType()}}
+                </span>
             </a>
-            <a class="item item-avatar" ng-if = "userInSession.user_type == 'agent'" ng-click="showObjectFunction('suppliers',{{item.id}})">
-              <img src="{{item.picture}}">
-                <h2>{{item.first_name}} {{item.last_name}}</h2>
-                <p><strong>Supplier Id</strong> {{item.id}}</p>
-            </a>
-        </div>
             </div>
       </div>
     </div>
 
       <div ng-if="requestedToUser.length == 0">
-        <span ng-if = "userInSession.user_type == 'supplier'">No agent are requesting to connect with you right now.</span>
-        <span ng-if = "userInSession.user_type == 'agent'">No supplier are requesting to connect with you right now.</span>
+        No user are requesting to connect with you right now.
       </div>
 
           <!--
@@ -41,8 +35,7 @@
     requestedFromUser List
     -->
     <hr>
-    <h4 class="title" ng-if = "userInSession.user_type == 'supplier'">Link Request From Me</h4>
-    <h4 class="title" ng-if = "userInSession.user_type == 'agent'">Link Request From Me</h4>
+    <h4 class="title">Link Request From Me</h4>
 
       <div class="text-center" ng-show="requestedFromUserLoad">
         <img id="mySpinner" src="/img/loader.gif"/>
@@ -51,18 +44,14 @@
       <div class="text-left">
       <div class="list">
             <div ng-repeat="item in requestedFromUser">
-              <div ng-controller = "UserController">
-            <a class="item item-avatar" ng-if = "userInSession.user_type == 'supplier'" ng-click="showObjectFunction('agents',{{item.id}})">
+             <a class="item item-avatar" ng-click="showUser({{item.id}})">
             <img src="{{item.picture}}">
                 <h2>{{item.first_name}} {{item.last_name}}</h2>
-                <p><strong>Agent Id</strong> {{item.id}}</p>
+                <p>{{item.state}}</p>
+                <span class="badge">
+                  {{item.user_type.getUserType()}}
+                </span>
             </a>
-            <a class="item item-avatar" ng-if = "userInSession.user_type == 'agent'" ng-click="showObjectFunction('suppliers',{{item.id}})">
-              <img src="{{item.picture}}">
-                <h2>{{item.first_name}} {{item.last_name}}</h2>
-                <p><strong>Supplier Id</strong> {{item.id}}</p>
-            </a>
-        </div>
             </div>
       </div>
     </div>

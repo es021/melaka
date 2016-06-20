@@ -41,6 +41,41 @@ div.sub-text{
 }
 .profile h5{
   display: block;
-  color: #f39c12;
   opacity: 0.75;
+}
+
+.text-light{
+ color : #fff;
+}
+
+.text-stable{
+ color : #f8f8f8;
+}
+
+.text-positive{
+ color : #387ef5;
+}
+
+.text-calm{
+ color : #11c1f3;
+}
+
+.text-balanced{
+ color : #33cd5f;
+}
+
+.text-energized{
+ color : #ffc900;
+}
+
+.text-assertive{
+ color : #ef473a;
+}
+
+.text-royal{
+ color : #886aea;
+}
+
+.text-dark{
+ color : #444;
 }

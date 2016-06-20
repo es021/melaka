@@ -35,53 +35,26 @@ myApp.service('BackandService', function ($http, Backand, auth){
 
   //CUSTOM QUERY /////////////////////////////////////////////////
 
-  getSupplierLinkByAgentIdAndType = function (agent_id,type){
+  getAllProductByUserId = function (user_id){
     return $http ({
         method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getSupplierLinkByAgentIdAndType',
+        url: Backand.getApiUrl() + '/1/query/data/getAllProductByUserId',
         params: {
           parameters: {
-            agent_id: agent_id,
-            type : type
-          }
-        }
-      })
-  }    
-
-  getAgentLinkBySupplierIdAndType = function (supplier_id,type){
-    return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getAgentLinkBySupplierIdAndType',
-        params: {
-          parameters: {
-            supplier_id: supplier_id,
-            type : type
+            user_id: user_id
           }
         }
       })
   }  
 
-  getProductBySupplierId = function (supplier_id){
-    console.log("product");
-    return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getProductBySupplierId',
-        params: {
-          parameters: {
-            supplier_id: supplier_id
-          }
-        }
-      })
-  }  
-
-  getUserLink = function (agent_id,supplier_id){
+  getUserLink = function (from_user_id, to_user_id){
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getUserLinkByBothId',
         params: {
           parameters: {
-            agent_id: agent_id,
-            supplier_id: supplier_id
+            from_user_id: from_user_id,
+            to_user_id: to_user_id
           }
         }
       })
@@ -100,15 +73,15 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }  
 
-  editUserLink = function (agent_id,supplier_id,type){
+  editUserLinkById = function (id,type,updated_at){
     return $http ({
         method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/editUserLink',
+        url: Backand.getApiUrl() + '/1/query/data/editUserLinkById',
         params: {
           parameters: {
-            agent_id: agent_id,
-            supplier_id: supplier_id,
-            type : type
+            id: id,
+            type : type,
+            updated_at : updated_at
           }
         }
       })
@@ -138,19 +111,6 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }  
 
-  getLinkByAgentIdSupplierIdType = function(agent_id,supplier_id,type){
-    return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getLinkByAgentIdSupplierIdType',
-        params: {
-          parameters: {
-            agent_id: agent_id,
-            supplier_id: supplier_id,
-            type: type
-          }
-        }
-      })
-  }  
 
   getAgentActiveListing = function(agent_id){
     return $http ({
@@ -226,6 +186,18 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }  
 
+  getUserByType = function(user_type){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getUserByType',
+        params: {
+          parameters: {
+            user_type: user_type
+          }
+        }
+      })
+  }  
+
   editTransactionPaymentStatus = function(id,payment_status,timeUpdated){
     return $http ({
         method: 'GET',
@@ -235,6 +207,80 @@ myApp.service('BackandService', function ($http, Backand, auth){
             id: id,
             payment_status : payment_status,
             timeUpdated : timeUpdated
+          }
+        }
+      })
+  }
+
+  getLinkedUserById = function(id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getLinkedUserById',
+        params: {
+          parameters: {
+            id: id
+          }
+        }
+      })
+  }
+
+  getRequestToUserById = function(id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getRequestToUserById',
+        params: {
+          parameters: {
+            id: id
+          }
+        }
+      })
+  }
+
+  getRequestFromUserById = function(id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getRequestFromUserById',
+        params: {
+          parameters: {
+            id: id
+          }
+        }
+      })
+  }
+
+  getShowProductById = function(id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getShowProductById',
+        params: {
+          parameters: {
+            id: id
+          }
+        }
+      })
+  }
+
+  getUserNameById = function(id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getUserNameById',
+        params: {
+          parameters: {
+            id: id
+          }
+        }
+      })
+  }
+
+  getLinkByFromIdToIdType = function(user1,user2,type){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getLinkByFromIdToIdType',
+        params: {
+          parameters: {
+            user1: user1,
+            user2: user2,
+            type : type
           }
         }
       })
@@ -261,16 +307,22 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getUserbyEmail : getUserbyEmail,
 
     //userRelatedQuery
-    getUserLink : getUserLink,
-    editUserLink : editUserLink,
-    deleteUserLink:deleteUserLink,
-    getSupplierLinkByAgentIdAndType : getSupplierLinkByAgentIdAndType,
-    getAgentLinkBySupplierIdAndType : getAgentLinkBySupplierIdAndType,
-    getLinkByAgentIdSupplierIdType : getLinkByAgentIdSupplierIdType,
+    getUserByType : getUserByType,
     getSupplierNameById : getSupplierNameById,
+    getUserNameById : getUserNameById,
+
+    //user link
+    getUserLink : getUserLink,
+    getLinkByFromIdToIdType : getLinkByFromIdToIdType,
+    getLinkedUserById : getLinkedUserById,
+    getRequestToUserById : getRequestToUserById,
+    getRequestFromUserById : getRequestFromUserById,
+    editUserLinkById : editUserLinkById,
+    deleteUserLink : deleteUserLink,
 
     //productQuery
-    getProductBySupplierId : getProductBySupplierId,
+    getAllProductByUserId : getAllProductByUserId,
+    getShowProductById : getShowProductById,
 
     //transactionQuery
     getAgentActiveListing : getAgentActiveListing,
@@ -412,7 +464,7 @@ myApp.service('FileReaderService', function ($q, $log){
 ///////////////////// PublicService ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////// PublicService ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.service('PublicService', function ($http){
+myApp.service('PublicService', function ($http,growl){
 
 
   getTimestampForFileName = function(timestamp)
@@ -482,7 +534,7 @@ myApp.service('PublicService', function ($http){
   {
     
     var footer = "footer_newUser";
-    var footerList = ["footer_agent","footer_supplier","footer_newUser"];
+    var footerList = ["footer_stockist","footer_supplier","footer_newUser","footer_dropship"];
 
     if(type != "")
     {
@@ -539,7 +591,7 @@ myApp.service('PublicService', function ($http){
       //console.log($scope.authProfile);
       if(userInSession != null)
       {
-        setFooter(userInSession.user_type);
+        setFooter(userInSession.user_type.getUserTypeLower());
       }
       else
       {
@@ -565,13 +617,18 @@ myApp.service('PublicService', function ($http){
 
     if(userInSession != null)
     {
-      $(".profile #user_type").text(userInSession.user_type.capitalize());
+      $(".profile #user_type").text(userInSession.user_type.getUserType());
     }
     else{
       $( ".profile #user_type").text("New User");
     }
   }
 
+  errorCallbackFunction = function(error, title)
+  {
+    console.log(error);
+    growl.error(''+error.data,{title: title});
+  }
 
   return {
       getTimestampForFileName : getTimestampForFileName,
@@ -582,9 +639,20 @@ myApp.service('PublicService', function ($http){
       getAgoTime : getAgoTime,
       getDate : getDate,
       logout : logout,
-      initSideMenu : initSideMenu
+      initSideMenu : initSideMenu,
+      errorCallbackFunction : errorCallbackFunction
   };
+});
 
 
+myApp.service('UserService', function ($state){
   
+  showUser = function(id,user_type){
+    $state.go("showUser",{id:id,user_type,user_type});
+  }
+
+  return{
+    showUser : showUser
+  }
+
 });

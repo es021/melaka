@@ -1,0 +1,69 @@
+<ion-view>
+<ion-content class="text-center has-header has-footer padding">
+<p>
+
+<h2 class="title">Product List</h2>
+<button class="button button-small button-clear button-positive" ng-click="showUser(userObject.id)">by {{userObject.user_name}}</button>
+      <!-- ******************************************************************************************************************************* -->
+      <ion-list class="text-left">
+        <div ng-repeat="item in productList">
+
+	    	<a class="item item-avatar item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
+			    <img src="{{item.picture}}">
+			    <h2>{{item.name}}</h2>
+				<p>RM {{item.price_per_unit}} / unit</p>
+				<span class="badge">{{item.category}}</span>
+		  
+		<!--
+		    <div ng-if="stateName=='myActiveListing'">
+		   	<h5 class="text-success" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
+		      Payment Comfirmed
+		    </h5>
+			</div>
+		-->
+
+		    <!--<i class="icon ion-ios-telephone-outline"></i>-->
+		  	</a>
+		
+		<!-- ******************************************************************************************************************************* -->
+		<!-- ******************************************************************************************************************************* -->
+        <!--EXPAND ************************************************************************************************************************* -->
+          <ion-item ng-show="isItemShown(item)">
+          <div class = "text-center">
+			    	<h2 ><strong>{{item.name}}</strong></h2>
+					<h4>
+						Last Update {{timeAgo}}
+					</h4>
+
+					<div ng-if="linked">
+						<button class="button button-small button-balanced icon-left ion-checkmark-round" ng-click="showProduct(showItem.id,'request')">Request Product</button>
+					</div>
+					<hr>
+
+					<img src="{{showItem.picture}}" class="full-image image-fit">
+
+
+				
+				<hr>			
+
+			    <!--- TRANSACTION INFO ************************************************************************************************************* -->
+				    <h4><strong>Price Per Unit</strong> | RM {{showItem.price_per_unit}}</h4>
+				    <h4><strong>Category</strong> | {{showItem.category}}</h4>
+				    <h4 ng-if = "showItem.description != null"><strong>Description</strong> | {{showItem.description}}</h4>
+
+				</div>
+          </ion-item>
+        </div>
+
+      </ion-list>
+  
+  <div class="text-center" ng-show="loading">
+    <img id="mySpinner" src="/img/loader.gif"/>
+  </div>
+
+  <div ng-if="productList.length == 0">
+    	No product available
+  </div>
+</p>
+</ion-view>
+</ion-content>

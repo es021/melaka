@@ -15,16 +15,29 @@ myApp.constant("APP_CONSTANT",{
 
 myApp.constant("USER_LINK_TYPE", {
         "LINKED": 1,
-        "NOT_REQUESTED": 2,
-        "REQUESTED_BY_A": 3,
-        "REQUESTED_BY_S": 4,
-        "SAME_TYPE":5,
-        "NOT_AUTH":6
+        "REQUESTED" : 2,
+        "NOT_REQUESTED": 3,
+        "REQUESTED_BY_USER": 4,
+        "REQUESTED_TO_USER": 5,
+        "SAME_TYPE":6,
+        "NOT_AUTH":7
 });
 
 myApp.constant("USER_TYPE", {
-        "AGENT": 1,
-        "SUPPLIER": 2
+        "SUPPLIER": 1,
+        "STOCKIST": 2,
+        "DROPSHIP": 3,
+        
+        "ION_COLOR" :{
+            "SUPPLIER" : "positive",
+            "STOCKIST": "royal",
+            "DROPSHIP": "assertive",
+        },
+
+        "BOOT_COLOR":{
+
+        }
+
 });
 
 myApp.constant("TRANS_STATUS", {

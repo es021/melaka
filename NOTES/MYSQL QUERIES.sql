@@ -1,3 +1,23 @@
+getLinkedUserById(id)
+{
+	SELECT DISTINCT l.updated_at AS linked_at , u.*
+	FROM userLinks l, users u
+	WHERE 
+
+	l.from_user_id LIKE '%{{id}}' 
+	AND u.id LIKE l.to_user_id
+	AND l.type LIKE 1
+
+	OR 
+
+	l.to_user_id LIKE '%{{id}}' 
+	AND u.id LIKE l.from_user_id
+	AND l.type LIKE 1;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////
+
 deleteUserLink(agent_id,supplier_id)
 {
 	DELETE FROM userLinks

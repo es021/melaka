@@ -1,6 +1,3 @@
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}
 
 // Ionic Starter App
 
@@ -11,8 +8,10 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'backand',
   'ui.router',
   'restangular',
+  
+  'sample.home',
   'sample.login-signup',
-  'sample.signup',
+  'sample.register',
   'sample.users',
   'sample.transactions',
   'sample.products',
@@ -20,6 +19,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'sample.service',
   'sample.constant',
   'sample.directive',
+  
   'auth0',
   'ngCookies',
   'ngRoute',
@@ -56,14 +56,6 @@ myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpP
   //$locationProvider.html5Mode(true);
   growlProvider.globalTimeToLive(3000);
 
-  $stateProvider
-    .state("home", {
-      url: "/home",
-      cache: false,
-      controller: 'HomeController',
-      templateUrl: 'home/home.html'
-    });
-
   BackandProvider.setAppName('wzs21testapp');
   BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
 
@@ -74,25 +66,29 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope,$ionicPopup,$ionicSideMenuDelegate, auth, $state,PublicService,$location,AUTH_CONSTANT) {
+myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,PublicService,$location,AUTH_CONSTANT,USER_TYPE) {
+  
+  $scope.main = function(){
+    var state = $location.path().replace("/", "");
 
-  var state = $location.path().replace("/", "");
+    console.log(state);
 
-  console.log(state);
+    //login with sosial provider
+    if(state.length > 30)
+    {
+      socialLoginHandler(state);
+    }
+    else if(state == "")
+    {
+      $state.go("home");
+    }
+    else
+    {
+      $state.go(state);
+    }
+  }
 
-  //login with sosial provider
-  if(state.length > 30)
-  {
-    socialLoginHandler(state);
-  }
-  else if(state == "")
-  {
-    $state.go("home");
-  }
-  else
-  {
-    $state.go(state);
-  }
+  $scope.main();
 
   function socialLoginHandler(state)
   {
@@ -111,7 +107,8 @@ myApp.controller('AppController', function ($scope,$ionicPopup,$ionicSideMenuDel
   //setting header and footer
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));  
-  
+  $scope.USER_TYPE = USER_TYPE;
+
   PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
   if($scope.authProfile != null)
   {
@@ -157,6 +154,7 @@ myApp.controller('AppController', function ($scope,$ionicPopup,$ionicSideMenuDel
   };
 
   $scope.login = function() {
+    console.log("here");
     $state.go('login');    
   };  
 
@@ -170,15 +168,11 @@ myApp.controller('AppController', function ($scope,$ionicPopup,$ionicSideMenuDel
   };
   
 
-  $scope.agents = function() {
+  $scope.findUser = function(user_type_request) {
     closeSideMenuBar();
-    $state.go('agents');
-  };
+    $state.go('findUser',{user_type_request:user_type_request});
+  };    
 
-  $scope.suppliers = function() {
-    closeSideMenuBar();
-    $state.go('suppliers');
-  };  
 
   $scope.myProducts = function() {
     closeSideMenuBar();
@@ -215,139 +209,35 @@ myApp.controller('AppController', function ($scope,$ionicPopup,$ionicSideMenuDel
     $state.go('myCompletedTransaction');
   };
 
+  $scope.myPendingLinkRequest = function()
+  {
+    $state.go('myPendingLinkRequest');
+  } 
 
   $scope.contact = function() {   
     closeSideMenuBar();
     $state.go('contact');    
   };
 
+  $scope.showUser = function (id){
+    closeSideMenuBar();
+    console.log(id);
+    $state.go('showUser',{id:id}); 
+  };
 
+  $scope.myProfile = function (){
+    closeSideMenuBar();
+    $state.go('myProfile'); 
+  };
 
+  $scope.showProductList = function(user_id){
+    closeSideMenuBar();
+    $state.go('showProductList',{user_id:user_id});
+  }
 
-
-});
-
-
-myApp.controller('HomeController', function ($scope, $state, BackandService,PublicService, USER_LINK_TYPE) {
-  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
-
-  if($scope.authProfile != null )
+  $scope.showProduct = function(product_id,show)
   {
-    initDashboard($scope);
-    PublicService.initSideMenu();
-  }
-
-  function initDashboard($scope)
-  {
-    $scope.myLinkedUser = {};
-    $scope.requestedToUser = {};
-    $scope.requestedFromUser = {};
-
-    $scope.myLinkedUserLoad = true;
-    $scope.requestedToUserLoad = true;
-    $scope.requestedFromUserLoad = true;
-    
-    if($scope.userInSession != null)
-    {
-      if($scope.userInSession.user_type == "agent")
-        initAgent();
-
-      else if($scope.userInSession.user_type == "supplier")
-        initSupplier();
-    }
-    else
-    {
-      console.log("Init New");
-    }
-
-  }
-
-  function initAgent()
-  {
-    console.log("Init Agent");
-    //myLinkedUser
-    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.LINKED);
-    //requestedToUser
-    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_S);
-    //requestedFromUser
-    getSupplierLinkByAgentIdAndType($scope.userInSession.agent_id, USER_LINK_TYPE.REQUESTED_BY_A);
-  
-  }
-
-  function initSupplier()
-  {
-    console.log("Init Supplier");
-    //myLinkedUser
-    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.LINKED);
-    //requestedToUser
-    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_A); 
-    //requestedFromUser
-    getAgentLinkBySupplierIdAndType($scope.userInSession.supplier_id, USER_LINK_TYPE.REQUESTED_BY_S);
-  }
-
-  function getSupplierLinkByAgentIdAndType(agent_id,type){
-    BackandService.getSupplierLinkByAgentIdAndType(agent_id,type).then(function(result){
-      console.log("Getting all getSupplierLinkByAgentIdAndType | Type : "+type);
-      //console.log(result);
-
-      if(type == USER_LINK_TYPE.LINKED)
-      {
-        $scope.myLinkedUser = result.data;
-        $scope.myLinkedUserLoad = false;
-      }      
-
-      //User : Agent
-      //Kita nak supplier, request by supplier => requestedToUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
-      {
-        $scope.requestedToUser = result.data;
-        $scope.requestedToUserLoad = false;
-      }
-
-
-      //User : Agent
-      //Kita nak supplier, request by agent => requestedFromUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
-      {
-        $scope.requestedFromUser = result.data;
-        $scope.requestedFromUserLoad = false;
-      }
-
-    });
-  }
-
-  function getAgentLinkBySupplierIdAndType(supplier_id,type){
-    BackandService.getAgentLinkBySupplierIdAndType(supplier_id,type).then(function(result){
-      console.log("Getting all getAgentLinkBySupplierIdAndType | Type : "+type);
-      //console.log(result);
-
-      if(type == USER_LINK_TYPE.LINKED)
-      {
-        $scope.myLinkedUser = result.data;
-        $scope.myLinkedUserLoad = false;
-      }
-
-      //User : Supplier
-      //Kita nak agent, request by agent => requestedToUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_A)
-      {
-        $scope.requestedToUser = result.data;
-        $scope.requestedToUserLoad = false;
-      }
-
-      //User : Supplier
-      //Kita nak agent, request by supplier => requestedFromUser
-      if(type == USER_LINK_TYPE.REQUESTED_BY_S)
-      {
-        $scope.requestedFromUser = result.data;
-        $scope.requestedFromUserLoad = false;
-
-      }
-
-    });
-  }
-
+    $state.go('showProduct',{product_id:product_id,show:show})
+  };
 
 });
