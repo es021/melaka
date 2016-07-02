@@ -14,11 +14,11 @@
 <form role="form" accept="image/gif, image/jpeg">
 <div class="form-group" ng-form='productform'>
   <label class="item item-input item-stacked-label">
-    
     <div ng-if="imageSrc==null">
     <span class="input-label">Upload Picture For Your Product <h4>(Size Limit : {{imageSizeLimit}} MB)</h4></span>
-      <input  type="file" id="file" name="file"/>
-      <button ng-if="imageSrc==null" class="button button-clear button-positive" ng-click="add()">Add Picture</button>
+      <input  type="file" id="file" name="file"   onchange="angular.element(this).scope().addPicture()"/>
+
+      <!--<button ng-if="imageSrc==null" class="button button-clear button-positive" ng-click="addPicture()">Add Picture</button>-->
     </div>      
 
     <div class="text-center" ng-show="loadImage">
@@ -29,7 +29,7 @@
         <img ng-if="imageSrc!=null" src="{{imageSrc}}" class="img-responsive img-thumbnail center-block" width="200">
         <button ng-if="progress > 0" class="button button-clear button-positive" ng-click="removePicture()">Remove Picture</button>
 
-        <div ng-show="add" imageSrc!=null class="progress">
+        <div class="progress">
           <div class="progress-bar progress-bar-striped active" role="progressbar"
           aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress}}%">
             {{progress}}%

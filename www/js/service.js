@@ -310,6 +310,26 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
+
+  editProductById = function (id,name,category,price_per_unit,description,picture,updated_at){
+    return $http ({
+        method: 'POST',
+        url: Backand.getApiUrl() + '/1/query/data/editProductById',
+        params: {
+          parameters: {
+            id: id,
+            name : name,
+            category : category,
+            price_per_unit : price_per_unit,
+            description : description,
+            picture : picture,
+            updated_at : updated_at
+          }
+        }
+      })
+  }
+
+
   getTimestampinMysql = function(){
     var formatedMysqlTimestamp = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
     return formatedMysqlTimestamp;
@@ -347,6 +367,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
     //productQuery
     getAllProductByUserId : getAllProductByUserId,
     getShowProductById : getShowProductById,
+    editProductById : editProductById,
 
     //transactionQuery
     getUserActiveListing : getUserActiveListing,

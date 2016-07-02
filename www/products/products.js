@@ -402,10 +402,7 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
   $scope.editProduct = function(){
 
     //kena check for all attributes
-    /*name
-    category
-    price_per_unit
-    description*/
+
 
     $scope.loading = true;
     $scope.newProduct.updated_at = BackandService.getTimestampinMysql();
@@ -435,11 +432,18 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
 
     //$scope.newProduct.user_id = $scope.userInSession.user_id;
     console.log($scope.newProduct);
-    //$scope.loading = false;
 
-/*    BackandService.addObject("products",$scope.newProduct).then(function(result){
+    BackandService.
+    editProductById($scope.newProduct.id,
+                $scope.newProduct.name,
+                $scope.newProduct.category,
+                $scope.newProduct.price_per_unit,
+                $scope.newProduct.description,
+                $scope.newProduct.picture,
+                $scope.newProduct.updated_at)
+    .then(function(result){
 
-      console.log("Result From Creating new Product");
+      console.log("Result From Editing old Product");
       console.log(result);      
 
       if(result.status == 200)
@@ -449,8 +453,10 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
       }
       $scope.loading = false;
 
+    },function errorCallback(error){
+      PublicService.errorCallbackFunction(error,"Failed to edit product");
     });
-*/
+
   }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -473,8 +479,7 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
 
 $scope.loadImage = false;
 
-$scope.add = function(){
-
+$scope.addPicture = function(){
   $scope.loadImage = true;
 
   var f = document.getElementById('file').files[0];
