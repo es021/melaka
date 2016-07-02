@@ -5,9 +5,10 @@ var myApp = angular.module('sample.constant', [
 
 myApp.constant("APP_CONSTANT",{
         "EMAIL": "zulsarhan.shaari@gmail.com",
-        "NAME" : "InnovaSeeds",
+        "NAME" : "DropBugz",
         "TAGLINE" : "Something",
         "LOGO" : "img/logo.png",
+        "LOADER" : "img/loader.gif",
         "FACEBOOK": "",
         "INSTAGRAM": "",
 

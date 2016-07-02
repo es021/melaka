@@ -23,7 +23,7 @@
 
     <div class="text-center" ng-show="loadImage">
         Adding Picture<br>
-    <img id="mySpinner" src="/img/loader.gif"/>
+      <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
     </div>
 
         <img ng-if="imageSrc!=null" src="{{imageSrc}}" class="img-responsive img-thumbnail center-block" width="200">
@@ -73,13 +73,13 @@
   <div ng-if = "state=='addProduct'" class="text-center" ng-show="loading">
       Adding New Product<br>
       {{loadStatus}} <br>
-    <img id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
 
   <div ng-if = "state=='editProduct'" class="text-center" ng-show="loading">
       Editing Your Product<br>
       {{loadStatus}} <br>
-    <img id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
 
   <button ng-if = "state=='addProduct'" ng-disabled="!productform.$valid || loading" 

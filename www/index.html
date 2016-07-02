@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>InnovaSeeds</title>
+    <title>DropBugz</title>
     
     <!-- compiled css output -->
     <link href="css/style.css" rel="stylesheet">
@@ -40,7 +40,7 @@
     <script type="text/javascript" src="contact/contact.js"></script>
 
     <!-- Auth0 Lock -->
-    <script src="lib/auth0-lock/build/auth0-lock.js"></script>
+    <!--<script src="lib/auth0-lock/build/auth0-lock.js"></script>-->
 
     
     <!-- Bootstrap -->
@@ -49,7 +49,7 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     
     <!-- Growl Notification -->
-    <link href="lib/growl/angular-growl.min.css" rel="stylesheet" media="screen"/> 
+    <link href="lib/growl/angular-growl.min.css" rel="stylesheet" media="screen"> 
     <script src="lib/growl/angular-growl.min.js"></script>
 
 
@@ -79,88 +79,86 @@
 
   </head>
 
-  <body ng-app = "sample" ng-controller="AppController">
+  <body ng-app="sample" ng-controller="AppController">
 
       <!--HEADER-->
         <div class="bar bar-header bar-stable">
           <div id="header_logout" style="display:none">
             <button class="button button-icon icon ion-navicon" ng-click="toggleSideMenuLeft()"></button>
-            <div class="h1 title">InnovaSeeds</div>
+            <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
             <button class="button button-icon icon ion-person" ng-click="toggleSideMenuRight()"></button>
           </div>
 
           <div id="header_login" style="display:default">
             <button class="button button-clear button-positive" ng-click="signup()">Signup</button>
-            <div class="h1 title">InnovaSeeds</div>
+            <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
             <button class="button button-clear button-positive" ng-click="login()">Login</button>
           </div>
       </div>
       
-      <div growl></div>
+      <div growl=""></div>
 
       <!--END OF HEADER-->
           
 
       <ion-side-menus>
-        <ion-side-menu side="left">
-                
-        <br>
-        <br>
-        <br>
-
-
-        <ion-list>
-          <a class="item item-icon-left" ng-click="myLinkedUser()">
-            <i class="icon ion-android-contacts"></i>
-              My Linked User
-            <span class="item-note">
-              
-            </span>
-          </a>          
-
-          <a class="item item-icon-left" ng-click="myPendingLinkRequest()">
-            <i class="icon ion-clock"></i>
-              Pending Request
-            <span class="item-note">
-            </span>
-          </a>                
-
-          <a class="item item-icon-left" ng-click="myCompletedTransaction()">
-            <i class="icon ion-clipboard"></i>
-              Transaction History
-            <span class="item-note">   
-            </span>
-          </a>  
-
-          <a class="item item-icon-left" ng-click="why()">
-              <i class="icon ion-help-circled" ></i>
-                  Why InnovaSeeds
-            </a>
-
-          <a class="item item-icon-left" ng-click="contact()">
-              <i class="icon ion-email"></i>
-                Contact Us
-          </a>
-
-
-
-        </ion-list>
-
-        </ion-side-menu>
 
         <ion-side-menu-content>
             <ion-nav-view>   
             </ion-nav-view>
         </ion-side-menu-content>
 
-        <ion-side-menu side="right">
 
+        <ion-side-menu side="left">        
+          <br>
+          <br>
+          <br>
+
+
+          <ion-list>
+            <a class="item item-icon-left" ng-click="myLinkedUser()">
+              <i class="icon ion-android-contacts"></i>
+                My Linked User
+              <span class="item-note">
+                
+              </span>
+            </a>          
+
+            <a class="item item-icon-left" ng-click="myPendingLinkRequest()">
+              <i class="icon ion-clock"></i>
+                Pending Request
+              <span class="item-note">
+              </span>
+            </a>                
+
+            <a class="item item-icon-left" ng-click="myCompletedTransaction()">
+              <i class="icon ion-clipboard"></i>
+                Transaction History
+              <span class="item-note">   
+              </span>
+            </a>  
+
+            <a class="item item-icon-left" ng-click="why()">
+                <i class="icon ion-help-circled"></i>
+                    Why {{APP_CONSTANT.NAME}}
+              </a>
+
+            <a class="item item-icon-left" ng-click="contact()">
+                <i class="icon ion-email"></i>
+                  Contact Us
+            </a>
+          </ion-list>
+        </ion-side-menu>
+
+
+
+        <ion-side-menu side="right">
          <br>
         <br>
-        <br>
+          <br>
 
         <div class="profile text-center">
-          <img src="" alt="profile-image" class="image"/><img>
+          <img src="" alt="profile-image" class="image"><img>
                 
           <br>
                 
@@ -170,7 +168,7 @@
         </div> 
 
           <a class="item item-icon-left" ng-click="myProfile()">
-            <i class="icon ion-gear-a" ></i>
+            <i class="icon ion-gear-a"></i>
               Profile Settings
           </a>
           
@@ -280,7 +278,7 @@
             </a>
             <a class="tab-item">
               <i class="icon ion-help-circled" ng-click="why()"></i>
-                  Why InnovaSeeds
+                  Why {{APP_CONSTANT.NAME}}
             </a>
 
             <a class="tab-item">

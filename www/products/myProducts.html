@@ -58,7 +58,7 @@
       </ion-list>
   
   <div class="text-center" ng-show="loading">
-    <img id="mySpinner" src="/img/loader.gif"/>
+	<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
 
   <div ng-if="productList.length == 0">

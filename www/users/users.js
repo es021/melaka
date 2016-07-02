@@ -138,7 +138,8 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
 
   $scope.user_link_id = null;
 
-  $scope.userLinkType = null;
+  $scope.userLinkType = USER_LINK_TYPE.NOT_REQUESTED;
+
   $scope.isRequestToUser = false;
   $scope.isRequestByUser = false;
 
@@ -181,18 +182,19 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
 
         if(result.data[0].type == USER_LINK_TYPE.REQUESTED && user_link_type == USER_LINK_TYPE.REQUESTED_BY_USER)
         {
+          $scope.userLinkType = USER_LINK_TYPE.REQUESTED;
           $scope.isRequestByUser = true; 
         }
         if(result.data[0].type == USER_LINK_TYPE.REQUESTED && user_link_type == USER_LINK_TYPE.REQUESTED_TO_USER)
         {
-           $scope.isRequestToUser = true; 
+          $scope.userLinkType = USER_LINK_TYPE.REQUESTED;
+          $scope.isRequestToUser = true; 
         }
         else
         {
           $scope.userLinkType = result.data[0].type;
         }
       }
-
     }, function errorCallback (result){
 
     });
@@ -506,4 +508,27 @@ myApp.controller('PendingLinkController', function ($scope, $state, $stateParams
 
 
 myApp.controller('MyProfileController', function ($scope, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  $scope.myProfile = null; 
+
+  function getObjectById(objectName, id)
+  {
+    BackandService.getObjectById(objectName,id).then(function(result){
+      console.log("Data from show object");
+      $scope.myProfile = result.data;
+      if(result.status == 200)
+      {
+
+      }
+
+    }, function errorCallback (result){
+          userLinkErrorCallback(result,"Error in Retrieving Info");
+    });
+  }
+
+  getObjectById("users",$scope.userInSession.user_id);
+
+
 });

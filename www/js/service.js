@@ -691,8 +691,8 @@ myApp.service('PublicService', function ($http,growl){
 
 myApp.service('UserService', function ($state){
   
-  showUser = function(id,user_type){
-    $state.go("showUser",{id:id,user_type,user_type});
+  showUser = function(id){
+    $state.go("showUser",{id:id});
   }
 
   return{

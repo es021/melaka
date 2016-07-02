@@ -68,7 +68,7 @@
   <div class="text-center" ng-show="loading">
       Registering Your Account as {{user_type.getUserType()}}<br>
       {{loadMessage}}<br>
-    <img id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
   <button ng-if="user_type==USER_TYPE.SUPPLIER" ng-disabled="!agentform.$valid || loading" type="submit" 

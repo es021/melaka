@@ -28,6 +28,8 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'angular-growl'
   ]);
 
+
+
 myApp.run(function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
@@ -59,6 +61,8 @@ myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpP
   BackandProvider.setAppName('wzs21testapp');
   BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
 
+  //$urlRouterProvider.otherwise('/home');
+
 });
 
 myApp.run(function(auth) {
@@ -66,8 +70,10 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT,USER_TYPE) {
+myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT,USER_TYPE,APP_CONSTANT) {
   
+  $scope.APP_CONSTANT = APP_CONSTANT;
+
   $scope.main = function(){
     var state = $location.path().replace("/", "");
 
@@ -76,6 +82,7 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     //login with sosial provider
     if(state.length > 30)
     {
+      console.log("a");
       socialLoginHandler(state);
     }
     else if(state == "")

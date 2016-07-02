@@ -1,9 +1,10 @@
 <!--App Controller-->
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
+
 <p>
     <div ng-if="authProfile == null">
-		<h2 class="title"><small>Welcome To</small><br>InnovaSeeds</h2>
+		<h2 class="title"><small>Welcome To</small><br>{{APP_CONSTANT.NAME}}</h2>
 		<hr>
 		<h5>Lets get started !</h5>
 
@@ -78,7 +79,7 @@
 		<h4 class="title">What's New?</h4>
 		  
 		  <div class="text-center" ng-show="myNotificationLoad">
-		    <img id="mySpinner" src="/img/loader.gif"/>
+				<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 		  </div>
 	    
 	    <div class="text-left">

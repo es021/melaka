@@ -128,6 +128,7 @@ myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $
       });
     }
 
+    console.log($stateParams.accessToken);
     getProfile($stateParams.accessToken,$stateParams.idToken);
 
 });

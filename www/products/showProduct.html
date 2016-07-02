@@ -13,7 +13,7 @@
       Edit
     </a>
     <div ng-show="loading">
-      <img  id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
     </div>
     <a ng-show="!loading" class="tab-item" data-toggle="tooltip" 
     title="Note that you cannot delete product that is already associated with any active listing or transactions!" 
@@ -29,7 +29,7 @@
     <a ng-show="!loading" ng-click="showFunction('request')" class="button icon-left ion-paper-airplane button-clear button-dark">Request Product</a>
 
     <div ng-show="loading">
-      <img  id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
     </div>
   </div>
 
@@ -93,7 +93,7 @@
       
       <div class="text-center" ng-show="loadingRequest">
           Requesting Product<br>
-        <img id="mySpinner" src="/img/loader.gif"/>
+          <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
       </div>
 
       <button ng-disabled="!requestform.$valid || loadingRequest" type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>

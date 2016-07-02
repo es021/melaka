@@ -6,7 +6,7 @@
     <h4 class="title">Link Request To Me</h4>
 
       <div class="text-center" ng-show="requestedToUserLoad">
-        <img id="mySpinner" src="/img/loader.gif"/>
+        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
       </div>
 
       <div class="text-left">
@@ -37,7 +37,7 @@
     <h4 class="title">Link Request From Me</h4>
 
       <div class="text-center" ng-show="requestedFromUserLoad">
-        <img id="mySpinner" src="/img/loader.gif"/>
+        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
       </div>
 
       <div class="text-left">

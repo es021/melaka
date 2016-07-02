@@ -6,78 +6,39 @@
 
 <div class="list card text-left">
 
-  <div class="bar" ng-show="!loading">
-  
-  <div >
-    <!-- Not Valid To Add Request -->
-      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.NOT_AUTH">
-        <div class="tab-item">
-          <i class="icon ion-android-close"></i>
-            Not Authorized
-        </div>
-      </div>
+  <div class="item text-center" ng-show="!loading">
 
-    <!-- Same User Type -->
-      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.SAME_TYPE">
-        <div class="tab-item">
-          <i class="icon ion-navicon"></i>
-            Same User Type
-        </div>
-      </div>
+    <button ng-if ="userLinkType == USER_LINK_TYPE.NOT_AUTH" 
+    class="button button-small button-balanced icon-left ion-android-close">Not Authorized</button>
 
-    <!-- No Record in userLink -->
-      <div class="tabs tabs-icon-top" ng-if ="!isRequestToUser && !isRequestByUser">
-        <a class="tab-item">
-          <i class="icon ion-android-person-add" ng-click="linkUser('sendRequest')"></i>
-            Add {{showObject.user_type.getUserType()}}
-        </a>
-      </div>
+    <div ng-if ="userLinkType == USER_LINK_TYPE.LINKED">
+        <button class="button button-small button-balanced icon-left ion-android-done">In Your List</button>
+        <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('removeFromList')">Remove From List</button>
+    </div>
+    
+    <button ng-if ="userLinkType == USER_LINK_TYPE.SAME_TYPE" class="button button-small button-balanced icon-left ion-navicon">Same User Type</button>
 
+    <button ng-if ="userLinkType == USER_LINK_TYPE.NOT_REQUESTED" class="button button-small button-positive button-outline icon-left ion-android-person-add" 
+    ng-click="linkUser('sendRequest')">Add {{showObject.user_type.getUserType()}}</button>    
 
-    <!-- Requested-by-supplier -->
-      <div class="tabs tabs-icon-top" ng-if ="isRequestToUser">
-        <a class="tab-item">
-          <i class="icon ion-android-done" ng-click="linkUser('confirmRequest')"></i>
-            Comfirm Request
-        </a>        
-        <a class="tab-item">
-          <i class="icon ion-android-close" ng-click="linkUser('ignoreRequest')"></i>
-            Ignore Request
-        </a>
-      </div>
+    <div ng-if ="isRequestToUser">
+        <button class="button button-small button-balanced button-outline icon-left ion-android-done" ng-click="linkUser('confirmRequest')">Comfirm Request</button>
+        <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('ignoreRequest')">Ignore Request</button>
+    </div>    
 
-    <!-- Requested-by-agent -->
-      <div class="tabs tabs-icon-top" ng-if ="isRequestByUser">
-        <div class="disable tab-item">
-          <i class="icon ion-android-done"></i>
-            Requested
-        </div>        
-        <a class="tab-item">
-          <i class="icon ion-android-close" ng-click="linkUser('cancelRequest')"></i>
-            Cancel Request
-        </a>
-      </div>
+    <div ng-if ="isRequestByUser">
+        <button class="button button-small button-balanced icon-left ion-android-done" ng-click="linkUser('confirmRequest')">Requested</button>
+        <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('cancelRequest')">Cancel Request</button>
+    </div>
 
 
     <!-- linked -->
-      <div class="tabs tabs-icon-top" ng-if ="userLinkType == USER_LINK_TYPE.LINKED">
-        <div class="disable tab-item">
-          <i class="icon ion-android-done"></i>
-            In Your List
-        </div>        
-        <a class="tab-item">
-          <i class="icon ion-android-close" ng-click="linkUser('removeFromList')"></i>
-            Remove From List
-        </a>
-      </div>
-  </div>
 
-</div>
+
     <div class="text-center" ng-show="loading" >
-      <img  id="mySpinner" src="/img/loader.gif"/>Loading Request
+      <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
     </div>
-  <hr> 
-
+  </div>
 <!-------------------------------------------------------- -->
 <!-------------------------------------------------------- -->
 

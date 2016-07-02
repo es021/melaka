@@ -496,13 +496,15 @@ $scope.addPicture = function(){
 }
 
   function previewFile(){
+    console.log($scope.file);
+    console.log($scope.file.type.split("/")[0] == "image");
+
     if($scope.file == null)
     {
       $scope.removePicture();
       return;
     }
-
-    else if(!$scope.file.type.includes("image"))
+    else if(!$scope.file.type.split("/")[0] == "image")
     {
       growl.error('File uploaded is not an image. Please try again',{title: 'Error Upload Image!'});
       $scope.file = null;

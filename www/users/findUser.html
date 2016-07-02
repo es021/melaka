@@ -17,7 +17,7 @@
 	</div>
 
   <div class="text-center" ng-show="loadSupplier">
-    <img id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
     <div ng-if="suppliers.length == 0">
@@ -43,7 +43,7 @@
   </div>
 
   <div class="text-center" ng-show="loadStockist">
-    <img id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
     <div ng-if="stockists.length == 0">
@@ -68,7 +68,7 @@
   </div>
 
   <div class="text-center" ng-show="loadDropship">
-    <img id="mySpinner" src="/img/loader.gif"/>
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
     <div ng-if="dropships.length == 0">
