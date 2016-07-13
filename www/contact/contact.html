@@ -13,17 +13,16 @@ ng-click="goTo('instagram')">{{APP_CONSTANT.NAME}}</a>
 <div class="text-left">
   <form role="form">
   <div class="form-group" ng-form='contactform'>
-    <label class="item item-input item-stacked-label">
-        <span class="input-label">Email</span>
-        <input type="email" class="form-control" id="email" placeholder="Enter Your Email (optional)" ng-model="contact.email">
+    <label class="item item-input">
+        <input type="email" class="form-control" id="email" placeholder="Your Email (optional)" ng-model="contact.email">
     </label>
-    
-    <label class="item item-input item-stacked-label">
-        <span class="input-label">Message</span>
-        <textarea class="form-control" placeholder="Your message here" rows="4" ng-model="contact.message" required></textarea>
+    <br>
+    <label class="item item-input">
+        <textarea class="form-control" placeholder="Your message goes here" rows="4" ng-model="contact.message" required></textarea>
     </label>
 
-    <button ng-disabled="!contactform.$valid" type="submit" class="button button-block button-positive" ng-click="submit()">Submit</button>
+    <button ng-disabled="!contactform.$valid" type="submit" class="button button-block button-assertive" ng-click="submit()">Submit</button>
+
   </div>
   </form>
 </div>

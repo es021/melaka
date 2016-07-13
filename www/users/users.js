@@ -120,13 +120,15 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,UserService, B
 });
 
 
-myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicService,BackandService, auth, growl, $state, $stateParams, USER_LINK_TYPE){
+myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup, PublicService,BackandService, auth, growl, $state, $stateParams, USER_LINK_TYPE){
   
   $scope.loading = false;
   $scope.loadingProducts = false;
   $scope.show = "info";
 
   $scope.showObject = {};
+  $scope.showObjectLoad = false;
+
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
   $scope.linkObject = {};
@@ -149,6 +151,7 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
     return;
   }
 
+  console.log("Showing User "+$scope.show_user_id)
   getObjectById("users", $scope.show_user_id);
   initLink();
 
@@ -213,6 +216,11 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
       newLink.created_at = BackandService.getTimestampinMysql();
       newLink.update_at = BackandService.getTimestampinMysql();
       addObject("userLinks",newLink,"Request Sent!");
+
+      BackandService.createNotification($scope.show_user_id,
+                                        "You got a new link request from "+$scope.userInSession.first_name,
+                                        "/showUser?id="+$scope.userInSession.user_id,
+                                        NOTI_CATEGORY.LINK);
     }
 
     if(operation == "cancelRequest" || operation == "ignoreRequest" || operation == "removeFromList")
@@ -228,6 +236,15 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
         {
           $scope.loading = true;
           deleteUserLink($scope.user_link_id);
+
+          if(operation == "removeFromList")
+          {
+            var text = "You were removed you from "+$scope.userInSession.first_name+ "'s list"
+            BackandService.createNotification($scope.show_user_id,
+                                      text,
+                                      "/showUser?id="+$scope.userInSession.user_id,
+                                      NOTI_CATEGORY.LINK);
+          }
         }
 
       });
@@ -236,6 +253,11 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
     if(operation == "confirmRequest")
     {
       editUserLink($scope.user_link_id, USER_LINK_TYPE.LINKED);
+
+      BackandService.createNotification($scope.show_user_id,
+                                  "You are now linked with "+$scope.userInSession.first_name,
+                                  "/showUser?id="+$scope.userInSession.user_id,
+                                  NOTI_CATEGORY.LINK);
     }
   }
 
@@ -288,6 +310,8 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
 
   function getObjectById(objectName, id)
   {
+    $scope.showObjectLoad = true;
+
     BackandService.getObjectById(objectName,id).then(function(result){
       console.log("Data from show object");
       $scope.showObject = result.data;
@@ -295,9 +319,11 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
       {
         $scope.showObject.created_at = PublicService.getDate($scope.showObject.created_at);
       }
+        $scope.showObjectLoad = false;
 
     }, function errorCallback (result){
           userLinkErrorCallback(result,"Error in Retrieving Info");
+          $scope.showObjectLoad = false;
     });
   }
 
@@ -391,12 +417,13 @@ myApp.controller('ShowUserController', function($scope,$ionicPopup, PublicServic
 });
 
 
-myApp.controller('LinkedUserController', function ($scope, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+myApp.controller('LinkedUserController', function ($scope,growl, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
   $scope.refresh = function(){
     initLinkedUser();
+    growl.info('List is up to date',{title: 'Refresh List!'});
   };
   
  if($scope.userInSession != null)
@@ -512,9 +539,12 @@ myApp.controller('MyProfileController', function ($scope, $state,UserService, Ba
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
   $scope.myProfile = null; 
+  $scope.myProfileLoad = false;
+
 
   function getObjectById(objectName, id)
   {
+    $scope.myProfileLoad = true;
     BackandService.getObjectById(objectName,id).then(function(result){
       console.log("Data from show object");
       $scope.myProfile = result.data;
@@ -522,9 +552,11 @@ myApp.controller('MyProfileController', function ($scope, $state,UserService, Ba
       {
 
       }
+      $scope.myProfileLoad = false;
 
     }, function errorCallback (result){
-          userLinkErrorCallback(result,"Error in Retrieving Info");
+        $scope.myProfileLoad = false;
+        userLinkErrorCallback(result,"Error in Retrieving Info");
     });
   }
 

@@ -3,12 +3,12 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1, maximum-scale=1, user-scalable=no, width=device-width">
-    <title>DropBugz</title>
+    <title>DropBug</title>
     
     <!-- compiled css output -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/ionic.app.css" rel="stylesheet">
-
+    <link rel="icon" type="image/png" href="img/favicons/favicon.ico">
     <!-- time ago -->
     <script src="lib/timeago/jquery-3.0.0.min.js"></script>
     <script src="lib/timeago/jquery.timeago.js"></script>
@@ -27,6 +27,7 @@
 
     <!-- your app's js -->
     <script src="js/app.js"></script>
+    <script src="js/bundle.js"></script>
     <script src="js/service.js"></script>
     <script src="js/constant.js"></script>
     <script src="js/directive.js"></script>
@@ -79,27 +80,29 @@
 
   </head>
 
-  <body ng-app="sample" ng-controller="AppController">
+  <body  ng-app="sample" ng-controller="AppController">
 
       <!--HEADER-->
+      
         <div class="bar bar-header bar-stable">
           <div id="header_logout" style="display:none">
             <button class="button button-icon icon ion-navicon" ng-click="toggleSideMenuLeft()"></button>
             <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
+          
+
             <button class="button button-icon icon ion-person" ng-click="toggleSideMenuRight()"></button>
           </div>
 
           <div id="header_login" style="display:default">
-            <button class="button button-clear button-positive" ng-click="signup()">Signup</button>
+            <button class="button button-clear button-assertive" ng-click="signup()">Signup</button>
             <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
-            <button class="button button-clear button-positive" ng-click="login()">Login</button>
+            <button class="button button-clear button-assertive" ng-click="login()">Login</button>
           </div>
       </div>
       
       <div growl=""></div>
 
       <!--END OF HEADER-->
-          
 
       <ion-side-menus>
 

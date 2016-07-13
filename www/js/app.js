@@ -8,7 +8,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'backand',
   'ui.router',
   'restangular',
-  
+  'tinify',
   'sample.home',
   'sample.login-signup',
   'sample.register',
@@ -54,15 +54,13 @@ myApp.run(function($ionicPlatform) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider) {
+myApp.config( function ($urlRouterProvider, $httpProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider) {
   //$locationProvider.html5Mode(true);
   growlProvider.globalTimeToLive(3000);
 
   BackandProvider.setAppName('wzs21testapp');
   BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
-
-  //$urlRouterProvider.otherwise('/home');
-
+  $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 });
 
 myApp.run(function(auth) {
@@ -70,7 +68,7 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT,USER_TYPE,APP_CONSTANT) {
+myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
   
   $scope.APP_CONSTANT = APP_CONSTANT;
 
@@ -149,7 +147,7 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     }
 
     var confirmPopup = $ionicPopup.confirm({
-       title: 'Log Out From Melaka',
+       title: 'Log Out From '+APP_CONSTANT.NAME,
        template: 'Are you sure?'
      });
      

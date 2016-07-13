@@ -1,8 +1,9 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 <p>
+    <a href="" ng-click="refresh()">
     <h2 class="title">My Linked User</h2>
-    <button class="button button-small button-clear button-positive" ng-click="refresh()">Refresh List</button>
+    </a>
       
       <div class="text-center" ng-show="myLinkedUserLoad">
         <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>

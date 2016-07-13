@@ -35,13 +35,15 @@ div.sub-text{
   border: 2px solid rgba(255, 255, 255, 0.5);
 
 }
-.profile h3 #name{
+.profile h3{
   margin: 0 0 5px;
   font-weight: 250;
+  color : white;
 }
 .profile h5{
   display: block;
   opacity: 0.75;
+  color:white;
 }
 
 .text-light{
@@ -78,4 +80,54 @@ div.sub-text{
 
 .text-dark{
  color : #444;
+}
+
+
+.scroll-content{    
+  background:url(../img/background2.jpg) no-repeat;
+  background-size: cover;
+  height:100%;
+}
+
+ion-side-menu{
+  background:url(../img/background2.jpg) repeat;
+  background-size: cover;
+  height:40px;
+  float:right;
+  margin:0 0 0 5px;
+}
+
+.item{
+  opacity: 0.80;
+}
+
+.card{
+  opacity: 0.90;
+}
+
+.title > small {
+  color: white;
+  opacity: 0.85;
+}
+
+.title {
+  color: white;
+}
+
+.link {
+  color: white;
+}
+
+span > .input-label {
+  color: white;
+}
+
+hr {
+  opacity: 0;
+}
+
+textarea {
+  outline : none;
+  resize: none;
+  overflow: auto;
 }

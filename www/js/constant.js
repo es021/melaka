@@ -4,10 +4,12 @@ var myApp = angular.module('sample.constant', [
 ]);
 
 myApp.constant("APP_CONSTANT",{
-        "EMAIL": "zulsarhan.shaari@gmail.com",
-        "NAME" : "DropBugz",
+        "EMAIL": "innovaseeds@gmail.com",
+        "NAME" : "DropBug",
         "TAGLINE" : "Something",
         "LOGO" : "img/logo.png",
+        "LOGO_SMALL" : "img/logo_small.png",
+        "LOGO_ONLY_SMALL" : "img/logo_only_small.png",
         "LOADER" : "img/loader.gif",
         "FACEBOOK": "",
         "INSTAGRAM": "",
@@ -50,6 +52,15 @@ myApp.constant("TRANS_STATUS", {
         "NOT_PAID" : 6,
         "PAID": 7,
         "COMFIRMED": 8
+});
+
+myApp.constant("NOTI_CATEGORY", {
+        "GENERAL": 1,
+        "PROFILE": 2,
+        "LINK": 3,
+        "PRODUCT": 4,
+        "TRANSACTION": 5,
+        "PAYMENT": 6
 });
 
 myApp.constant("PICTURE_CONSTANT", {

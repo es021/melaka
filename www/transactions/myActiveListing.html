@@ -2,13 +2,20 @@
 <ion-content class="text-center has-header has-footer padding">
 <p>
 <div ng-if="stateName=='myActiveListing'" >
-<h2 class="title">My Active Listing</h2>
-    <button class="button button-small button-clear button-positive" ng-click="goTo('myCompletedTransaction')">See My Completed Transactions</button>
+<a class='link' href="" ng-click="refresh()">
+	<h2>My Active Listing</h2>
+</a>
+    <a href="" class="link small" ng-click="goTo('myCompletedTransaction')">See My Completed Transactions</a>
 </div>
+
 <div ng-if="stateName=='myCompletedTransaction'">
-<h2 class="title">My Completed Transaction</h2>
-    <button class="button button-small button-clear button-positive" ng-click="goTo('myActiveListing')">See My Active Listing</button>
+	
+<a class='link' href="" ng-click="refresh()">
+	<h2>My Completed Transaction</h2>
+</a>
+    <a href="" class="link small" ng-click="goTo('myActiveListing')">See My Active Listing</a>
 </div>
+<br>
       <!-- ******************************************************************************************************************************* -->
       <ion-list class="text-left">
         <div ng-repeat="item in activeListing">
@@ -24,35 +31,20 @@
 
        	<!-- ******************************************************************************************************************************* -->
         <!--STATUS AND PAYMENT STATUS SHOW ************************************************************************************************* -->
-		  
-		    <h5><strong>
-			    <span  class="text-success" ng-if="item.status == TRANS_STATUS.REQUESTED">
-			      Requested 
-			    </span>
-			    <span class="text-danger" ng-if="item.status == TRANS_STATUS.DENIED">
-			      Denied
-			    </span>
-			   	<span class="text-success" ng-if="item.status == TRANS_STATUS.APPROVED">
-			      Approved
-			    </span>
-			    <span class="text-success" ng-if="item.status == TRANS_STATUS.DELIVERED">
-			      Delivered
-			    </span>
-			   	<span  class="text-primary" ng-if="item.status == TRANS_STATUS.RECEIVED">
-			      Package Received
-			    </span>
-				/
-			    <span class="text-danger" ng-if="item.payment_status == TRANS_STATUS.NOT_PAID">
-			      Not Paid
-			    </span>
-			   	<span class="text-success" ng-if="item.payment_status == TRANS_STATUS.PAID">
-			      Paid
-			    </span>
-			   	<span class="text-primary" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
-			      Payment Comfirmed
-			    </span>
-			</strong>
-		    </h5>
+		<br>
+		<div class="small">
+		    
+		    <span ng-if="item.status == TRANS_STATUS.REQUESTED" class="label label-success">Requested</span>
+		    <span ng-if="item.status == TRANS_STATUS.DENIED" class="label label-danger">Denied</span>
+		    <span ng-if="item.status == TRANS_STATUS.APPROVED" class="label label-success">Approved</span>
+		    <span ng-if="item.status == TRANS_STATUS.DELIVERED" class="label label-success">Delivered</span>
+		    <span ng-if="item.status == TRANS_STATUS.RECEIVED" class="label label-primary">Package Received</span>
+
+		    <span ng-if="item.payment_status == TRANS_STATUS.NOT_PAID" class="label label-danger">Not Paid</span>
+		    <span ng-if="item.payment_status == TRANS_STATUS.PAID" class="label label-success">Paid</span>
+		    <span ng-if="item.payment_status == TRANS_STATUS.COMFIRMED" class="label label-primary">Payment Comfirmed</span>
+
+		</div>
 
 		    <span class="badge">
 		    	{{item.quantity}}
@@ -86,12 +78,13 @@
 						Last Updated : {{timeAgo}}
 					</h4>
 
-				<br>
+				
 				
 
 				  <!-- ******************************************************************************************************************************* -->
 				  <!--- STATUS AND PAYMENT STATUS FOR AGENT ****************************************************************************************** -->
 				  	<!-- GENERAL STATUS -->
+				  	<!--
 					<button ng-if="showItem.status == TRANS_STATUS.REQUESTED" 
 					class="button button-small button-balanced icon-left ion-checkmark-round">Requested</button>
 
@@ -117,6 +110,7 @@
 					class="button button-small button-positive icon-left ion-cash">Payment Comfirmed</button>
     				
     				<div style="padding:3px"></div>
+    			-->
 					<!-- ******************************************************************************************************************************* -->
 					<!-- ACTION FOR AGENT **********************************************************************************************************-->
 				  <div ng-if="userInSession.user_id == showItem.from_user_id">
@@ -157,16 +151,20 @@
     	
 				  </div>
 
-			    <br>
 
 			    <!--- TRANSACTION INFO ************************************************************************************************************* -->
+			    <!--
 				    <h4><strong>Price Per Unit</strong> | RM {{showProduct.price_per_unit}}</h4>
 				    <h4><strong>Quantity</strong> | {{showItem.quantity}}</h4>
 				    <h4><strong>Type</strong> | {{showItem.type}}</h4>
 				    <h4><strong>Total Price</strong> | RM {{showItem.total_price}} </h4>  
 
 				    <h4><strong>Category</strong> | {{showProduct.category}}</h4>
-
+				-->
+				<div style="padding:3px"></div>
+				<button
+				ng-click="showTransaction()" 
+				class="button button-small button-positive icon-right ion-arrow-right-a">Show More</button>
 				</div>
           </ion-item>
         </div>

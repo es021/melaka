@@ -1,8 +1,11 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 <p>
-<h2 class="title">My Products</h2>
-<button class="button button-clear button-positive" ng-click="addProduct()">Add New Product</button>
+<a class="link" href="" ng-click="refresh()">
+	<h2>My Products</h2>
+</a>
+<a href="" class="link small" ng-click="addProduct()">Add New Product</a>
+<br><br>
       <!-- ******************************************************************************************************************************* -->
       <ion-list class="text-left">
         <div ng-repeat="item in productList">

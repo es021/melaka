@@ -57,13 +57,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
 });
 
-myApp.controller('MyProductController', function(auth,PublicService,$location,$stateParams, $scope, $state, BackandService,USER_TYPE){
-
-  if($stateParams.refresh == 'y')
-  {
-    console.log("Refresh");
-    getAllProductByUserId($scope.userInSession.user_id);
-  }
+myApp.controller('MyProductController', function(auth,PublicService,growl,$location,$stateParams, $scope, $state, BackandService,USER_TYPE){
 
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.loading = false;
@@ -73,12 +67,19 @@ myApp.controller('MyProductController', function(auth,PublicService,$location,$s
     $scope.loading = true;
     $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
+
     if($scope.userInSession.user_type < USER_TYPE.DROPSHIP)
     {
       getAllProductByUserId($scope.userInSession.user_id);
     }
   }
 
+  $scope.refresh = function()
+  {
+    console.log("Refresh");
+    getAllProductByUserId($scope.userInSession.user_id);
+    growl.info('List is up to date',{title: 'Refresh List!'});
+  }
 
   $scope.addProduct = function(){
     console.log("Add Product Page");
@@ -138,7 +139,7 @@ myApp.controller('MyProductController', function(auth,PublicService,$location,$s
 
 });
 
-myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, PublicService,BackandService, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
+myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, PublicService,BackandService,NOTI_CATEGORY, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
   $scope.showObject = null;
 
   $scope.productId = $stateParams.product_id;
@@ -164,6 +165,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
       $scope.newRequest.total_price = 0;
     }
   }
+
 
   $scope.requestProduct = function()
   {
@@ -198,6 +200,11 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
       {
         growl.success("Redirecting to Listing Page" ,{title: 'Successfully Added New Request!'});              
         $state.go("myActiveListing");
+
+        BackandService.createNotification(result.data.to_user_id,
+                                          "New product request from "+$scope.userInSession.first_name,
+                                          "/showTransaction?id="+result.data.id+"&other_user_id="+$scope.userInSession.user_id,
+                                          NOTI_CATEGORY.PRODUCT);
       }
 
       $scope.loadingRequest = false;
@@ -312,7 +319,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
 });
 
-myApp.controller('AddEditProductController', function($scope, $stateParams, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
+myApp.controller('AddEditProductController', function($scope,$http, $stateParams, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
   
   //MB
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
@@ -335,6 +342,7 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
   $scope.fileToUpload = {};
 
   $scope.file = null;
+  $scope.filedata = null;
   $scope.imageSrc = null;
   $scope.progress = null;
 
@@ -420,7 +428,7 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
       }
       else
       {
-        uploadFileDropbox();
+        uploadFileBackand();
       }
     }
 
@@ -449,7 +457,7 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
       if(result.status == 200)
       {
         growl.success("Redirecting to product page" ,{title: 'Successfully Added New Product!'});              
-        $state.go("myProducts");
+        $state.go("myProducts",{refresh:'y'});
       }
       $scope.loading = false;
 
@@ -473,6 +481,7 @@ myApp.controller('AddEditProductController', function($scope, $stateParams, USER
     $scope.fileToUpload = {};
 
     $scope.file = null;
+    $scope.filedata = null;
     $scope.imageSrc = null;
     $scope.progress = null;
   }
@@ -485,14 +494,26 @@ $scope.addPicture = function(){
   var f = document.getElementById('file').files[0];
   var r = new FileReader();
 
-  r.onloadend = function(e){
-    var data = e.target.result;
+  r.onload = function(e){
+    $scope.filedata = e.currentTarget.result;
+    $scope.filename = f.name;
+
     $scope.file = f;
     $scope.loadImage = false;
     previewFile();
   }
   
-  r.readAsBinaryString(f);
+  //r.readAsBinaryString(f);
+   r.readAsDataURL(f);
+}
+
+function tinify(){
+    $http ({
+        method: 'POST',
+        url: 'https://api.tinify.com/shrink',
+        Authorization: 'XCi84z1igNgjjp0hDh_QuT-gol_ePm1r',
+        data: $scope.file
+        });
 }
 
   function previewFile(){
@@ -531,7 +552,7 @@ $scope.addPicture = function(){
       $scope.progress = (progress.loaded / progress.total)*100;
   });
 
-
+/*
  function getShareLinkDropbox(filePath){
     $scope.loadStatus = "Getting link for the saved image."
 
@@ -546,6 +567,7 @@ $scope.addPicture = function(){
         var temp = result.data.url.split(/[ ?]+/)[0];
         $scope.newProduct.picture = temp+"?raw=1"; //picture <- https://www.dropbox.com/s/a2hhhx67zuwol7f/supplier1_2016-06-07-09-12-55.jpeg?raw=1
         console.log($scope.newProduct.picture);
+        //tinify();
       }
       else
       {
@@ -585,6 +607,39 @@ $scope.addPicture = function(){
 
     });  
   }  
+*/
+
+  function uploadFileBackand(){ 
+    $scope.loadStatus = "Saving image of your new product. Might be a while depending on the size of the image"
+
+    var filename = generateProductName();
+    var filedata = $scope.filedata;
+
+      BackandService.uploadFile(filename,filedata).then(function(result){
+
+          console.log("Result From Upload Image to Backand");
+          console.log(result);      
+
+          if(result.status == 200)
+          {
+            $scope.newProduct.picture = result.data.url;
+
+            if($scope.state == "editProduct")
+            {
+              editRecord();
+            }
+
+            if($scope.state == "addProduct")
+            {
+              addRecord();
+            }
+          }
+
+        },function errorCallback(result){
+            console.log(result);
+        });  
+
+  }  
 
   function addRecord(){
     $scope.loadStatus = "Creating new record in database"
@@ -609,7 +664,7 @@ $scope.addPicture = function(){
       if(result.status == 200)
       {
         growl.success("Redirecting to product page" ,{title: 'Successfully Added New Product!'});              
-        $state.go("myProducts");
+        $state.go("myProducts",{refresh:'y'});
       }
     });
 
@@ -640,7 +695,7 @@ $scope.addPicture = function(){
     }
     else
     {
-      uploadFileDropbox();
+      uploadFileBackand();
     }
   };
 

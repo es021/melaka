@@ -51,4 +51,20 @@ myApp.controller('ContactController', function($location,growl, $scope, $state, 
     $state.go("home");
   }
 
+  $scope.sendEmail = function(){
+    console.log("sending email");
+       $.ajax({
+          url:'php/sendEmail.php',
+          complete: function (response) {
+              console.log(response);
+              //console.log(response.responseText);
+          },
+          error: function () {
+              console.log("Error");
+          }
+      });
+      return false;
+  }
+
+
 });

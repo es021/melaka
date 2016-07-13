@@ -5,12 +5,13 @@
 <p>
     <div ng-if="authProfile == null">
 		<h2 class="title"><small>Welcome To</small><br>{{APP_CONSTANT.NAME}}</h2>
-		<hr>
-		<h5>Lets get started !</h5>
 
+		<img ng-src="{{APP_CONSTANT.LOGO_ONLY_SMALL}}" style="height: 150px; width: auto; margin-left:auto; margin-right:auto;" class="img-responsive" alt="logo">
+
+		<h5 class="title">Lets get started !</h5>
 		<div ng-app="sample" ng-controller="AppController">
-			<button class="button button-block button-positive" ng-click="login()">Login</button>
-			<button class="button button-block button-positive" ng-click="signup()">Signup</button>
+			<button class="button button-block button-assertive" ng-click="login()">Login</button>
+			<button class="button button-block button-assertive" ng-click="signup()">Signup</button>
 		</div>
 
     </div>
@@ -76,8 +77,10 @@
 		NOTIFICATION
 		-->
 		<hr>
-		<h4 class="title">What's New?</h4>
-		  
+
+		<a class="link" href="" ng-click="refreshNotification()">
+		<h4>What's New?</h4>
+		</a>
 		  <div class="text-center" ng-show="myNotificationLoad">
 				<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 		  </div>
@@ -85,18 +88,21 @@
 	    <div class="text-left">
 			<div class="list">
 	          <div ng-repeat="item in myNotification">
-	          	<div ng-controller = "NotificationController">
-				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'supplier'" ng-click="showObjectFunction('agents',{{item.id}})">
-				   	<img src="{{item.picture}}">
-				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
-				      	<p><strong>Agent Id</strong> {{item.id}}</p>
+				    <a class="item item-icon-left" ng-click="isRead(item)" href="#{{item.link}}">
+		   			  	
+		   			  	<i ng-if="item.category == NOTI_CATEGORY.GENERAL" class="icon ion-android-notifications"></i>	
+		   			  	<i ng-if="item.category == NOTI_CATEGORY.PROFILE" class="icon ion-person"></i>	
+		   			  	<i ng-if="item.category == NOTI_CATEGORY.LINK" class="icon ion-person-stalker"></i>	
+		   			  	<i ng-if="item.category == NOTI_CATEGORY.PRODUCT" class="icon ion-bag"></i>	
+		   			  	<i ng-if="item.category == NOTI_CATEGORY.TRANSACTION" class="icon ion-arrow-swap"></i>	
+		   			  	<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>	
+
+						{{item.text}}
+						<br>
+						<span ng-if="!item.isRead" class="label label-primary">New</span>
+						<span class="small text-muted">{{item.created_at.getTime()}} - {{item.created_at.getDate()}}<span>
+
 				    </a>
-				    <a class="item item-avatar" ng-if = "userInSession.user_type == 'agent'" ng-click="showObjectFunction('suppliers',{{item.id}})">
-				    	<img src="{{item.picture}}">
-				      	<h2>{{item.first_name}} {{item.last_name}}</h2>
-				      	<p><strong>Supplier Id</strong> {{item.id}}</p>
-				    </a>
-				</div>
 	          </div>
 			</div>
 		</div>

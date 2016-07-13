@@ -10,18 +10,17 @@
 <div class="text-left">
   <form role="form">
   <div class="form-group" ng-form='loginform'>
-    <label class="item item-input item-stacked-label">
-        <span class="input-label">Email</span>
-        <input type="email" class="form-control" id="email" placeholder="john@gmail.com" ng-model="loginInfo.email" required>
+
+    <label class="item item-input">
+        <input type="email" class="form-control" id="email" placeholder="Email" ng-model="loginInfo.email" required>
     </label>
     
-    <label class="item item-input item-stacked-label">
-        <span class="input-label">Password</span>
-        <input type="password" class="form-control" id="password" placeholder="Enter Your Password" ng-model="loginInfo.password" required>
+    <label class="item item-input">
+        <input type="password" class="form-control" id="password" placeholder="Password" ng-model="loginInfo.password" required>
     </label>
   
 
-    <button ng-disabled="!loginform.$valid" type="submit" class="button button-block button-positive" ng-click="login()">Login</button>
+    <button ng-disabled="!loginform.$valid" type="submit" class="button button-block button-assertive" ng-click="login()">Login</button>
   </div>
   </form>
 </div>  

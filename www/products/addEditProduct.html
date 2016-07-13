@@ -13,7 +13,7 @@
 
 <form role="form" accept="image/gif, image/jpeg">
 <div class="form-group" ng-form='productform'>
-  <label class="item item-input item-stacked-label">
+  <label class="item item-input">
     <div ng-if="imageSrc==null">
     <span class="input-label">Upload Picture For Your Product <h4>(Size Limit : {{imageSizeLimit}} MB)</h4></span>
       <input  type="file" id="file" name="file"   onchange="angular.element(this).scope().addPicture()"/>
@@ -26,20 +26,17 @@
       <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
     </div>
 
-        <img ng-if="imageSrc!=null" src="{{imageSrc}}" class="img-responsive img-thumbnail center-block" width="200">
-        <button ng-if="progress > 0" class="button button-clear button-positive" ng-click="removePicture()">Remove Picture</button>
-
+    <img ng-if="imageSrc!=null" src="{{imageSrc}}" class="img-responsive img-thumbnail center-block" width="200">
+ <button ng-if="progress > 0" class="button button-clear button-positive" ng-click="removePicture()">Remove Picture</button>
+  </label>  
+       
         <div class="progress">
           <div class="progress-bar progress-bar-striped active" role="progressbar"
           aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress}}%">
             {{progress}}%
           </div>
         </div>
-
-  </label>  
-
-
-  <label class="item item-input item-stacked-label">
+  <label class="item item-input">
     <span class="input-label">Product Name</span>
     <input type="text" class="form-control" id="name" placeholder="Polo Shirt" ng-model="newProduct.name" required>
   </label>
@@ -57,13 +54,13 @@
       </select>
     </label>
 
-  <label class="item item-input item-stacked-label">
+  <label class="item item-input">
     <span class="input-label">Price Per Unit (RM)</span>
-    <input type="number" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.price_per_unit" required>
+    <input type="number" placeholder="21" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.price_per_unit" required>
   </label>  
 
 
-  <label class="item item-input item-stacked-label">
+  <label class="item item-input">
     <span class="input-label">Description</span>
     <textarea class="form-control" placeholder="Tell more about the new product (optional)" rows="4" ng-model="newProduct.description"></textarea>
   </label>
@@ -83,10 +80,10 @@
   </div>
 
   <button ng-if = "state=='addProduct'" ng-disabled="!productform.$valid || loading" 
-  type="submit" class="button button-block button-positive" ng-click="createNewProduct()">Add Product</button>
+  type="submit" class="button button-block button-assertive" ng-click="createNewProduct()">Add Product</button>
   
   <button ng-if = "state=='editProduct'" ng-disabled="!productform.$valid || loading" 
-  type="submit" class="button button-block button-positive" ng-click="editProduct()">Edit Product</button>
+  type="submit" class="button button-block button-assertive" ng-click="editProduct()">Edit Product</button>
 
 </div>
 </form>

@@ -22,6 +22,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
   }
 
   getObjectById = function(objectName,id){
+    console.log(getUrl(objectName) + id);
     return $http.get(getUrl(objectName) + id);
   }
 
@@ -329,6 +330,112 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
+  setNotificationIsReadTrue = function (id){
+    return $http ({
+        method: 'POST',
+        url: Backand.getApiUrl() + '/1/query/data/setNotificationIsReadTrue',
+        params: {
+          parameters: {
+            id: id          
+          }
+        }
+      })
+  }
+
+  getAllNotificationByUserId = function (user_id,limit){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getAllNotificationByUserId',
+        params: {
+          parameters: {
+            user_id: user_id,
+            limit : limit
+          }
+        }
+      })
+  }  
+
+  getTransById = function (id,other_user_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getTransById',
+        params: {
+          parameters: {
+            id: id,
+            other_user_id : other_user_id
+          }
+        }
+      })
+  }
+
+  getUserEmailById = function (id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getUserEmailById',
+        params: {
+          parameters: {
+            id: id
+          }
+        }
+      })
+  }
+
+  var filesActionName = 'files';
+  var objectName = 'products';
+  uploadFile = function (filename,filedata){
+    // By calling the files action with POST method in will perform
+    // an upload of the file into Backand Storage
+    return $http({
+      method: 'POST',
+      url : Backand.getApiUrl() + '/1/objects/action/' +  objectName,
+      params:{
+        "name": filesActionName
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // you need to provide the file name and the file data
+      data: {
+        "filename": filename,
+        "filedata": filedata.substr(filedata.indexOf(',') + 1, filedata.length) //need to remove the file prefix type
+      }
+    });
+  }
+
+  createNotification = function (user_id,text,link,category){
+    var newNotification = {};
+
+    newNotification.user_id = user_id;
+    newNotification.link = link;
+    newNotification.text = text;
+    newNotification.category = category;
+    
+    newNotification.isRead = 0;
+    newNotification.created_at = getTimestampinMysql();
+    newNotification.updated_at = getTimestampinMysql();
+
+    //getting the user email first
+    getUserEmailById(user_id).then(function(result){
+      console.log("Getting the user email");
+      console.log(result.data[0].email);
+
+      if(result.status == 200)
+      {
+        //create notification
+        newNotification.user_email = result.data[0].email;
+        console.log(newNotification);
+        addObject("notifications",newNotification).then(function(result){
+          console.log(result);
+        },function errorCallback(result){
+          console.log(result);
+        });
+      }
+
+    },function errorCallback(result){
+      console.log(result);
+    });
+  }
+
 
   getTimestampinMysql = function(){
     var formatedMysqlTimestamp = (new Date ((new Date((new Date(new Date())).toISOString() )).getTime() - ((new Date()).getTimezoneOffset()*60000))).toISOString().slice(0, 19).replace('T', ' ');
@@ -373,7 +480,15 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getUserActiveListing : getUserActiveListing,
     editTransactionStatus : editTransactionStatus,
     editTransactionPaymentStatus : editTransactionPaymentStatus,
-    getUserCompletedTransaction : getUserCompletedTransaction
+    getUserCompletedTransaction : getUserCompletedTransaction,
+    getTransById : getTransById,
+
+    //notification
+    getAllNotificationByUserId : getAllNotificationByUserId,
+    setNotificationIsReadTrue : setNotificationIsReadTrue,
+    createNotification : createNotification,
+
+    uploadFile : uploadFile 
   }
 
 });

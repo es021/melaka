@@ -1,0 +1,4 @@
+BackandService.createNotification(result.data.to_user_id,
+                                  "New product request from "+$scope.userInSession.first_name,
+                                  "/showTransaction?id="+result.data.id+"&other_user_id="+$scope.userInSession.user_id,
+                                  NOTI_CATEGORY.PRODUCT);

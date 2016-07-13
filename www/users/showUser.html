@@ -1,8 +1,14 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
-<p>
+
+<div class="text-center" ng-show="showObjectLoad">
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+</div>
+
+<div ng-show="!showObjectLoad">
+
 <h2 class="title">{{showObject.user_type.getUserType()}} Details</h2>
-<button ng-if="showObject.user_type < USER_TYPE.DROPSHIP" class="button button-small button-clear button-positive" ng-click="showProductList(showObject.id)">Show Product List For This User</button>
+<a href="" ng-if="showObject.user_type < USER_TYPE.DROPSHIP" class="link small" ng-click="showProductList(showObject.id)">Show Product List For This User</a>
 
 <div class="list card text-left">
 
@@ -68,6 +74,6 @@
 
 </div>
 
-</p>
+</div>
 </ion-view>
 </ion-content>
