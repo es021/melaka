@@ -311,8 +311,26 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
+  editUserById = function (id, first_name,last_name,state,email,phone_number,about,updated_at){
+    return $http ({
+        method: 'POST',
+        url: Backand.getApiUrl() + '/1/query/data/editUserById',
+        params: {
+          parameters: {
+            id: id,
+            first_name : first_name,
+            last_name : last_name,
+            state : state,
+            email : email,
+            phone_number : phone_number,
+            about : about,
+            updated_at : updated_at
+          }
+        }
+      })
+  }
 
-  editProductById = function (id,name,category,price_per_unit,description,picture,updated_at){
+  editProductById = function (id,name,category,price_per_unit,description,picture,custom_pricing, updated_at){
     return $http ({
         method: 'POST',
         url: Backand.getApiUrl() + '/1/query/data/editProductById',
@@ -324,6 +342,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
             price_per_unit : price_per_unit,
             description : description,
             picture : picture,
+            custom_pricing : custom_pricing,
             updated_at : updated_at
           }
         }
@@ -461,6 +480,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getUserByType : getUserByType,
     getSupplierNameById : getSupplierNameById,
     getUserNameById : getUserNameById,
+    editUserById : editUserById,
 
     //user link
     getUserLink : getUserLink,
@@ -723,7 +743,7 @@ myApp.service('PublicService', function ($http,growl){
 
   setHeader = function (type)
   {
-    var headerList = ["header_logout","header_login"];
+    var headerList = ["header_logout","header_login","header_newUser"];
     var header = "header_"+ type;
 
     for (var i = 0; i < headerList.length; i++)
@@ -744,17 +764,26 @@ myApp.service('PublicService', function ($http,growl){
   {
     console.log(userInSession);
     console.log(authProfile);
+
+    if(authProfile != null && userInSession != null)
+    {
+      setHeader("login");
+      setFooter("newUser");
+    }
+
     if(authProfile != null )
     {
-      setHeader("logout");
+      
       //console.log($scope.authProfile);
-      if(userInSession != null)
+      if(userInSession != null)//registered
       {
+        setHeader("logout");
         setFooter(userInSession.user_type.getUserTypeLower());
       }
-      else
+      else//newUser
       {
         setFooter("newUser");
+        setHeader("newUser");
       }    
     }
   }

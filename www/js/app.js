@@ -8,7 +8,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'backand',
   'ui.router',
   'restangular',
-  'tinify',
+  //'tinify',
   'sample.home',
   'sample.login-signup',
   'sample.register',
@@ -62,6 +62,7 @@ myApp.config( function ($urlRouterProvider, $httpProvider, $stateProvider, authP
   BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 });
+
 
 myApp.run(function(auth) {
   auth.hookEvents();
@@ -233,7 +234,7 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.contact = function() {   
     closeSideMenuBar();
-    $state.go('contact');    
+    $state.go();    
   };
 
   $scope.showUser = function (id){
@@ -244,7 +245,17 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.myProfile = function (){
     closeSideMenuBar();
-    $state.go('myProfile'); 
+   
+
+    if($scope.userInSession != null)
+    {
+      $state.go('myProfile');     
+    }
+    else
+    {
+      growl.error("Supplier, Stockist or Dropship" ,{title: 'You have to Register First!'});    
+    }
+
   };
 
   $scope.showProductList = function(user_id){

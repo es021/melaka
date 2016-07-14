@@ -1,52 +1,126 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
-<p>
-<h2 class="title">My Profile</h2>
+<h2 class="title">{{authProfile.nickname}}</h2>
 
+<div ng-if= "userInSession == null">
+  <img src="{{authProfile.picture}}" class="img-circle profile-image" width="100">
+  <h4 class="subtitle">It seems that you are new here!</h4>
+  <h4 class="subtitle">Let's get started</h4>
+  <h4 class="subtitle">Register As One of The Following</h4>
+    <div ng-app="sample" ng-controller="RegisterController">
+      <button class="button button-block button-{{USER_TYPE.ION_COLOR.SUPPLIER}}" ng-click="register(USER_TYPE.SUPPLIER)">Register as Supplier</button>
+      <button class="button button-block button-{{USER_TYPE.ION_COLOR.STOCKIST}}" ng-click="register(USER_TYPE.STOCKIST)">Register as Stockist</button>
+      <button class="button button-block button-{{USER_TYPE.ION_COLOR.DROPSHIP}}" ng-click="register(USER_TYPE.DROPSHIP)">Register as Dropship</button>
+    </div>
+
+</div>
+
+<div ng-if = "userInSession != null">
 
 <div class="text-center" ng-show="showObjectLoad">
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 </div>
 
 
-<div class="list card text-left">
+<div class="list card text-left" ng-if="page == 'show'">
+    <div class="item text-center">
+        <button class="button button-small button-balanced icon-left ion-edit" ng-click="editProfile()">Edit Profile</button>
+    </div>
+    <div class="item item-avatar">
+      <img src="{{myProfile.picture}}">
+      <h2>{{myProfile.first_name}} {{myProfile.last_name}}</h2>
+    <p><strong>{{myProfile.user_type.getUserType()}}</strong>  | User Id {{myProfile.id}}</p>
+    </div>
 
+    <div class="item item-body">
+      <h3><strong>Location</strong> | {{myProfile.state}}</h3>
+      <h3><strong>Email</strong> | {{myProfile.email}}</h3>
+      <h3><strong>Phone Number</strong> | {{myProfile.phone_number}}</h3>
+      <h3><strong>Member Since</strong> | {{myProfile.created_at.getDate()}}</h3>
+      
+      <hr>
+      <h3><strong>More Information</strong></h3>
+      <p ng-if="myProfile.about == ''">
+      There is no other information about this agent
+      </p>    
+      <p ng-if="myProfile.about != ''">
+      {{myProfile.about}}
+      </p>
 
-      <div class="item text-center">
-          <button class="button button-small button-balanced icon-left ion-edit">Edit Profile</button>
-      </div>
-
-
-
-<!-------------------------------------------------------- -->
-<!-------------------------------------------------------- -->
-
-
-  <div class="item item-avatar">
-    <img src="{{myProfile.picture}}">
-    <h2>{{myProfile.first_name}} {{myProfile.last_name}}</h2>
-	<p><strong>{{myProfile.user_type.getUserType()}}</strong>  | User Id {{myProfile.id}}</p>
-  </div>
-
-  <div class="item item-body">
-    <h3><strong>Location</strong> | {{myProfile.state}}</h3>
-    <h3><strong>Email</strong> | {{myProfile.email}}</h3>
-    <h3><strong>Phone Number</strong> | {{myProfile.phone_number}}</h3>
-    <h3><strong>Member Since</strong> | {{myProfile.created_at.getDate()}}</h3>
-    
-    <hr>
-    <h3><strong>More Information</strong></h3>
-    <p ng-if="myProfile.about == ''">
-		There is no other information about this agent
-    </p>    
-    <p ng-if="myProfile.about != ''">
-		{{myProfile.about}}
-    </p>
-
-  </div>
+    </div>
 
 </div>
 
-</p>
+<div class="list card text-left" ng-if="page == 'edit'">
+    <div class="item text-center">
+        <button class="button button-small button-assertive icon-left ion-android-cancel" ng-click="showProfile()">Cancel</button>
+    </div>
+    <div class="item item-avatar">
+      <img src="{{myProfile.picture}}">
+      <p><strong>{{myProfile.user_type.getUserType()}}</strong>  | User Id {{myProfile.id}}</p>
+
+   
+   <form role="form">
+    <div class="form-group" ng-form='editForm'>
+     
+     <label class="item item-input">
+      <input type="text" class="form-control" placeholder="First Name" ng-model="myProfile.first_name" required>
+    </label>
+
+     <label class="item item-input">
+      <input type="text" class="form-control" placeholder="Last Name" ng-model="myProfile.last_name" required>
+    </label>
+    <div class="list">
+
+    <label class="item item-input item-select">
+      <div class="input-label">{{myProfile.state}}</div>
+      <select ng-model="myProfile.state" required>
+        <option selected>Johor</option>
+        <option>Kedah</option>
+        <option>Kelantan</option>
+        <option>Kuala Lumpur</option>
+        <option>Labuan</option>
+        <option>Malacca</option>
+        <option>Negeri Sembilan</option>
+        <option>Pahang</option>
+        <option>Penang</option>
+        <option>Perak</option>
+        <option>Perlis</option>
+        <option>Putrajaya</option>
+        <option>Sabah</option>
+        <option>Sarawak</option>
+        <option>Selangor</option>
+        <option>Terengganu</option>
+      </select>
+    </label>
+  
+    <label class="item item-input">
+      <input type="text" class="form-control" placeholder="Email" ng-model="myProfile.email" >
+    </label> 
+      
+    <label class="item item-input">
+      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" ng-model="myProfile.phone_number" required data-country="US">
+    </label> 
+   
+
+    <label class="item item-input">
+    <textarea class="form-control" placeholder="Tell more about yourself (optional)" rows="4" ng-model="myProfile.about"></textarea>
+    </label>
+
+    <div class="text-center" ng-show="loadingEdit">
+          {{loadStatus}}<br>
+        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+      </div>
+      
+      <button ng-disabled="!editForm.$valid || loading" type="submit" 
+      class="button button-block button-balanced" ng-click="submitEditProfile()">Edit Profile</button>
+
+      
+    </div>
+  </form>
+  </div>
+</div>
+</div>
+
 </ion-view>
 </ion-content>

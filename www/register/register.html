@@ -3,35 +3,32 @@
 
 <p>
 
-<h2 ng-if="user_type==USER_TYPE.SUPPLIER" class="text-{{USER_TYPE.ION_COLOR.SUPPLIER}}">Register As New Supplier</h2>
-<h2 ng-if="user_type==USER_TYPE.STOCKIST" class="text-{{USER_TYPE.ION_COLOR.STOCKIST}}">Register As New Stockist</h2>
-<h2 ng-if="user_type==USER_TYPE.DROPSHIP" class="text-{{USER_TYPE.ION_COLOR.DROPSHIP}}">Register As New Dropship</h2>
+<h2 ng-if="user_type==USER_TYPE.SUPPLIER" class="title">Register As New Supplier</h2>
+<h2 ng-if="user_type==USER_TYPE.STOCKIST" class="title">Register As New Stockist</h2>
+<h2 ng-if="user_type==USER_TYPE.DROPSHIP" class="title">Register As New Dropship</h2>
 
-
-<img src="{{authProfile.picture}}" class="img-circle" width="100">
+<img src="{{authProfile.picture}}" class="img-circle profile-image" width="100">
 <hr>
 
 <div class="text-left">
 
 <form role="form">
 <div class="form-group" ng-form='agentform'>
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">First Name</span>
-    <input type="text" class="form-control" id="first_name" placeholder="John" ng-model="newUser.first_name" required>
-  </label>
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">Last Name</span>
-    <input type="text" class="form-control" id="last_name" placeholder="Doe" ng-model="newUser.last_name" required>
+
+  <label class="item item-input">
+    <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="newUser.first_name" required>
   </label>
 
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">Phone Number</span>
-    <input type="text" class="input-medium bfh-phone" placeholder="XXX-XXXXXXXX" id="phone_number" ng-model="newUser.phone_number" required data-country="US">
+  <label class="item item-input">
+    <input type="text" class="form-control" id="last_name" placeholder="Last Name" ng-model="newUser.last_name" required>
+  </label>
+
+  <label class="item item-input">
+    <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" id="phone_number" ng-model="newUser.phone_number" required data-country="US">
   </label>  
 
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">Email</span>
-    <input type="text" class="form-control" placeholder="john.doe@gmail.com" id="email" ng-model="newUser.email" >
+  <label class="item item-input">
+    <input type="text" class="form-control" placeholder="Email" id="email" ng-model="newUser.email" >
   </label>  
 
   <div class="list">
@@ -58,8 +55,7 @@
     </label>
 
 
-  <label class="item item-input item-stacked-label">
-    <span class="input-label">About Yourself</span>
+  <label class="item item-input">
     <textarea class="form-control" placeholder="Tell more about yourself (optional)" rows="4" ng-model="newUser.about"></textarea>
     </label>
 

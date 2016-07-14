@@ -4,15 +4,15 @@ var myApp = angular.module('sample.constant', [
 ]);
 
 myApp.constant("APP_CONSTANT",{
-        "EMAIL": "innovaseeds@gmail.com",
+        "EMAIL": "innovaseedssolutions@gmail.com",
         "NAME" : "DropBug",
         "TAGLINE" : "Something",
         "LOGO" : "img/logo.png",
+        "WEBSITE" : "http://faizuljasmi.wix.com/dropbug",
+        "FACEBOOK" : "https://www.facebook.com/DropBugs-966049216844847/",
         "LOGO_SMALL" : "img/logo_small.png",
         "LOGO_ONLY_SMALL" : "img/logo_only_small.png",
         "LOADER" : "img/loader.gif",
-        "FACEBOOK": "",
-        "INSTAGRAM": "",
 
 });
 

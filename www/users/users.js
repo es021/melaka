@@ -534,13 +534,14 @@ myApp.controller('PendingLinkController', function ($scope, $state, $stateParams
 });
 
 
-myApp.controller('MyProfileController', function ($scope, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+myApp.controller('MyProfileController', function ($scope, growl, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
   $scope.myProfile = null; 
+  $scope.oldProfile = null;
   $scope.myProfileLoad = false;
-
+  $scope.page = "show";
 
   function getObjectById(objectName, id)
   {
@@ -548,6 +549,7 @@ myApp.controller('MyProfileController', function ($scope, $state,UserService, Ba
     BackandService.getObjectById(objectName,id).then(function(result){
       console.log("Data from show object");
       $scope.myProfile = result.data;
+      $scope.oldProfile = result.data;
       if(result.status == 200)
       {
 
@@ -560,7 +562,62 @@ myApp.controller('MyProfileController', function ($scope, $state,UserService, Ba
     });
   }
 
-  getObjectById("users",$scope.userInSession.user_id);
+  $scope.submitEditProfile = function(){
+    $scope.oldProfile = $scope.myProfile;
+    console.log("submitEditProfile");
 
+    $scope.loadStatus = "Editing old record in database"
+    
+    $scope.myProfile.updated_at;
+    
+    //$scope.newProduct.user_id = $scope.userInSession.user_id;
+    console.log($scope.myProfile);
+
+    BackandService.
+    editUserById($scope.myProfile.id,
+                $scope.myProfile.first_name,
+                $scope.myProfile.last_name,
+                $scope.myProfile.state,
+                $scope.myProfile.email,
+                $scope.myProfile.phone_number,
+                $scope.myProfile.about,
+                $scope.myProfile.updated_at)
+    .then(function(result){
+
+      console.log("Result From Editing Profile");
+      console.log(result);      
+
+      if(result.status == 200)
+      {
+        growl.success("" ,{title: 'Successfully Edit Your Product!'});              
+        $scope.page = "show";
+      }
+      $scope.loading = false;
+
+    },function errorCallback(error){
+      PublicService.errorCallbackFunction(error,"Failed to edit your profile");
+    });
+
+  }
+
+  $scope.editProfile = function(){
+    $scope.page = "edit";
+  }
+
+  $scope.showProfile = function(){
+    $scope.page = "show";
+    $scope.myProfile = $scope.oldProfile;
+  }
+
+  console.log($scope.userInSession == null);
+  if($scope.userInSession != null)
+  {
+    getObjectById("users",$scope.userInSession.user_id);
+  }
+  else
+  {
+    console.log($scope.authProfile);
+    //growl.error("Supplier, Stockist or Dropship" ,{title: 'You have to Register First!'});    
+  }
 
 });

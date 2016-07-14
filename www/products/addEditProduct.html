@@ -37,13 +37,13 @@
           </div>
         </div>
   <label class="item item-input">
-    <span class="input-label">Product Name</span>
+    <span class="input-label small">Product Name</span>
     <input type="text" class="form-control" id="name" placeholder="Polo Shirt" ng-model="newProduct.name" required>
   </label>
 
   <div class="list">
     <label class="item item-input item-select">
-      <div class="input-label">Category</div>
+      <div class="input-label small">Category</div>
       <select ng-model="newProduct.category" required>
         <option selected>Cloth</option>
         <option>Shoe</option>
@@ -54,20 +54,201 @@
       </select>
     </label>
 
-  <label class="item item-input">
-    <span class="input-label">Price Per Unit (RM)</span>
-    <input type="number" placeholder="21" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.price_per_unit" required>
-  </label>  
+   <label class="item item-input">
+        <span class="input-label small">Quantity</span>
+        <input type="number" value="1000" min="0" step="10"  placeholder="100" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
+    </label>  
+
+    <label ng-if="!hasCustomPricing" class="item item-input">
+      <span class="input-label small">Price Per Unit (RM)</span>
+      <input type="number" placeholder="21" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.price_per_unit" required>
+    </label>  
+
+    <label class="item item-input">
+      <span class="input-label small">Description</span>
+      <textarea class="form-control" placeholder="Tell more about the new product (optional)" rows="4" ng-model="newProduct.description"></textarea>
+    </label>
+ 
+ </div>
+<!-- *************************************************************************************************************************** -->
+<!-- ***************************** CUSTOM PRICING ****************************************************************************** -->
+   
+   <li class="item item-toggle">
+     Custom Pricing {{hasCustomPricing}}?
+     <label class="toggle toggle-balanced">
+       <input type="checkbox" ng-disabled="loading" ng-model="hasCustomPricing" ng-change="toogleHasCustomPricing()" >
+       <div class="track">
+         <div class="handle"></div>
+       </div>
+     </label>
+  </li>
+
+<!-- ***************************** start hasCustomPricing ****************************************************************************** -->
+<div ng-if="hasCustomPricing">  
+    
+    <li ng-if="customPricingList.length > 0" class="item"> 
+
+      <table class="table table-condensed">
+        <thead>
+          <tr>
+            <th><strong>Quantity</strong></th>
+            <th><strong>Price Per Unit</strong></th>   
+            <th><strong>Action</strong></th>
+          </tr>
+          </thead>
+        <tbody>
+          <tr ng-repeat="custom in customPricingList">
+            <td>{{custom.from}} - {{custom.to}}</td>
+            <td>RM {{custom.price}}</td>
+            <td>       
+
+              <!-- edit for not the last -->
+              <a ng-if="(customPricingList.length-1) != custom.index" 
+              class="button button-small button-balanced ion-edit" 
+              ng-click="customPricingOperation('edit',custom.index)"></a>
+              
+              <!-- remove for the last only -->
+              <a ng-if="(customPricingList.length-1) == custom.index" 
+              class="button button-small button-assertive ion-close-round" 
+              ng-click="removeLastCustomPrice()"></a>
+
+            </td>
+          </tr>   
+        </tbody>
+     </table>
+    </li>
+
+    <div ng-if="customPricingDone">
+      <li ng-if="doneErrorMessageList.length > 0" class="item">
+        <strong class ="text-assertive">Opps.. There is something wrong!</strong>
+        <ul>
+          <li ng-repeat="message in doneErrorMessageList" >
+              <span class ="text-assertive">{{message}}</span>
+          </li>
+        </ul>
+      </li>
+
+      <li ng-if="doneErrorMessageList.length == 0" class="item">
+        <strong class ="text-balanced">The custom pricing looks good!</strong>
+      </li>
 
 
-  <label class="item item-input">
-    <span class="input-label">Description</span>
-    <textarea class="form-control" placeholder="Tell more about the new product (optional)" rows="4" ng-model="newProduct.description"></textarea>
-  </label>
 
-  </div>
-  
-  <div ng-if = "state=='addProduct'" class="text-center" ng-show="loading">
+    </div>
+
+    <li class="item" ng-if="!showCustomPricingForm && !showCustomPricingFormEdit && !showCustomPricingFormLast && !customPricingDone" >
+      <button ng-if="customPricingList.length == 0" class="button button-block button-balanced" ng-click="customPricingOperation('add',0)">Add New Pricing</button>
+      
+      <div class="button-bar" ng-if="customPricingList.length != 0">
+        <a class="button button-small button-balanced" ng-click="customPricingOperation('add',0)">
+        Add New Pricing</a> 
+        <a class="button button-small button-positive" ng-click="customPricingOperation('addLast',0)">Add Last Pricing</a>
+      </div>
+    </li>
+
+  <!-- ***************************** showCustomPricingForm ****************************************************************************** -->
+    <div ng-if="showCustomPricingForm" >
+      <form role="form" accept="image/gif, image/jpeg">
+      <div class="form-group" ng-form='customPricingForm'>
+
+        <label class="item item-input">
+          <span class="input-label small">From</span>
+          <input ng-disabled="true" type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.from" required>
+        </label>  
+        
+        <label class="item item-input">
+          <span class="input-label small">To</span>
+          <input type="number" placeholder="100" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.to" required>
+        </label>
+
+        <label class="item item-input">
+          <span class="input-label small">Price (RM)</span>
+          <input type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.price" required>
+        </label>    
+      
+      <li class="item">
+        <div class="button-bar">
+          <a ng-disabled="!customPricingForm.$valid" class="button button-small button-balanced" ng-click="addCustomPricing()">Add Pricing</a> 
+          <a class="button button-small button-assertive" ng-click="customPricingOperation('cancel',0)">Cancel</a>
+        </div>
+      </li>
+
+      </li>
+      </div>
+      </form>
+    </div>
+    
+  <!-- ***************************** showCustomPricingFormLast ****************************************************************************** -->
+    <div ng-if="showCustomPricingFormLast" >
+      <form role="form" accept="image/gif, image/jpeg">
+      <div class="form-group" ng-form='customPricingForm'>
+
+        <label class="item item-input">
+          <span class="input-label small">From</span>
+          <input ng-disabled="true" type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.from" required>
+        </label>  
+        
+        <label class="item item-input">
+          <span class="input-label small">To</span>
+          <input ng-disabled="true" type="text" placeholder="Infinity" ng-model="newCustomPricing.to" required>
+        </label>
+
+        <label class="item item-input">
+          <span class="input-label small">Price (RM)</span>
+          <input type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.price" required>
+        </label>    
+      
+      <li class="item">
+        <div class="button-bar">
+          <a ng-disabled="!customPricingForm.$valid" class="button button-small button-balanced" ng-click="addCustomPricing()">Add Pricing</a> 
+          <a class="button button-small button-assertive" ng-click="customPricingOperation('cancel',0)">Cancel</a>
+        </div>
+      </li>
+
+      </li>
+      </div>
+      </form>
+    </div>
+    
+  <!-- ***************************** showCustomPricingFormEdit ****************************************************************************** -->
+    <div ng-if="showCustomPricingFormEdit" >
+      <form role="form" accept="image/gif, image/jpeg">
+      <div class="form-group" ng-form='customPricingFormEdit'>
+
+        <label class="item item-input">
+          <span class="input-label small">From</span>
+          <input type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.from" required>
+        </label>  
+        
+        <label ng-if="!showCustomPricingFormLast" class="item item-input">
+          <span class="input-label small">To</span>
+          <input type="number" placeholder="100" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.to" required>
+        </label>
+   
+        <label ng-if="showCustomPricingFormLast" class="item item-input">
+          <span class="input-label small">To</span>
+          <input type="text" ng-model="tempCustomPricing.to" required>
+        </label>
+
+        <label class="item item-input">
+          <span class="input-label small">Price (RM)</span>
+          <input type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.price" required>
+        </label>    
+
+      <li class="item">
+        <div class="button-bar">
+          <a ng-disabled="!customPricingFormEdit.$valid" class="button button-small button-balanced" ng-click="editCustomPricing()">Edit Pricing</a> 
+          <a class="button button-small button-assertive" ng-click="customPricingOperation('cancel',0)">Cancel</a>
+        </div>
+      </li>
+      </div>
+      </form>
+    </div>
+
+</div>
+<!-- ***************************** end hasCustomPricing ****************************************************************************** -->
+
+    <div ng-if = "state=='addProduct'" class="text-center" ng-show="loading">
       Adding New Product<br>
       {{loadStatus}} <br>
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
@@ -79,14 +260,26 @@
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
 
-  <button ng-if = "state=='addProduct'" ng-disabled="!productform.$valid || loading" 
-  type="submit" class="button button-block button-assertive" ng-click="createNewProduct()">Add Product</button>
+  <button ng-if = "state=='addProduct'" 
+  ng-disabled="!productform.$valid || loading || 
+  (!customPricingDone && hasCustomPricing) || 
+  (customPricingDone && hasCustomPricing && doneErrorMessageList.length > 0)"
+
+  class="button button-block button-positive" ng-click="createNewProduct()">Add Product</button>
   
-  <button ng-if = "state=='editProduct'" ng-disabled="!productform.$valid || loading" 
-  type="submit" class="button button-block button-assertive" ng-click="editProduct()">Edit Product</button>
+  <button ng-if = "state=='editProduct'" 
+  ng-disabled="!productform.$valid || loading || 
+  (!customPricingDone && hasCustomPricing) || 
+  (customPricingDone && hasCustomPricing && doneErrorMessageList.length > 0)"
+  class="button button-block button-positive" ng-click="editProduct()">Edit Product</button>
 
 </div>
 </form>
+
+
+    
+
+
 </div>
 <hr>
 </p>

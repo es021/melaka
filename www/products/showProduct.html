@@ -8,18 +8,12 @@
 
 <!-- ***************************************************************************************************************** -->
   <!-- Product Tabs For Supplier -->
-  <div ng-if="authenticated" class="item tabs">
-    <a ng-show="!loading" class="tab-item" ng-click="editProduct()">
-      Edit
-    </a>
-    <div ng-show="loading">
-    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
-    </div>
-    <a ng-show="!loading" class="tab-item" data-toggle="tooltip" 
-    title="Note that you cannot delete product that is already associated with any active listing or transactions!" 
-    ng-click="comfirmDeleteProduct()">
-      Delete
-    </a>
+  <div ng-if="authenticated" class="text-center">
+    <br>
+    <button ng-controller="MyProductController" class="button button-small button-balanced icon-left ion-edit" 
+    ng-click="editProduct(showObject.id,userInSession.user_id)">Edit Product</button>
+    <button class="button button-small button-assertive icon-left ion-edit" ng-click="comfirmDeleteProduct()">Delete</button>
+    <br><br>
   </div>
 
 <!-- ***************************************************************************************************************** -->
@@ -43,8 +37,6 @@
     </div>
     <h3><strong>Price Per Unit</strong> | RM {{showObject.price_per_unit}}</h3>
     <h3><strong>Category</strong> | {{showObject.category}}</h3>
-    
-    <hr>
     <h3><strong>Description</strong></h3>
     <p ng-if="showObject.description == ''">
 		There is no description for this product

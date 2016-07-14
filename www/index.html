@@ -39,6 +39,7 @@
     <script type="text/javascript" src="transactions/transactions.js"></script>
     <script type="text/javascript" src="products/products.js"></script>
     <script type="text/javascript" src="contact/contact.js"></script>
+    
 
     <!-- Auth0 Lock -->
     <!--<script src="lib/auth0-lock/build/auth0-lock.js"></script>-->
@@ -85,10 +86,10 @@
       <!--HEADER-->
       
         <div class="bar bar-header bar-stable">
+
           <div id="header_logout" style="display:none">
             <button class="button button-icon icon ion-navicon" ng-click="toggleSideMenuLeft()"></button>
             <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
-          
 
             <button class="button button-icon icon ion-person" ng-click="toggleSideMenuRight()"></button>
           </div>
@@ -98,6 +99,12 @@
             <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
             <button class="button button-clear button-assertive" ng-click="login()">Login</button>
           </div>
+
+          <div id="header_newUser" style="display:none">
+            <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
+            <button class="button button-icon icon ion-person" ng-click="toggleSideMenuRight()"></button>
+          </div>
+
       </div>
       
       <div growl=""></div>
@@ -141,10 +148,13 @@
               </span>
             </a>  
 
-            <a class="item item-icon-left" ng-click="why()">
-                <i class="icon ion-help-circled"></i>
-                    Why {{APP_CONSTANT.NAME}}
-              </a>
+            <a class="item item-icon-left" target="_blank" ng-href="{{APP_CONSTANT.WEBSITE}}">
+              <i class="icon ion-help-circled" ng-click="about()"></i>
+                Why {{APP_CONSTANT.NAME}}
+              <span class="item-note">   
+              </span>
+            </a>  
+
 
             <a class="item item-icon-left" ng-click="contact()">
                 <i class="icon ion-email"></i>
@@ -279,8 +289,8 @@
               <i class="icon ion-home" ng-click="home()"></i>
                 <div>Home</div>
             </a>
-            <a class="tab-item">
-              <i class="icon ion-help-circled" ng-click="why()"></i>
+            <a class="tab-item"  target="_blank" ng-href="{{APP_CONSTANT.WEBSITE}}">
+              <i class="icon ion-help-circled"></i>
                   Why {{APP_CONSTANT.NAME}}
             </a>
 
@@ -288,6 +298,8 @@
               <i class="icon ion-email" ng-click="contact()"></i>
                 Contact Us
             </a>
+            <br>
+            
           </div>
 
 

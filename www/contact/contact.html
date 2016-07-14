@@ -1,15 +1,17 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 
-<h2 class="title"><small>Follow Us On</small></h2>
+<h2 class="subtitle">Follow Us</h2>
 <a class="button button-small button-positive icon-left ion-social-facebook" 
-ng-click="goTo('facebook')">{{APP_CONSTANT.NAME}}</a>
+target="_blank" ng-href="{{APP_CONSTANT.FACEBOOK}}">{{APP_CONSTANT.NAME}}</a>
 
-<a class="button button-small button-dark icon-left ion-social-instagram-outline" 
-ng-click="goTo('instagram')">{{APP_CONSTANT.NAME}}</a>
+
+<a class="button button-small button-assertive icon-left ion-android-wifi" 
+target="_blank" ng-href="{{APP_CONSTANT.WEBSITE}}">Website</a>
 
 <hr>
-<h2 class="title"><small>Send Us Message</small></h2>
+<h2 class="subtitle">Send Us Message</h2>
+<h4 class="subtitle">{{APP_CONSTANT.EMAIL}}</h4>
 <div class="text-left">
   <form role="form">
   <div class="form-group" ng-form='contactform'>

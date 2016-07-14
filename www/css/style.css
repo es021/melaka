@@ -17,14 +17,6 @@ div.sub-text{
 
 }
 
-.all-content{
-    background: url(../img/background1.jpg);
-    background-repeat: no-repeat;
-    background-size: contain;
-    background-position: center;
-}
-
-
 .profile .image {
   border-radius: 50%;
   bottom: 50%;
@@ -35,6 +27,19 @@ div.sub-text{
   border: 2px solid rgba(255, 255, 255, 0.5);
 
 }
+
+.profile-image {
+  border-radius: 50%;
+  bottom: 50%;
+  left: 50%;
+  max-width: 100px;
+  opacity: 1;
+  box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+
+}
+
+
 .profile h3{
   margin: 0 0 5px;
   font-weight: 250;
@@ -82,20 +87,81 @@ div.sub-text{
  color : #444;
 }
 
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
 .scroll-content{    
-  background:url(../img/background2.jpg) no-repeat;
+  background:url(../img/background3_small.jpg) no-repeat;
   background-size: cover;
   height:100%;
 }
 
 ion-side-menu{
-  background:url(../img/background2.jpg) repeat;
+  background:url(../img/background3_small.jpg) repeat;
   background-size: cover;
   height:40px;
   float:right;
   margin:0 0 0 5px;
 }
+
+@media only screen 
+and (min-width : 321px) {
+  .scroll-content{    
+    background:url(../img/background3_small.jpg) no-repeat;
+    background-size: cover;
+    height:100%;
+  }
+
+  ion-side-menu{
+    background:url(../img/background3_small.jpg) repeat;
+    background-size: cover;
+    height:40px;
+    float:right;
+    margin:0 0 0 5px;
+  }
+}
+
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen 
+and (min-width : 768px) {
+  .scroll-content{    
+    background:url(../img/background3_medium.jpg) no-repeat;
+    background-size: cover;
+    height:100%;
+  }
+
+  ion-side-menu{
+    background:url(../img/background3_medium.jpg) repeat;
+    background-size: cover;
+    height:40px;
+    float:right;
+    margin:0 0 0 5px;
+  }
+}
+
+/* Desktops and laptops ----------- */
+@media only screen 
+and (min-width : 1224px) {
+    .scroll-content{    
+    background:url(../img/background3_high.jpg) no-repeat;
+    background-size: cover;
+    height:100%;
+  }
+
+  ion-side-menu{
+    background:url(../img/background3_high.jpg) repeat;
+    background-size: cover;
+    height:40px;
+    float:right;
+    margin:0 0 0 5px;
+  }
+}
+
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+
 
 .item{
   opacity: 0.80;
@@ -110,12 +176,35 @@ ion-side-menu{
   opacity: 0.85;
 }
 
+#mySpinner{
+  opacity: 0.85;
+}
+
 .title {
   color: white;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.subtitle {
+  color: white;
+  text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
 }
 
 .link {
   color: white;
+}
+
+.link:hover {
+  color: red;
+  opacity: 0.70;
+  text-decoration: none;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.button:hover {
+  opacity: 0.70;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
 }
 
 span > .input-label {

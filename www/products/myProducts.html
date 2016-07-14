@@ -31,7 +31,7 @@
 		<!-- ******************************************************************************************************************************* -->
         <!--EXPAND ************************************************************************************************************************* -->
           <ion-item ng-show="isItemShown(item)">
-          <div class = "text-center">
+          <div class = "text-left">
 			    	<h2 ><strong>{{item.name}}</strong></h2>
 					<h4>
 						Last Update {{timeAgo}}
@@ -40,15 +40,10 @@
 					<div ng-if="authenticated">
 						<br>
 						<button class="button button-small button-balanced icon-left ion-edit" ng-click="editProduct(showItem.id,showItem.user_id)">Edit Product</button>
+						<button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id)">Show More</button>
 					</div>
 					<br>
-
-					<img src="{{showItem.picture}}" class="full-image image-fit">
-
-
-				
-				<hr>			
-
+			
 			    <!--- TRANSACTION INFO ************************************************************************************************************* -->
 				    <h4><strong>Price Per Unit</strong> | RM {{showItem.price_per_unit}}</h4>
 				    <h4><strong>Category</strong> | {{showItem.category}}</h4>
