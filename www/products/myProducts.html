@@ -13,43 +13,42 @@
 	    	<a class="item item-avatar item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
 			    <img src="{{item.picture}}">
 			    <h2>{{item.name}}</h2>
-				<p>RM {{item.price_per_unit}} / unit</p>
+ 				
+ 				<!--- QUANTITY ****************************************************************************************************** -->
+      			<span ng-if="item.quantity > 0" class="label label-success">{{item.quantity}} available</span>
+      			<span ng-if="item.quantity <= 0 || item.quantity == null" class="label label-danger">Out Of Stock</span>
+
 				<span class="badge">{{item.category}}</span>
 		  
-		<!--
-		    <div ng-if="stateName=='myActiveListing'">
-		   	<h5 class="text-success" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
-		      Payment Comfirmed
-		    </h5>
-			</div>
-		-->
-
-		    <!--<i class="icon ion-ios-telephone-outline"></i>-->
 		  	</a>
 		
-		<!-- ******************************************************************************************************************************* -->
-		<!-- ******************************************************************************************************************************* -->
+		<!-- ******************************************************************************************************************** -->
+		<!-- ******************************************************************************************************************** -->
         <!--EXPAND ************************************************************************************************************************* -->
           <ion-item ng-show="isItemShown(item)">
           <div class = "text-left">
-			    	<h2 ><strong>{{item.name}}</strong></h2>
-					<h4>
-						Last Update {{timeAgo}}
-					</h4>
 
-					<div ng-if="authenticated">
-						<br>
-						<button class="button button-small button-balanced icon-left ion-edit" ng-click="editProduct(showItem.id,showItem.user_id)">Edit Product</button>
-						<button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id)">Show More</button>
-					</div>
+	    	<h2 ><strong>{{item.name}}</strong></h2>
+			<h4>
+				Last Update {{timeAgo}}
+			</h4>
+
+		    <!--- BUTTON ********************************************************************************************************** -->
+			<div ng-if="authenticated">
+				<br>
+				<button class="button button-small button-balanced icon-left ion-edit" ng-click="editProduct(showItem.id,showItem.user_id)">Edit Product</button>
+				<button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id)">Show More</button>
+			</div>
+			<br>
+				<div class="small item item-body">
+					<span class="glyphicon glyphicon-tag" aria-hidden="true"> </span>
+				   	<strong ng-if="item.custom_pricing == '' || item.custom_pricing == null" > RM {{item.price_per_unit}} / unit</strong>
+					<strong ng-if="item.custom_pricing != null && item.price_per_unit == 0" > Custom Price</strong>
 					<br>
-			
-			    <!--- TRANSACTION INFO ************************************************************************************************************* -->
-				    <h4><strong>Price Per Unit</strong> | RM {{showItem.price_per_unit}}</h4>
-				    <h4><strong>Category</strong> | {{showItem.category}}</h4>
-				    <h4 ng-if = "showItem.description != null"><strong>Description</strong> | {{showItem.description}}</h4>
-
+				   	{{item.description}}
 				</div>
+
+			</div>
           </ion-item>
         </div>
 

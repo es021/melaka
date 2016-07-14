@@ -135,6 +135,7 @@ myApp.controller('MyProductController', function(auth,PublicService,growl,$locat
     else 
     {
       $scope.showItem = item;
+      console.log($scope.showItem);
       $scope.timeAgo = PublicService.getAgoTime(item.updated_at);
     }
 
@@ -435,6 +436,7 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
 
     if(operation == 'add')
     {
+      console.log($scope.customPricingList);
       $scope.showCustomPricingForm = true;
       $scope.showCustomPricingFormEdit = false;
       $scope.showCustomPricingFormLast = false;
@@ -463,9 +465,17 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
 
   $scope.removeLastCustomPrice = function()
   {
-    $scope.customPricingList.pop();
+    
+    console.log($scope.index);
+    if($scope.index == 0)
+    {
+       $scope.index = $scope.customPricingList.length;
+    }
+    
     $scope.index --;
 
+    $scope.customPricingList.pop();
+    
     var newFrom = 0;
     if($scope.customPricingList.length > 0)
     {
@@ -743,6 +753,7 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
                 $scope.newProduct.price_per_unit,
                 $scope.newProduct.description,
                 $scope.newProduct.picture,
+                $scope.newProduct.quantity,
                 $scope.newProduct.custom_pricing,
                 $scope.newProduct.updated_at)
     .then(function(result){

@@ -330,7 +330,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
-  editProductById = function (id,name,category,price_per_unit,description,picture,custom_pricing, updated_at){
+  editProductById = function (id,name,category,price_per_unit,description,picture,quantity,custom_pricing, updated_at){
     return $http ({
         method: 'POST',
         url: Backand.getApiUrl() + '/1/query/data/editProductById',
@@ -342,6 +342,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
             price_per_unit : price_per_unit,
             description : description,
             picture : picture,
+            quantity : quantity,
             custom_pricing : custom_pricing,
             updated_at : updated_at
           }

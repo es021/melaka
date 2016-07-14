@@ -56,7 +56,7 @@
 
    <label class="item item-input">
         <span class="input-label small">Quantity</span>
-        <input type="number" value="1000" min="0" step="10"  placeholder="100" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
+      <input type="number" placeholder="100" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.quantity" required>
     </label>  
 
     <label ng-if="!hasCustomPricing" class="item item-input">
@@ -74,7 +74,7 @@
 <!-- ***************************** CUSTOM PRICING ****************************************************************************** -->
    
    <li class="item item-toggle">
-     Custom Pricing {{hasCustomPricing}}?
+     Custom Pricing ?
      <label class="toggle toggle-balanced">
        <input type="checkbox" ng-disabled="loading" ng-model="hasCustomPricing" ng-change="toogleHasCustomPricing()" >
        <div class="track">
