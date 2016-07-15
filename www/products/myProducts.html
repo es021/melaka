@@ -34,9 +34,12 @@
 			</h4>
 
 		    <!--- BUTTON ********************************************************************************************************** -->
-			<div ng-if="authenticated">
+			<div>
 				<br>
-				<button class="button button-small button-balanced icon-left ion-edit" ng-click="editProduct(showItem.id,showItem.user_id)">Edit Product</button>
+				<span ng-if="authenticated">
+					<button class="button button-small button-balanced icon-left ion-edit" 
+					ng-click="editProduct(showItem.id,showItem.user_id)">Edit Product</button>
+				</span>
 				<button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id)">Show More</button>
 			</div>
 			<br>

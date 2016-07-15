@@ -1,6 +1,6 @@
 {
   "name": "HelloAndroid",
-  "app_id": "",
+  "app_id": "8b661ace",
   "gulpStartupTasks": [
     "sass",
     "watch"

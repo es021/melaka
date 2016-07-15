@@ -10,7 +10,7 @@
   <!-- Product Tabs For Supplier -->
   <div ng-if="authenticated" class="text-center">
     <br>
-    <button ng-controller="MyProductController" class="button button-small button-balanced icon-left ion-edit" 
+    <button class="button button-small button-balanced icon-left ion-edit" 
     ng-click="editProduct(showObject.id,userInSession.user_id)">Edit Product</button>
     <button class="button button-small button-assertive icon-left ion-edit" ng-click="comfirmDeleteProduct()">Delete</button>
     <br><br>
@@ -29,21 +29,59 @@
 
 <!-- ***************************************************************************************************************** -->
 <!-- ***************************** INFO ****************************************************************************** -->
-  <div ng-if="show=='info'" class="item item-body">
-    <div class="text-center">
-      
-        <img src="{{showObject.picture}}" class="full-image image-fit">
+  <div ng-if="show=='info'" class="item item-body text-center">
+          <h2><strong>{{showObject.name}}</strong><br><span class="small">Last Updated {{lastUpdatedAgo}}<span></h2>          
+            
+            <span ng-if="showObject.quantity > 0" class="label label-success">{{showObject.quantity}} available</span>
+            <span ng-if="showObject.quantity <= 0 || showObject.quantity == null" class="label label-danger">Out Of Stock</span>
+            
+            <br><br>
+            
+            <img src="{{showObject.picture}}" class="full-image image-fit">
+            
+            <br><br>
   
-    </div>
-    <h3><strong>Price Per Unit</strong> | RM {{showObject.price_per_unit}}</h3>
-    <h3><strong>Category</strong> | {{showObject.category}}</h3>
-    <h3><strong>Description</strong></h3>
-    <p ng-if="showObject.description == ''">
-		There is no description for this product
-    </p>    
-    <p ng-if="showObject.description != ''">
-		{{showObject.description}}
-    </p>
+            <span class="info-with-fa">
+                <li class="fa fa-suitcase" >
+                </li>
+                {{showObject.category}}
+            </span> 
+            
+            <br>
+            
+            <span class="info-with-fa" ng-if="!hasCustomPricing">
+                <li class="fa fa-tag" >
+                </li>
+                RM {{showObject.price_per_unit}} / unit
+                <br><br>
+            </span> 
+
+            <span class="info-with-fa" ng-if="hasCustomPricing">
+                <br>
+                <li class="fa fa-tag" >
+                </li>
+                <u>Custom Pricing</u>
+
+            <div>
+              <ul class="list-inline small text-center">
+                <li ng-repeat="custom in customPricingList">
+                  <strong>{{custom.from}}-{{custom.to}}</strong>
+                  <br>
+                  <span class="text-muted">RM {{custom.price}}</span>
+
+                </li>
+              </ul>
+            </div>
+            </span>
+
+          <div class="small item item-body text-muted">
+            <span ng-if="showObject.description == ''">
+            There is no description for this product
+            </span>    
+            <span ng-if="showObject.description != ''">
+            {{showObject.description}}
+            </span>          
+          </div>        
   </div>
 
 <!-- ********************************************************************************************************************** -->
@@ -96,6 +134,11 @@
 
   </div>
 
+  <!-- ********************************************************************************************************************** -->
+  <!-- **************************** VISIT SUPPLIER **************************************************************************** -->
+  <div class="item text-center">
+    <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showUser(showObject.user_id)">Visit Supplier</button>
+  </div>
 
 </div>
 

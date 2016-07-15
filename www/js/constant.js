@@ -5,15 +5,15 @@ var myApp = angular.module('sample.constant', [
 
 myApp.constant("APP_CONSTANT",{
         "EMAIL": "innovaseedssolutions@gmail.com",
+        "COMPANY": "InnovaSeeds Solution",
         "NAME" : "DropBug",
-        "TAGLINE" : "Something",
+        "TAGLINE" : "Your One-Stop Bussiness App",
         "LOGO" : "img/logo.png",
         "WEBSITE" : "http://faizuljasmi.wix.com/dropbug",
-        "FACEBOOK" : "https://www.facebook.com/DropBugs-966049216844847/",
+        "FACEBOOK" : "https://www.facebook.com/DropBug-895228623915581/",
         "LOGO_SMALL" : "img/logo_small.png",
         "LOGO_ONLY_SMALL" : "img/logo_only_small.png",
-        "LOADER" : "img/loader.gif",
-
+        "LOADER" : "img/loader.gif"
 });
 
 myApp.constant("USER_LINK_TYPE", {
@@ -74,3 +74,76 @@ myApp.constant("AUTH_CONSTANT",{
     "AUTH0_DB_CONNECTION_NAME" : 'Username-Password-Authentication',
     "CALLBACK_URL" : "localhost:8100"
 });
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+myApp.constant("TEAM_CONSTANT", 
+    {"member":[
+        {
+            "first_name":"",
+            "last_name":"",
+            "email":"@gmail.com",
+            "role":"",
+            "facebook":"",
+            "linkedin":"",
+            "twitter":"",
+            "picture":"",
+            "phone":"",
+            "description":""
+        }, 
+        
+        {
+            "first_name":"",
+            "last_name":"",
+            "email":"@gmail.com",
+            "role":"",
+            "facebook":"",
+            "linkedin":"",
+            "twitter":"",
+            "picture":"",
+            "phone":"",            
+            "description":""
+        }, 
+      
+        {
+            "first_name":"",
+            "last_name":"",
+            "email":"@gmail.com",
+            "role":"",
+            "facebook":"",
+            "linkedin":"",
+            "twitter":"",
+            "picture":"",
+            "phone":"",  
+            "description":""
+        }, 
+      
+        {
+            "first_name":"",
+            "last_name":"",
+            "email":"@gmail.com",
+            "role":"",
+            "facebook":"",
+            "linkedin":"",
+            "twitter":"",
+            "picture":"",
+            "phone":"",  
+            "description":""
+        }, 
+      
+        {
+            "first_name":"Wan Zulsarhan",
+            "last_name":"Wan Shaari",
+            "email":"zulsarhan.shaari@gmail.com",
+            "role":"Developer",
+            "facebook":"https://www.facebook.com/wan.zulsarhan",
+            "linkedin":"https://www.linkedin.com/in/wan-zulsarhan-wan-shaari-3b0569110",
+            "twitter":"https://twitter.com/es021",
+            "picture":"img/image_profile/zul.jpg",
+            "phone":"+1 (515) 708-3630",  
+            "description":"Senior in Software Engineering at Iowa State University."
+        }
+    ]}
+);

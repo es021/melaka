@@ -17,33 +17,17 @@ myApp.config(function($stateProvider) {
 
 });
 
-myApp.controller('ContactController', function($location,growl, $scope, $state, APP_CONSTANT){
+myApp.controller('ContactController', function($location,growl, $scope, $state, APP_CONSTANT,TEAM_CONSTANT){
   
-  $scope.contact = {};
+  $scope.TEAM_CONSTANT = TEAM_CONSTANT;
+  console.log(TEAM_CONSTANT);
+  
+  $scope.showItem = null;
+
 
   $scope.submit = function ()
   {
-    console.log($scope.contact.email);
-    console.log($scope.contact.message);
-    
-    var sender = $scope.contact.email
-    if($scope.contact.email == null || $scope.contact.email == "")
-    {
-      sender = "Anonymous";
-    }
 
-    var subject = APP_CONSTANT.NAME+" : Message from "+sender; 
-    var body = $scope.contact.message;
-    
-    /*
-    window.location.href('mailto:'
-                +APP_CONSTANT.EMAIL
-                +'?subject='+subject
-                +'&body='+body
-                );
-    */
-
-    successCallback();
   }
 
   function successCallback(){
@@ -51,20 +35,25 @@ myApp.controller('ContactController', function($location,growl, $scope, $state, 
     $state.go("home");
   }
 
-  $scope.sendEmail = function(){
-    console.log("sending email");
-       $.ajax({
-          url:'php/sendEmail.php',
-          complete: function (response) {
-              console.log(response);
-              //console.log(response.responseText);
-          },
-          error: function () {
-              console.log("Error");
-          }
-      });
-      return false;
-  }
+
+  $scope.toggleItem = function(item) {
+    
+    if ($scope.isItemShown(item)) 
+    {
+      $scope.showItem = null;
+    } 
+    else 
+    {
+      $scope.showItem = item;
+      console.log($scope.showItem);
+    }
+
+  };
+
+  $scope.isItemShown = function(item) {
+    return $scope.showItem === item;
+  };
+
 
 
 });

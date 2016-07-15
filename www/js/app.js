@@ -60,7 +60,13 @@ myApp.config( function ($urlRouterProvider, $httpProvider, $stateProvider, authP
 
   BackandProvider.setAppName('wzs21testapp');
   BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
-  $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+  
+  //BackandProvider.setAppName('dropbug');
+  //BackandProvider.setAnonymousToken('5ee54b6c-f992-4a78-b789-0a36721791c7');
+  
+  console.log("From app config");
+  
+  //$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 });
 
 

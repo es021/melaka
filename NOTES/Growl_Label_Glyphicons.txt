@@ -1,0 +1,9 @@
+
+growl.warning('This is warning message.',{title: 'Warning!'});
+growl.error('This is error message.',{title: 'Error!'});
+growl.success('This is success message.',{title: 'Success!'});
+growl.info('This is an info message.',{title: 'Info!'});
+
+<span class="glyphicon glyphicon-tag" aria-hidden="true"> </span>
+
+<span class="label label-success"></span>

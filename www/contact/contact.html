@@ -1,32 +1,70 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 
-<h2 class="subtitle">Follow Us</h2>
-<a class="button button-small button-positive icon-left ion-social-facebook" 
-target="_blank" ng-href="{{APP_CONSTANT.FACEBOOK}}">{{APP_CONSTANT.NAME}}</a>
+<h2 class="title">The Team</h2>
+
+<ion-list class="text-left">
+<div ng-repeat="member in TEAM_CONSTANT.member">
+    <a class="item item-avatar" ng-click="toggleItem(member)" ng-class="{active: isItemShown(member)}">
+      <img src="{{member.picture}}">
+      <h2>{{member.first_name}}</h2>      
+      <span class="label label-success">{{member.role}}</span>
+    </a>
+
+       <ion-item ng-show="isItemShown(member)">
+        <div class = "text-center">
+
+          <h2><strong>{{showItem.first_name}} {{member.last_name}}</strong><br><span="text-muted">{{member.role}}<span></h2>          
+          <br>
+
+          <div class="small item item-body">
+            <span class="text-muted">{{member.description}}</span>
+            
+            <hr>
+            
+            <span class="fa fa-envelope" aria-hidden="true" style="padding-right:10px;"> </span>{{member.email}}<br>
+            <span class="fa fa-phone" aria-hidden="true" style="padding-right:10px;"> </span>{{member.phone}}<br>
+          </div>
+
+          <div id="social">
+            <a class="facebookBtn smGlobalBtn" target="_blank" ng-href="{{member.facebook}}"></a>
+            <a class="twitterBtn smGlobalBtn" target="_blank" ng-href="{{member.twitter}}"></a>
+            <a class="linkedinBtn smGlobalBtn" target="_blank" ng-href="{{member.linkedin}}"></a>
+
+            <!--
+            <a class="linkedinBtn smGlobalBtn" href="social-media-profile-url" ></a>
+            <a class="googleplusBtn smGlobalBtn" href="social-media-profile-url" ></a>
+            <a class="linkedinBtn smGlobalBtn" href="social-media-profile-url" ></a>
+            <a class="pinterestBtn smGlobalBtn" href="social-media-profile-url" ></a>
+            <a class="tumblrBtn smGlobalBtn" href="social-media-profile-url" ></a>
+            <a class="rssBtn smGlobalBtn" href="social-media-profile-url" ></a>
+            -->
+          </div>
 
 
-<a class="button button-small button-assertive icon-left ion-android-wifi" 
-target="_blank" ng-href="{{APP_CONSTANT.WEBSITE}}">Website</a>
+        </div>
+      </ion-item>
+
+</div>
+</ion-list>
+
 
 <hr>
-<h2 class="subtitle">Send Us Message</h2>
+<h2 class="title">Send Us Message</h2>
 <h4 class="subtitle">{{APP_CONSTANT.EMAIL}}</h4>
-<div class="text-left">
-  <form role="form">
-  <div class="form-group" ng-form='contactform'>
-    <label class="item item-input">
-        <input type="email" class="form-control" id="email" placeholder="Your Email (optional)" ng-model="contact.email">
-    </label>
-    <br>
-    <label class="item item-input">
-        <textarea class="form-control" placeholder="Your message goes here" rows="4" ng-model="contact.message" required></textarea>
-    </label>
+<div class="card text-center">
+  <div class="item text-left">
+    <form role="form">
+    <div class="form-group" ng-form='contactform'>
+          <input type="email" class="form-control" id="email" placeholder=" Your Email (optional)" ng-model="contact.email">
+          <br>
+          <textarea class="form-control" placeholder="Your message goes here" rows="4" ng-model="contact.message" required></textarea>
 
-    <button ng-disabled="!contactform.$valid" type="submit" class="button button-block button-assertive" ng-click="submit()">Submit</button>
+      <button ng-disabled="!contactform.$valid" type="submit" class="button button-block button-assertive" ng-click="submit()">Submit</button>
 
+    </div>
+    </form>
   </div>
-  </form>
 </div>
 </p>
 

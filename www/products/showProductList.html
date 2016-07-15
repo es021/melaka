@@ -2,10 +2,21 @@
 <ion-content class="text-center has-header has-footer padding">
 <p>
 
-<h2 class="title">Product List</h2>
+<div ng-if="!isMyProduct">
+	<a class="link" href="" ng-click="refresh()">
+		<h2>Products List</h2>
+	</a>
+	<a href="" class="link small" ng-click="showUser(userObject.id)">by {{userObject.user_name}}</a>
+</div>
 
-<a href="" class="link small" ng-click="showUser(userObject.id)">by {{userObject.user_name}}</a>
-<br><br>
+<div ng-if="isMyProduct">
+	<a class="link" href="" ng-click="refresh()">
+		<h2>My Products</h2>
+	</a>
+	<a href="" class="link small" ng-click="addProduct()">Add New Product</a>
+</div>
+
+<br>
       <!-- ******************************************************************************************************************************* -->
       <ion-list class="text-left">
         <div ng-repeat="item in productList">
@@ -18,16 +29,6 @@
       			<span ng-if="item.quantity <= 0 || item.quantity == null" class="label label-danger">Out Of Stock</span>
 
 				<span class="badge">{{item.category}}</span>
-		  
-		<!--
-		    <div ng-if="stateName=='myActiveListing'">
-		   	<h5 class="text-success" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
-		      Payment Comfirmed
-		    </h5>
-			</div>
-		-->
-
-		    <!--<i class="icon ion-ios-telephone-outline"></i>-->
 		  	</a>
 		
 		<!-- ******************************************************************************************************************************* -->
@@ -35,15 +36,22 @@
         <!--EXPAND ************************************************************************************************************************* -->
           <ion-item ng-show="isItemShown(item)">
           	<div class = "text-left">
-			    	<h2 ><strong>{{item.name}}</strong></h2>
-					<h4>
-						Last Update {{timeAgo}}
-					</h4>
+			    	<h2 ><strong>{{item.name}}</strong><br><span class="small">Last Updated {{timeAgo}}<span></h2>
+	
+				<div>
+					<br>
+					<span ng-if="linked">	
+						<button class="button button-small button-balanced icon-left ion-paper-airplane" 
+						ng-click="showProduct(showItem.id,'request')">Request Product</button>
+					</span>
+					<span ng-if="isMyProduct">	
+						<button class="button button-small button-balanced icon-left ion-edit" 
+					ng-click="editProduct(showItem.id,showItem.user_id)">Edit Product</button>
+					</span>
 
-					<div ng-if="linked">
-						<br>
-						<button class="button button-small button-balanced icon-left ion-paper-airplane" ng-click="showProduct(showItem.id,'request')">Request Product</button>
-					</div>
+
+					<button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id,'info')">Show More</button>
+				</div>
 					<br>
 					
 			    <!--- TRANSACTION INFO ************************************************************************************************************* -->

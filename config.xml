@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <widget id="com.ionicframework.helloandroid944012" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-  <name>InnovaSeeds</name>
+  <name>DropBug</name>
   <description>
-        An App for Supplier and Agents by InnovaSeeds
+        An App for Supplier and Agents by InnovaSeeds Solutions
     </description>
   <author email="zulsarhan.shaari@gmail.com" href="http://example.com.com/">
-      InnovaSeeds
+      InnovaSeeds Solutions
     </author>
   <content src="index.html"/>
   <access origin="*"/>

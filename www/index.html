@@ -7,6 +7,7 @@
     
     <!-- compiled css output -->
     <link href="css/style.css" rel="stylesheet">
+    <link href="css/button.css" rel="stylesheet">
     <link href="css/ionic.app.css" rel="stylesheet">
     <link rel="icon" type="image/png" href="img/favicons/favicon.ico">
     <!-- time ago -->
@@ -16,7 +17,8 @@
 
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
-    <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
+<script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
+    
 
     <!-- Backand -->
     <script src="https://cdn.backand.net/backand/dist/1.8.2/backand.min.js"></script>
@@ -32,18 +34,14 @@
     <script src="js/constant.js"></script>
     <script src="js/directive.js"></script>
     <script src="js/prototype.js"></script>
-    <script type="text/javascript" src="home/home.js"></script>
-    <script type="text/javascript" src="login/login-signup.js"></script>
-    <script type="text/javascript" src="register/register.js"></script>
-    <script type="text/javascript" src="users/users.js"></script>
-    <script type="text/javascript" src="transactions/transactions.js"></script>
-    <script type="text/javascript" src="products/products.js"></script>
-    <script type="text/javascript" src="contact/contact.js"></script>
-    
-
-    <!-- Auth0 Lock -->
-    <!--<script src="lib/auth0-lock/build/auth0-lock.js"></script>-->
-
+    <script src="home/home.js"></script>
+    <script src="login/login-signup.js"></script>
+    <script src="register/register.js"></script>
+    <script src="users/users.js"></script>
+    <script src="transactions/transactions.js"></script>
+    <script src="products/products.js"></script>
+    <script src="contact/contact.js"></script>
+    <script src="about/about.js"></script>
     
     <!-- Bootstrap -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
@@ -74,14 +72,17 @@
     <script src="//cdn.auth0.com/w2/auth0-5.js"></script>
     <script src="//cdn.auth0.com/w2/auth0-angular-2.js"> </script>
     -->
-
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/angular-ui-router/0.2.14/angular-ui-router.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/restangular/1.4.0/restangular.js"></script>
 
   </head>
 
-  <body  ng-app="sample" ng-controller="AppController">
+<!-- ##################################################################################################################################################### -->
+<!-- ########### BODY #################################################################################################################################### -->
+<!-- ########### BODY ##################################################################################################################################### -->
+
+<body ng-app="sample" ng-controller="AppController">
 
       <!--HEADER-->
       
@@ -108,9 +109,12 @@
       </div>
       
       <div growl=""></div>
-
       <!--END OF HEADER-->
 
+      <!-- ############################################################################################################################## -->
+      <!-- ############################################################################################################################## -->
+
+      <!--CONTENT-->
       <ion-side-menus>
 
         <ion-side-menu-content>
@@ -118,12 +122,11 @@
             </ion-nav-view>
         </ion-side-menu-content>
 
-
+        <!-- SIDE MENU LEFT (Only for Registered User)-->
         <ion-side-menu side="left">        
           <br>
           <br>
           <br>
-
 
           <ion-list>
             <a class="item item-icon-left" ng-click="myLinkedUser()">
@@ -148,9 +151,9 @@
               </span>
             </a>  
 
-            <a class="item item-icon-left" target="_blank" ng-href="{{APP_CONSTANT.WEBSITE}}">
-              <i class="icon ion-help-circled" ng-click="about()"></i>
-                Why {{APP_CONSTANT.NAME}}
+            <a class="item item-icon-left" ng-click="about()">
+              <i class="icon ion-help-circled"></i>
+                Why {{APP_CONSTANT.NAME}} ?
               <span class="item-note">   
               </span>
             </a>  
@@ -164,21 +167,18 @@
         </ion-side-menu>
 
 
-
+        <!-- SIDE MENU RIGHT (Only for Authorized User)-->
         <ion-side-menu side="right">
-         <br>
-        <br>
+          <br>
+          <br>
           <br>
 
-        <div class="profile text-center">
-          <img src="" alt="profile-image" class="image"><img>
-                
-          <br>
-                
-          <h3 id="name">Name</h3>
-          <h5 id="user_type">User Type</h5>
-
-        </div> 
+          <div class="profile text-center">
+            <img src="" alt="profile-image" class="image"><img>    
+            <br>    
+            <h3 id="name">Name</h3>
+            <h5 id="user_type">User Type</h5>
+          </div> 
 
           <a class="item item-icon-left" ng-click="myProfile()">
             <i class="icon ion-gear-a"></i>
@@ -190,128 +190,106 @@
                 Log Out
           </a>
 
-          </ion-side-menu>
-
-      </ion-side-menus>
-
-
-      <!--CONTENT-->
-          
-        <!--<div class="container" ui-view></div>-->
+        </ion-side-menu>
+      </ion-side-menus>     
       <!--END OF CONTENT-->
 
-      <!-- The title of the ion-view will be shown on the navbar -->
-
+      <!-- *************************************************************************************************************************** --> 
+      <!-- *************************************************************************************************************************** --> 
       <!--FOOTER-->
-      <!-- *************************************************************************************************************************** --> 
-      <!-- *************************************************************************************************************************** --> 
+
+      <!--FOOTER FOR DROPSHIP--> 
+      <!--FOOTER FOR DROPSHIP--> 
+      <div class="tabs tabs-icon-top" id="footer_dropship" style="display:none">
+        <a class="tab-item">
+          <i class="icon ion-home" ng-click="home()"></i>
+            <div>Home</div>
+        </a>
+        <a class="tab-item">
+          <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.DROPSHIP)"></i>
+            Connect
+        </a>
+
+        <a class="tab-item">
+          <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
+            My Active Listing
+        </a>
+
+      </div>          
       
-          <!--FOOTER-->
+      <!-- *********************************************************************************** --> 
+      <!--FOOTER FOR STOCKIST--> 
+      <!--FOOTER FOR STOCKIST--> 
+      <div class="tabs tabs-icon-top" id="footer_stockist" style="display:none">
+        <a class="tab-item">
+          <i class="icon ion-home" ng-click="home()"></i>
+            <div>Home</div>
+        </a>
+        <a class="tab-item">
+          <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.STOCKIST)"></i>
+            Connect
+        </a>
 
-          <!--FOOTER FOR DROPSHIP--> 
-          <!--FOOTER FOR DROPSHIP--> 
-          <div class="tabs tabs-icon-top" id="footer_dropship" style="display:none">
-            <a class="tab-item">
-              <i class="icon ion-home" ng-click="home()"></i>
-                <div>Home</div>
-            </a>
-            <a class="tab-item">
-              <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.DROPSHIP)"></i>
-                Connect
-            </a>
+        <a class="tab-item">
+          <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
+            My Active Listing
+        </a>            
 
-            <a class="tab-item">
-              <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
-                My Active Listing
-            </a>
+        <a class="tab-item">
+          <i class="icon ion-bag" ng-click="myProducts()"></i>
+            My Products
+        </a>
 
-          </div>          
-          
-      <!-- *************************************************************************************************************************** --> 
+      </div>    
 
-          <!--FOOTER FOR STOCKIST--> 
-          <!--FOOTER FOR STOCKIST--> 
-          <div class="tabs tabs-icon-top" id="footer_stockist" style="display:none">
-            <a class="tab-item">
-              <i class="icon ion-home" ng-click="home()"></i>
-                <div>Home</div>
-            </a>
-            <a class="tab-item">
-              <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.STOCKIST)"></i>
-                Connect
-            </a>
+      <!-- ************************************************************************************* --> 
+      <!--FOOTER FOR SUPPLIER--> 
+      <!--FOOTER FOR SUPPLIER--> 
+      <div class="tabs tabs-icon-top" id="footer_supplier" style="display:none">
+        <a class="tab-item">
+          <i class="icon ion-home" ng-click="home()"></i>
+            <div>Home</div>
+        </a>
+        <a class="tab-item">
+          <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.SUPPLIER)"></i>
+            Connect
+        </a>
 
-            <a class="tab-item">
-              <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
-                My Active Listing
-            </a>            
+        <a class="tab-item">
+          <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
+            My Active Listing
+        </a>            
 
-            <a class="tab-item">
-              <i class="icon ion-bag" ng-click="myProducts()"></i>
-                My Products
-            </a>
+        <a class="tab-item">
+          <i class="icon ion-bag" ng-click="myProducts()"></i>
+            My Products
+        </a>
 
-          </div>    
-
-      <!-- *************************************************************************************************************************** --> 
-
-          <!--FOOTER FOR SUPPLIER--> 
-          <!--FOOTER FOR SUPPLIER--> 
-          <div class="tabs tabs-icon-top" id="footer_supplier" style="display:none">
-            <a class="tab-item">
-              <i class="icon ion-home" ng-click="home()"></i>
-                <div>Home</div>
-            </a>
-            <a class="tab-item">
-              <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.SUPPLIER)"></i>
-                Connect
-            </a>
-
-            <a class="tab-item">
-              <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
-                My Active Listing
-            </a>            
-
-            <a class="tab-item">
-              <i class="icon ion-bag" ng-click="myProducts()"></i>
-                My Products
-            </a>
-
-          </div>
+      </div>
 
 
-      <!-- *************************************************************************************************************************** --> 
+      <!-- **************************************************************************************** --> 
+      <!--FOOTER FOR NEW USER--> 
+      <!--FOOTER FOR NEW USER--> 
+      <div class="tabs tabs-icon-top" id="footer_newUser" style="display:default">
+        <a class="tab-item">
+          <i class="icon ion-home" ng-click="home()"></i>
+            <div>Home</div>
+        </a>
+        <a class="tab-item" ng-click="about()">
+          <i class="icon ion-help-circled" ></i>
+              Why {{APP_CONSTANT.NAME}}
+        </a>
 
-          <!--FOOTER FOR NEW USER--> 
-          <!--FOOTER FOR NEW USER--> 
-          <div class="tabs tabs-icon-top" id="footer_newUser" style="display:default">
-            <a class="tab-item">
-              <i class="icon ion-home" ng-click="home()"></i>
-                <div>Home</div>
-            </a>
-            <a class="tab-item"  target="_blank" ng-href="{{APP_CONSTANT.WEBSITE}}">
-              <i class="icon ion-help-circled"></i>
-                  Why {{APP_CONSTANT.NAME}}
-            </a>
+        <a class="tab-item" ng-click="contact()">
+          <i class="icon ion-email"></i>
+            Contact Us
+        </a>
+        <br>
+        
+      </div>
 
-            <a class="tab-item">
-              <i class="icon ion-email" ng-click="contact()"></i>
-                Contact Us
-            </a>
-            <br>
-            
-          </div>
-
-
-    <!--END OF FOOTER-->
-
-      <!-- *************************************************************************************************************************** --> 
-      <!-- *************************************************************************************************************************** -->
       <!--END OF FOOTER-->
-
-
-
-
 
 
   </body>

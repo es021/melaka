@@ -815,6 +815,11 @@ myApp.service('PublicService', function ($http,growl){
 
   errorCallbackFunction = function(error, title)
   {
+    if(title == "default")
+    {
+      title = "Opps! Something went wrong";
+    }
+    
     console.log(error);
     growl.error(''+error.data,{title: title});
   }

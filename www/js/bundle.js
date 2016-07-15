@@ -17,6 +17,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'sample.transactions',
   'sample.products',
   'sample.contact',
+  'sample.about',
   'sample.service',
   'sample.constant',
   'sample.directive',
@@ -64,6 +65,10 @@ myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpP
 
   //$urlRouterProvider.otherwise('/home');
 
+  console.log("From APP CONFIG");
+  
+  $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
 });
 
 myApp.run(function(auth) {
@@ -72,7 +77,8 @@ myApp.run(function(auth) {
 
 
 myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
-  
+  console.log("FROM APP CONTROLLER");
+
   $scope.APP_CONSTANT = APP_CONSTANT;
 
   $scope.main = function(){
@@ -150,7 +156,7 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     }
 
     var confirmPopup = $ionicPopup.confirm({
-       title: 'Log Out From Melaka',
+       title: 'Log Out From '+APP_CONSTANT.NAME,
        template: 'Are you sure?'
      });
      
@@ -195,7 +201,16 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.myProducts = function() {
     closeSideMenuBar();
-    $state.go('myProducts');
+    //$state.go('myProducts');
+    if($scope.userInSession != null)
+    {
+      $state.go('showProductList',{user_id:$scope.userInSession.user_id});
+    }
+    else
+    {
+      growl.error('',{title: 'You Are Not Logged In Or Not Registered!'});
+    }
+
   };
   
   ///////////////////////////////////////////////
@@ -237,6 +252,11 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
   $scope.contact = function() {   
     closeSideMenuBar();
     $state.go('contact');    
+  };
+
+  $scope.about = function() {   
+    closeSideMenuBar();
+    $state.go('about');    
   };
 
   $scope.showUser = function (id){
