@@ -2,44 +2,27 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 <p>
-<h2 class="title">List of Agents</h2>
-    
+<h2 class="title">List of {{user_type.getUserType()}}</h2>
+	<div class="text-center" ng-show="loading">
+		<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+  	</div>
+	    
     <div class="text-left">
 		<div class="list">
-          <div ng-repeat="item in agents">
-			    <a class="item item-avatar" ng-click="showObjectFunction('agents',{{item.id}})">
-			    	<img src="{{item.picture}}">
-			      	<h2>{{item.first_name}} {{item.last_name}}</h2>
-			      	<p><strong>{{item.category}}</strong> | {{item.state}}</p>
-			    </a>
+          <div ng-repeat="item in users">
+	          <a ng-if = "item.id != userInSession.user_id" class="item item-avatar" ng-click="showUser({{item.id}})">
+	            <img src="{{item.picture}}">
+	              <h2>{{item.first_name}} {{item.last_name}}</h2>
+	              <p><strong>{{item.state}}</strong><small class="text-muted" ng-if="item.about != null"><br>{{item.about}}</small></p>
+	          </a>
           </div>
 		</div>
 	</div>
 
     <div ng-if="agents.length == 0">
-    	No registered agent
+    	No registered {{user_type.getUserType()}}
     </div>
 </div>
-
-<h2 class="title">List of Suppliers</h2>
-
-    <div class="text-left">
-		<div class="list">
-          <div ng-repeat="item in suppliers">
-			    <a class="item item-avatar" ng-click="showObjectFunction('suppliers',{{item.id}})">
-			    	<img src="{{item.picture}}">
-			      	<h2>{{item.first_name}} {{item.last_name}}</h2>
-			      	<p>{{item.state}}</p>
-			    </a>
-          </div>
-		</div>
-	</div>
-    
-    <div ng-if="suppliers.length == 0">
-    	No registered suppliers
-    </div>
-
-</p>
 
 </ion-view>
 </ion-content>

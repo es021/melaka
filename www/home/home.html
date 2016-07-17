@@ -4,11 +4,26 @@
 
 <p>
     <div ng-if="authProfile == null">
+		
 		<h2 class="title"><small>Welcome To</small><br>{{APP_CONSTANT.NAME}}</h2>
 
 		<img ng-src="{{APP_CONSTANT.LOGO_ONLY_SMALL}}" style="height: 150px; width: auto; margin-left:auto; margin-right:auto;" class="img-responsive" alt="logo">
 
-		<h5 class="title">Lets get started !</h5>
+		<br>
+    	<!-- #################################### -->
+		<!-- USER COUNT -->
+		<h4 class="title">Registered Users Count</h4>
+		<h4>
+			<span class="label label-primary">{{suppliersCount}} Suppliers</span>
+			<span class="label label-success">{{stockistsCount}} Stokists</span>
+			<span class="label label-danger">{{dropshipsCount}} Dropships</span>
+		</h4>
+
+		<br>
+		<!-- USER COUNT -->
+	  	<!-- #################################### -->
+
+		<h4 class="title">Be Part of the Community<br><small>Let's Get Started!</small></h4>
 		<div ng-app="sample" ng-controller="AppController">
 			<button class="button button-block button-assertive" ng-click="login()">Login</button>
 			<button class="button button-block button-assertive" ng-click="signup()">Signup</button>
@@ -107,7 +122,7 @@
 			</div>
 		</div>
 
-	    <div ng-if="myNotification.length == 0">
+	    <div  class="info-text" ng-if="myNotification.length == 0">
 	    	You Have No Notification
 	    </div>
 

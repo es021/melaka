@@ -27,7 +27,7 @@ myApp.config(function($stateProvider, BackandProvider) {
 
     $stateProvider
     .state('showTransaction', {
-      url: "/showTransaction?id&other_user_id",
+      url: "/showTransaction?id&other_user_id&show",
       controller: 'TransactionsController',
       templateUrl: 'transactions/showTransaction.html',
       data: {
@@ -38,7 +38,7 @@ myApp.config(function($stateProvider, BackandProvider) {
 });
 
 
-myApp.controller('TransactionsController', function($state,$stateParams,growl,NOTI_CATEGORY, $ionicPopup,$scope, BackandService,PublicService, auth, TRANS_STATUS){
+myApp.controller('TransactionsController', function($state,$stateParams,growl,NOTI_CATEGORY,$ionicModal, $ionicPopup,$scope, BackandService,PublicService, auth, TRANS_STATUS){
   
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
@@ -48,6 +48,7 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
   $scope.TRANS_STATUS = TRANS_STATUS;
   $scope.stateName = $state.current.name;
   $scope.loading = false;
+  $scope.show = 'info';
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////  Main Listing /////////////////////////////////////////////////////////////////////////
@@ -71,9 +72,28 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
 
       if($state.current.name == "showTransaction")
       {
-        getTransById($stateParams.id,$stateParams.other_user_id);
+        getTransById($stateParams.id,$stateParams.other_user_id);        
+        if($stateParams.show != null)
+        {
+          $scope.show = $stateParams.show; 
+        }
       }
     }
+  }
+
+  $scope.openLink = function(link)
+  {
+    if(link == "delivery_detail"){
+      link = $scope.showItem.delivery_detail;
+    }
+
+    if(link == "payment_detail"){
+      link = $scope.showItem.payment_detail;
+    }
+
+    console.log(link);
+    var win = window.open(link, '_blank');
+    win.focus();
   }
 
   $scope.refresh = function()
@@ -209,6 +229,7 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
         {
           $scope.showItem.status = status;
           createNotificationTransaction(id,"status",status);
+          openModal(status);
         }
 
       },function errorCallback(result){
@@ -224,6 +245,7 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
         {
           $scope.showItem.payment_status = payment_status;
           createNotificationTransaction(id,"payment_status",payment_status);
+          openModal(payment_status);
         }
 
       },function errorCallback(result){
@@ -236,13 +258,116 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
       if(status == 200)
       {
           growl.success("Updated Transaction "+id,{title: 'Successfully Updated!'});
-          //getTransById(id);
       }
       else
       {
           growl.error("Failed to update transactions "+id+". Please try again." ,{title: 'Error!'});
       }
   }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////////////
+  ////////// DETAILS HELPER FUNCTION  /////////////////////////////////////////////////////////////////////////
+
+  $scope.requestDetail = function(type)
+  {
+    var confirmPopup = $ionicPopup.confirm({
+         title: "Remind "+$scope.showItem.other_user_name,
+         template: "to add a proof of "+type+"?"
+       });
+       
+      confirmPopup.then(function(result) {
+          if(result)
+          {
+            var to_user_id = $scope.showItem.other_user_id;
+            
+            var link = "/showTransaction?id="+$scope.showItem.id+"&other_user_id="+$scope.userInSession.user_id;
+            var category = 0;
+            var other_user_name = $scope.userInSession.first_name;
+            
+            var text = other_user_name +" request you to add a proof of "+type;
+
+            var updated_at = PublicService.getTimestampinMysql();
+
+            if(type == "delivery")
+            {
+              category = NOTI_CATEGORY.TRANSACTION;
+              link += "&show=add_delivery_detail";
+
+              BackandService.editDeliveryDetailByTransId($scope.showItem.id,"requested",updated_at).then(function(result){
+                
+                if(result.status == 200)
+                {
+                  $scope.showItem.delivery_detail = "requested";
+                  BackandService.createNotification(to_user_id,text,link,category);
+                }
+
+              },function errorCallbackFunction(result){
+                  PublicService.errorCallbackFunction(result,"default");
+              });
+
+            }
+            
+            if(type == "payment")
+            {
+              category = NOTI_CATEGORY.PAYMENT;
+              link += "&show=add_payment_detail";
+
+              BackandService.editPaymentDetailByTransId($scope.showItem.id,"requested",updated_at).then(function(result){
+                
+                if(result.status == 200)
+                {
+                  $scope.showItem.payment_detail = "requested";
+                  BackandService.createNotification(to_user_id,text,link,category);
+                }
+
+              },function errorCallbackFunction(result){
+                  PublicService.errorCallbackFunction(result,"default");
+              });
+
+            }
+            
+          }
+       });
+  }
+
+  $scope.setShow = function(show)
+  {
+    $scope.show = show;
+  }
+
+  function openModal(status)
+  {
+    if(status == TRANS_STATUS.DELIVERED)
+    {
+      var confirmPopup = $ionicPopup.confirm({
+         title: 'Delivery Status Successfully Updated',
+         template: 'Do you want to upload a proof of delivery?'
+       });
+       
+      confirmPopup.then(function(result) {
+          if(result)
+          {
+            $scope.setShow('add_delivery_detail');
+          }
+       });
+    } 
+
+    if(status == TRANS_STATUS.PAID)
+    {
+      var confirmPopup = $ionicPopup.confirm({
+         title: 'Payment Status Successfully Updated',
+         template: 'Do you want to upload a proof of payment?'
+       });
+       
+      confirmPopup.then(function(result) {
+          if(result)
+          {
+            $scope.setShow('add_payment_detail');
+          }
+       });
+    } 
+  }
+
 
 
 
@@ -268,6 +393,17 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
         if(result.status == 200 && $scope.showItem != null)
         {
           getProductbyId($scope.showItem.product_id);
+
+          if($scope.showItem.payment_detail == '')
+          {
+            $scope.showItem.payment_detail = null;
+          }
+
+          if($scope.showItem.delivery_detail == '')
+          {
+            $scope.showItem.delivery_detail = null;
+          }
+
           $scope.timeAgo = PublicService.getAgoTime($scope.showItem.updated_at);
         }
       },function errorCallback(result){
@@ -298,10 +434,155 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
 
   $scope.isItemShown = function(item) {
     return $scope.showItem === item;
+  };  
+});
+
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////// AddFileController  ////////////////////////////////////////////////////////////////////////////////////////////
+///////////////// AddFileController  ////////////////////////////////////////////////////////////////////////////////////////////
+
+myApp.controller('AddFileController', function($scope,$http, $stateParams, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
+  
+  
+  $scope.imageSizeLimit = 2;
+
+  $scope.filePath = null;
+  $scope.fileToUpload = {};
+
+  $scope.file = null;
+  $scope.filedata = null;
+  $scope.imageSrc = null;
+  $scope.progress = null;
+
+$scope.filename = "";
+
+  $scope.loading = false;
+  $scope.loadStatus = "";
+
+  $scope.file_link = "";
+  $scope.loadImage = false;
+
+
+  
+  function sizeInMB(size)
+  {
+    return size / 1000000;
+  }
+
+  $scope.removePicture = function () {
+    $scope.filePath = null;
+    $scope.fileToUpload = {};
+
+    $scope.file = null;
+    $scope.filedata = null;
+    $scope.imageSrc = null;
+    $scope.progress = null;
+  }
+
+
+$scope.addPicture = function(){
+  $scope.loadImage = true;
+
+  var f = document.getElementById('file').files[0];
+  var r = new FileReader();
+
+  r.onload = function(e){
+    $scope.filedata = e.currentTarget.result;
+    $scope.filename = f.name;
+
+    $scope.file = f;
+    $scope.loadImage = false;
+    previewFile();
+  }
+  
+  //r.readAsBinaryString(f);
+   r.readAsDataURL(f);
+
+}
+
+function tinify(){
+    $http ({
+        method: 'POST',
+        url: 'https://api.tinify.com/shrink',
+        Authorization: 'XCi84z1igNgjjp0hDh_QuT-gol_ePm1r',
+        data: $scope.file
+        });
+}
+
+
+  function previewFile(){
+    console.log($scope.file);
+    console.log($scope.file.type);
+    console.log($scope.file.type.split("/")[1]);
+    if($scope.file == null)
+    {
+      $scope.removePicture();
+      return;
+    }
+    else if($scope.file.type.split("/")[0] != "image" && $scope.file.type.split("/")[1] != "pdf")
+    {
+      growl.error('File uploaded is not an image. Please try again',{title: 'Error Upload Image!'});
+      $scope.file = null;
+      return;
+    }
+    else if(sizeInMB($scope.file.size) > $scope.imageSizeLimit)
+    {
+      growl.error('Image Size is Too Large. Please try again',{title: 'Error Upload Image!'});
+      $scope.file = null;
+      return;
+    }
+
+    //console.log($scope.file);
+    $scope.progress = null;
+
+    FileReaderService.readAsDataURL($scope.file, $scope).then(function(result) {
+        if($scope.file.type.split("/")[0] == "image")
+        {
+          $scope.imageSrc = result;
+        }
+      });
   };
 
+  $scope.$on("fileProgress", function(e, progress) {
+    $scope.progress = (progress.loaded / progress.total)*100;
+  });
 
-  //////////////////////////////////////////////////////////////////////////////////////////////////////
-  ////////// my History ////// /////////////////////////////////////////////////////////////////////////
-  
+  function uploadFileBackand(){ 
+    $scope.loadStatus = "Saving image of your new product. Might be a while depending on the size of the image"
+
+    var filename = generateFileName();
+    var filedata = $scope.filedata;
+
+      BackandService.uploadFile(filename,filedata).then(function(result){
+
+          console.log("Result From Upload Image to Backand");
+          console.log(result);      
+
+          if(result.status == 200)
+          {
+            $scope.file_link = result.data.url;
+          }
+
+        },function errorCallback(result){
+            console.log(result);
+        });  
+
+  }  
+
+ 
+  function generateFileName()
+  {
+    //supplier<id>_<create_at>
+    var imageType = $scope.file.type.split(/[ /]+/)[1];
+    var timeStamp = PublicService.getTimestampForFileName($scope.newProduct.created_at);
+
+    var productName = "user"+$scope.userInSession.user_id +"_"+ timeStamp + "." + imageType;
+    console.log(productName);
+    return productName
+  }
+
 });

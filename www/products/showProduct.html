@@ -87,8 +87,34 @@
 <!-- ********************************************************************************************************************** -->
 <!-- **************************** REQUEST FORM **************************************************************************** -->
   <div ng-if="show=='request'" class="item item-body">
-    <h4><strong>Price Per Unit</strong> | RM {{showObject.price_per_unit}}</h4>
-    <h4><strong>Category</strong> | {{showObject.category}}</h4>
+            <div class="text-center">
+              <span ng-if="showObject.quantity > 0" class="label label-success">{{showObject.quantity}} available</span>
+              <span ng-if="showObject.quantity <= 0 || showObject.quantity == null" class="label label-danger">Out Of Stock</span>  
+              <br>
+            <span class="info-with-fa" ng-if="!hasCustomPricing">
+                <br>
+                <li class="fa fa-tag" >
+                </li>
+                RM {{showObject.price_per_unit}} / unit
+            </span> 
+
+            <span class="info-with-fa" ng-if="hasCustomPricing">
+                <br>
+                <li class="fa fa-tag" >
+                </li>
+                <u>Custom Pricing</u>
+              <div>
+                <ul class="list-inline small text-center">
+                  <li ng-repeat="custom in customPricingList">
+                    <strong>{{custom.from}}-{{custom.to}}</strong>
+                    <br>
+                    <span class="text-muted">RM {{custom.price}}</span>
+
+                  </li>
+                </ul>
+              </div>
+            </span>
+          </div>
     <hr>
     <div class="text-left">
 
@@ -97,7 +123,8 @@
       
       <!-- Total Price -->
       <div class="text-center">
-          <h4>Total Price For This Request</h4>RM {{newRequest.total_price}}
+          <h4>Total Price For This Request</h4><h1><span class="label label-pill label-success">RM {{newRequest.total_price}}</span></h1>
+          <br>
       </div>
 
       <div class="list">
@@ -110,7 +137,8 @@
         </label>
 
       <label class="item item-input item-stacked-label">
-        <span class="input-label">Quantity</span>
+        <span class="input-label">Quantity</span><br>
+        <small ng-if="newRequest.quantity > showObject.quantity" class="text-assertive">[Error] The quantity is larger than available product</small>
         <input type="number" value="1000" min="0" step="1" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
       </label>  
 
@@ -126,7 +154,8 @@
           <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
       </div>
 
-      <button ng-disabled="!requestform.$valid || loadingRequest" type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
+      <button ng-disabled="!requestform.$valid || loadingRequest || (newRequest.quantity > showObject.quantity)" 
+        type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
 
     </div>
     </form>

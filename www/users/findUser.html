@@ -1,19 +1,39 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 
-<div ng-if="user_type_request != USER_TYPE.SUPPLIER"> 
+  <!-- #################################### -->
+  <!-- USER COUNT -->
+  <h4 class="title">Registered Users Count</h4>
+  <h4>
+    <span class="label label-primary">{{suppliersCount}} Suppliers</span>
+    <span class="label label-success">{{stockistsCount}} Stokists</span>
+    <span class="label label-danger">{{dropshipsCount}} Dropships</span>
+  </h4>
+
+  <br>
+  <!-- USER COUNT -->
+    <!-- #################################### -->
+
+<!--<div ng-if="user_type_request != USER_TYPE.SUPPLIER">-->
+<div> 
 <h3 class="title">List of Suppliers</h3>
     
     <div class="text-left">
 		<div class="list">
-          <div ng-repeat="item in suppliers">
-			    <a class="item item-avatar" ng-click="showUser({{item.id}})">
-			    	<img src="{{item.picture}}">
-			      	<h2>{{item.first_name}} {{item.last_name}}</h2>
-			      	<p><strong>{{item.user_type.getUserType()}}</strong> | {{item.state}}</p>
-			    </a>
-          </div>
-		</div>
+        <div ng-repeat="item in suppliers">
+		    <a class="item item-avatar" ng-click="showUser({{item.id}})">
+		    	<img src="{{item.picture}}">
+		      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+		      	<p><strong>{{item.user_type.getUserType()}}</strong> | {{item.state}}</p>
+		    </a>
+        </div>
+        
+        <div class="item text-right">
+        <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="findMore(USER_TYPE.SUPPLIER)">Find More Suppliers</button>
+        </div>
+		
+    </div>
+
 	</div>
 
   <div class="text-center" ng-show="loadSupplier">
@@ -27,7 +47,8 @@
     <hr>
 </div>
 
-<div ng-if="user_type_request != USER_TYPE.STOCKIST"> 
+<!--<div ng-if="user_type_request != USER_TYPE.STOCKIST">-->
+<div> 
 <h3 class="title">List of Stockists</h3>
     
     <div class="text-left">
@@ -39,6 +60,11 @@
               <p><strong>{{item.user_type.getUserType()}}</strong> | {{item.state}}</p>
           </a>
           </div>
+
+        <div class="item text-right">
+        <button class="button button-small button-balanced icon-right ion-arrow-right-a" ng-click="findMore(USER_TYPE.STOCKIST)">Find More Stockists</button>
+        </div>
+
     </div>
   </div>
 
@@ -46,13 +72,15 @@
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
-    <div ng-if="stockists.length == 0">
+    <div  class="info-text" ng-if="stockists.length == 0">
       No registered stockist found
     </div>
 
     <hr>
 </div>
-<div ng-if="user_type_request != USER_TYPE.DROPSHIP"> 
+
+<!--<div ng-if="user_type_request != USER_TYPE.DROPSHIP">-->
+<div>
 <h3 class="title">List of Dropships</h3>
     
     <div class="text-left">
@@ -64,6 +92,12 @@
               <p><strong>{{item.user_type.getUserType()}}</strong> | {{item.state}}</p>
           </a>
           </div>
+
+
+        <div class="item text-right">
+        <button class="button button-small button-assertive icon-right ion-arrow-right-a" ng-click="findMore(USER_TYPE.DROPSHIP)">Find More Dropships</button>
+        </div>
+
     </div>
   </div>
 
@@ -71,7 +105,7 @@
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
-    <div ng-if="dropships.length == 0">
+    <div  class="info-text" ng-if="dropships.length == 0">
       No registered dropship found
     </div>
 

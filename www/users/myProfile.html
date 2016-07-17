@@ -26,30 +26,50 @@
     <div class="item text-center">
         <button class="button button-small button-balanced icon-left ion-edit" ng-click="editProfile()">Edit Profile</button>
     </div>
-    <div class="item item-avatar">
-      <img src="{{myProfile.picture}}">
-      <h2>{{myProfile.first_name}} {{myProfile.last_name}}</h2>
-    <p><strong>{{myProfile.user_type.getUserType()}}</strong>  | User Id {{myProfile.id}}</p>
-    </div>
 
-    <div class="item item-body">
-      <h3><strong>Location</strong> | {{myProfile.state}}</h3>
-      <h3><strong>Email</strong> | {{myProfile.email}}</h3>
-      <h3><strong>Phone Number</strong> | {{myProfile.phone_number}}</h3>
-      <h3><strong>Member Since</strong> | {{myProfile.created_at.getDate()}}</h3>
+    <div class="item item-body text-center">
+      <img src="{{myProfile.picture}}" class="img-circle profile-image-no-shadow" width="50">
+
+
+      <h2><strong>{{myProfile.first_name}} {{myProfile.last_name}}</strong><br><span class="small">Member Since {{myProfile.created_at.getDate()}}<span></h2>          
+      <div class="small">
+        <span class="fa fa-phone" aria-hidden="true" style="padding-right:10px;"> </span>{{myProfile.phone_number}}<br>
+        <span class="fa fa-envelope" aria-hidden="true" style="padding-right:10px;"> </span>{{myProfile.email}}<br>
+        <span class="fa fa-map-marker" aria-hidden="true" style="padding-right:10px;"> </span>
+
+        <a href="" ng-click="toggleFullAddress()">
+          <span ng-show="fullAddress">
+            {{myProfile.address_line_1}}<br>
+            <span ng-if="myProfile.address_line_2 != ''">{{myProfile.address_line_2}}<br></span>
+            {{myProfile.city}}<br>{{myProfile.state}}, {{myProfile.postal_code}}
+            
+          </span>
+
+          <span ng-show="!fullAddress">
+            {{myProfile.city}}, {{myProfile.state}}
+          </span>
+        </a>
+        
+      </div>
       
-      <hr>
-      <h3><strong>More Information</strong></h3>
-      <p ng-if="myProfile.about == ''">
-      There is no other information about this agent
-      </p>    
-      <p ng-if="myProfile.about != ''">
-      {{myProfile.about}}
-      </p>
+      <br>
 
+      <div class="small item item-body">
+        <span ng-if="myProfile.about != ''" class="text-muted">{{myProfile.about}}</span>
+        <span ng-if="myProfile.about == ''" class="text-muted">There is no more information about this user</span>
+      </div>
+
+
+    </div>
+    <div  ng-if="myProfile.user_type < USER_TYPE.DROPSHIP" class="item text-center">
+      <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProductList(myProfile.id)">See Product</button>
     </div>
 
 </div>
+
+<!-- #################################################################################################################################### -->
+<!-- #################################################################################################################################### -->
+<!-- ###################################### EDIT PROFILE ################################################################################ -->
 
 <div class="list card text-left" ng-if="page == 'edit'">
     <div class="item text-center">
@@ -63,16 +83,49 @@
    <form role="form">
     <div class="form-group" ng-form='editForm'>
      
-     <label class="item item-input">
+     <!-- first name -->
+     <label class="item-input">
       <input type="text" class="form-control" placeholder="First Name" ng-model="myProfile.first_name" required>
     </label>
 
-     <label class="item item-input">
+     <!-- last name -->
+     <label class="item-input">
       <input type="text" class="form-control" placeholder="Last Name" ng-model="myProfile.last_name" required>
     </label>
-    <div class="list">
 
-    <label class="item item-input item-select">
+    <!-- email -->
+    <label class="item-input">
+      <input type="text" class="form-control" placeholder="Email" ng-model="myProfile.email" >
+    </label> 
+      
+    <!-- phone number -->      
+    <label class="item-input">
+      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" ng-model="myProfile.phone_number" required data-country="US">
+    </label> 
+   
+    <!-- address-line1 input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="address-line1" name="address-line1" placeholder="Address Line 1" ng-model="myProfile.address_line_1" required>
+    </label>    
+
+    <!-- address-line2 input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="address-line2" name="address-line2" placeholder="Address Line 2" ng-model="myProfile.address_line_2">
+    </label>    
+
+    <!-- city input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="myProfile.city" required>
+    </label>      
+
+    <!-- postal-code input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="postal-code" name="postal-code" placeholder="Postal Code" ng-model="myProfile.postal_code" required>
+    </label>        
+
+     <!-- state -->
+    <div class="list">
+    <label class="item-input item-select">
       <div class="input-label">{{myProfile.state}}</div>
       <select ng-model="myProfile.state" required>
         <option selected>Johor</option>
@@ -93,17 +146,9 @@
         <option>Terengganu</option>
       </select>
     </label>
-  
-    <label class="item item-input">
-      <input type="text" class="form-control" placeholder="Email" ng-model="myProfile.email" >
-    </label> 
-      
-    <label class="item item-input">
-      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" ng-model="myProfile.phone_number" required data-country="US">
-    </label> 
-   
 
-    <label class="item item-input">
+    <!-- about -->
+    <label class="item-input">
     <textarea class="form-control" placeholder="Tell more about yourself (optional)" rows="4" ng-model="myProfile.about"></textarea>
     </label>
 
@@ -117,7 +162,10 @@
 
       
     </div>
+
+
   </form>
+
   </div>
 </div>
 </div>

@@ -26,8 +26,46 @@ myApp.controller('HomeController', function ($scope,growl, $state, BackandServic
   console.log($scope.userInSession);
   PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
 
+  $scope.userCount_load = ["count",0,0,0];
+  $scope.suppliersCount = 0;
+  $scope.stockistsCount = 0;
+  $scope.dropshipsCount = 0; 
 
   $scope.USER_TYPE = USER_TYPE;
+  
+  function getAllUserCount()
+  {
+    for(var i=1; i<=3 ;i++)
+    {
+      $scope.userCount_load[i] = true;
+      getUserCountByUserType(i);
+    }
+
+  }
+
+  function getUserCountByUserType(user_type){
+    BackandService.getUserCountByUserType(user_type).then(function(result){
+      if(user_type == USER_TYPE.SUPPLIER)
+      {
+        $scope.suppliersCount = result.data[0].total_user;
+      }
+
+      if(user_type == USER_TYPE.STOCKIST)
+      {
+        $scope.stockistsCount = result.data[0].total_user;
+      }
+
+      if(user_type == USER_TYPE.DROPSHIP)
+      {
+        $scope.dropshipsCount = result.data[0].total_user;
+      }
+
+      $scope.userCount_load[user_type] = false;
+
+    },function errorCallback(result){
+        PublicService.errorCallbackFunction(result,"default");
+    });
+  }
   
   if($scope.authProfile != null )
   {
@@ -35,6 +73,10 @@ myApp.controller('HomeController', function ($scope,growl, $state, BackandServic
       initDashboard($scope);
 
     PublicService.initSideMenu();
+  }
+  else
+  {
+      getAllUserCount();
   }
 
   function initDashboard($scope)
@@ -92,5 +134,8 @@ myApp.controller('HomeController', function ($scope,growl, $state, BackandServic
       });
 
   }
+
+
+ 
 
 });

@@ -21,8 +21,8 @@ myApp.config(function($stateProvider) {
 
   $stateProvider
     .state('allUsers', {
-      url: '/allUsers',
-      controller: 'UserController',
+      url: '/allUsers?user_type',
+      controller: 'AllUserController',
       templateUrl: 'users/allUsers.html',
       data: {
         requiresLogin: false
@@ -75,6 +75,31 @@ myApp.config(function($stateProvider) {
   
 });
 
+myApp.controller('AllUserController', function($scope, USER_TYPE,UserService, BackandService, auth, $state,$location, $stateParams){
+  $scope.user_type = $stateParams.user_type;
+  $scope.users = [];
+  $scope.loading = false;
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  function getAllUserByUserType()
+  {
+    $scope.loading = true;
+    BackandService.getUserByType($scope.user_type,"all").then(function(result){
+      $scope.users = result.data
+      console.log(result);
+      $scope.loading = false;
+
+    },function errorCallback(result){
+        PublicService.errorCallbackFunction(result,"default");
+        $scope.loading = false;
+    });
+  }
+
+  getAllUserByUserType();
+
+
+});
+
 myApp.controller('FindUserController', function($scope, USER_TYPE,UserService, BackandService, auth, $state,$location, $stateParams){
   
   $scope.user_type_request = $stateParams.user_type_request;
@@ -90,32 +115,74 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,UserService, B
   $scope.loadStockist = false;
   $scope.loadDropship = false;
 
+  $scope.userCount_load = ["count",0,0,0];
+  $scope.suppliersCount = 0;
+  $scope.stockistsCount = 0;
+  $scope.dropshipsCount = 0; 
 
 
-  function getUserByType(user_type){
-      BackandService.getUserByType(user_type).then(function(result){
+  $scope.findMore = function(user_type)
+  {
+    console.log("find more " + user_type);
+    $state.go("allUsers",{user_type:user_type});
+
+  }
+
+  function getUserByType(user_type,limit){
+      BackandService.getUserByType(user_type,limit).then(function(result){
         console.log("getUserByType");
         console.log(result);
 
-        if(user_type == 1)
+        if(user_type == USER_TYPE.SUPPLIER)
           $scope.suppliers = result.data;
 
-        if(user_type == 2)
+        if(user_type == USER_TYPE.STOCKIST)
           $scope.stockists = result.data;
 
-        if(user_type == 3)
+        if(user_type == USER_TYPE.DROPSHIP)
           $scope.dropships = result.data;
 
       });
     }
 
-  for(var i=1; i<=3 ;i++)
+
+  function getUserCountByUserType(user_type){
+    BackandService.getUserCountByUserType(user_type).then(function(result){
+      if(user_type == USER_TYPE.SUPPLIER)
+      {
+        $scope.suppliersCount = result.data[0].total_user;
+      }
+
+      if(user_type == USER_TYPE.STOCKIST)
+      {
+        $scope.stockistsCount = result.data[0].total_user;
+      }
+
+      if(user_type == USER_TYPE.DROPSHIP)
+      {
+        $scope.dropshipsCount = result.data[0].total_user;
+      }
+
+      $scope.userCount_load[user_type] = false;
+
+    },function errorCallback(result){
+        PublicService.errorCallbackFunction(result,"default");
+    });
+  }
+
+  function main()
   {
-    if($scope.user_type_request != i)
+    var limitGetUser = 3;
+    for(var i=1; i<=3 ;i++)
     {
-      getUserByType(i);
+      getUserByType(i,limitGetUser);
+      $scope.userCount_load[i] = true;
+      getUserCountByUserType(i);
     }
   }
+
+  main();
+
 
 });
 
@@ -144,6 +211,16 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
 
   $scope.isRequestToUser = false;
   $scope.isRequestByUser = false;
+
+  $scope.fullAddress = false;
+
+  $scope.toggleFullAddress = function()
+  {
+    if($scope.fullAddress)
+        $scope.fullAddress = false;
+    else
+        $scope.fullAddress = true;
+  }
 
   if($scope.userInSession.user_id == $scope.show_user_id)
   {
@@ -315,6 +392,7 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
     BackandService.getObjectById(objectName,id).then(function(result){
       console.log("Data from show object");
       $scope.showObject = result.data;
+      console.log($scope.showObject);
       if(result.status == 200)
       {
         $scope.showObject.created_at = PublicService.getDate($scope.showObject.created_at);
@@ -534,7 +612,7 @@ myApp.controller('PendingLinkController', function ($scope, $state, $stateParams
 });
 
 
-myApp.controller('MyProfileController', function ($scope, growl, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+myApp.controller('MyProfileController', function ($scope, growl, $state,UserService, BackandService,PublicService, USER_LINK_TYPE, USER_TYPE) {
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
@@ -542,6 +620,17 @@ myApp.controller('MyProfileController', function ($scope, growl, $state,UserServ
   $scope.oldProfile = null;
   $scope.myProfileLoad = false;
   $scope.page = "show";
+  $scope.fullAddress = false;
+
+  $scope.toggleFullAddress = function()
+  {
+    if($scope.fullAddress)
+        $scope.fullAddress = false;
+    else
+        $scope.fullAddress = true;
+  }
+
+  $scope.USER_TYPE = USER_TYPE;
 
   function getObjectById(objectName, id)
   {
@@ -550,6 +639,7 @@ myApp.controller('MyProfileController', function ($scope, growl, $state,UserServ
       console.log("Data from show object");
       $scope.myProfile = result.data;
       $scope.oldProfile = result.data;
+      console.log($scope.myProfile);
       if(result.status == 200)
       {
 
@@ -568,16 +658,19 @@ myApp.controller('MyProfileController', function ($scope, growl, $state,UserServ
 
     $scope.loadStatus = "Editing old record in database"
     
-    $scope.myProfile.updated_at;
+    $scope.myProfile.updated_at = PublicService.getTimestampinMysql();
     
-    //$scope.newProduct.user_id = $scope.userInSession.user_id;
     console.log($scope.myProfile);
 
     BackandService.
     editUserById($scope.myProfile.id,
                 $scope.myProfile.first_name,
                 $scope.myProfile.last_name,
+                $scope.myProfile.address_line_1,
+                $scope.myProfile.address_line_2,
+                $scope.myProfile.city,
                 $scope.myProfile.state,
+                $scope.myProfile.postal_code,
                 $scope.myProfile.email,
                 $scope.myProfile.phone_number,
                 $scope.myProfile.about,
@@ -607,6 +700,11 @@ myApp.controller('MyProfileController', function ($scope, growl, $state,UserServ
   $scope.showProfile = function(){
     $scope.page = "show";
     $scope.myProfile = $scope.oldProfile;
+  }
+
+  $scope.showProductList = function (user_id)
+  {
+    $state.go("showProductList",{user_id:user_id});
   }
 
   console.log($scope.userInSession == null);

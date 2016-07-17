@@ -1,8 +1,10 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 <p>
+  <a class="link" href="" ng-click="refresh()">
     <h2 class="title">My Pending Link Request</h2>
-    <button class="button button-small button-clear button-positive" ng-click="refresh()">Refresh List</button>    
+  </a> 
+  <br> 
     <h4 class="title">Link Request To Me</h4>
 
       <div class="text-center" ng-show="requestedToUserLoad">
@@ -24,7 +26,7 @@
       </div>
     </div>
 
-      <div ng-if="requestedToUser.length == 0">
+      <div class="info-text" ng-if="requestedToUser.length == 0">
         No user are requesting to connect with you right now.
       </div>
 
@@ -55,7 +57,7 @@
       </div>
     </div>
 
-      <div ng-if="requestedFromUser.length == 0">
+      <div class="info-text" ng-if="requestedFromUser.length == 0">
         You are not requesting to connect with any users right now.
       </div>
 

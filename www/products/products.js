@@ -6,16 +6,6 @@ var myApp = angular.module('sample.products', [
 myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
-    .state('myProducts', {
-      url: '/myProducts?refresh',
-      controller: 'MyProductController',
-      templateUrl: 'products/myProducts.html',
-      data: {
-        requiresLogin: false
-      }
-    });
-
-  $stateProvider
     .state('showProductList', {
       url: '/showProductList?user_id?refresh',
       controller: 'ShowProductListController',
@@ -93,7 +83,25 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
   $scope.updateTotalPrice = function()
   { 
-    $scope.newRequest.total_price = $scope.newRequest.quantity * $scope.showObject.price_per_unit;
+    if(!$scope.hasCustomPricing)
+    {
+      $scope.newRequest.total_price = $scope.newRequest.quantity * $scope.showObject.price_per_unit;
+    }
+    else
+    {
+      var price_per_unit_custom = 0;
+      for(var i=0; i<$scope.customPricingList.length; i++)
+      {
+          if($scope.newRequest.quantity <= $scope.customPricingList[i].to)
+          {
+            price_per_unit_custom = $scope.customPricingList[i].price;
+            break;
+          }          
+      }
+      console.log(price_per_unit_custom);
+      $scope.newRequest.total_price = $scope.newRequest.quantity * price_per_unit_custom ;
+    }
+
     $scope.newRequest.total_price = $scope.newRequest.total_price.toFixed(2);
     
     if(isNaN($scope.newRequest.total_price))
@@ -769,7 +777,7 @@ function tinify(){
       $scope.removePicture();
       return;
     }
-    else if(!$scope.file.type.split("/")[0] == "image")
+    else if($scope.file.type.split("/")[0] != "image")
     {
       growl.error('File uploaded is not an image. Please try again',{title: 'Error Upload Image!'});
       $scope.file = null;
@@ -1036,97 +1044,4 @@ myApp.controller('ShowProductListController', function($scope,growl, USER_TYPE,U
     $state.go("editProduct",{id:id , user_id:user_id});
   }
   
-});
-
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////// MyProductController  ////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////// MyProductController  ////////////////////////////////////////////////////////////////////////////////////////////////
-
-myApp.controller('MyProductController', function(auth,PublicService,growl,$location,$stateParams, $scope, $state, BackandService,USER_TYPE){
-
-  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
-  $scope.loading = false;
-  $scope.productList = [];
-  $scope.showItem = null;
-
-
-  if($scope.authProfile != null && $state.current.name == "myProducts")
-  {
-    $scope.loading = true;
-    $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-
-
-    if($scope.userInSession.user_type < USER_TYPE.DROPSHIP)
-    {
-      getAllProductByUserId($scope.userInSession.user_id);
-    }
-  }
-
-  $scope.refresh = function()
-  {
-    console.log("Refresh");
-    getAllProductByUserId($scope.userInSession.user_id);
-    growl.info('List is up to date',{title: 'Refresh List!'});
-  }
-
-  $scope.addProduct = function(){
-    console.log("Add Product Page");
-    $state.go("addProduct");
-  }
-
-  $scope.editProduct = function(id,user_id){
-    console.log("Edit Product Page");
-    $state.go("editProduct",{id:id , user_id:user_id});
-  }
-
- function getAllProductByUserId(user_id){
-
-    BackandService.getAllProductByUserId(user_id).then(function(result){
-
-      console.log("Result From getAllProductByUserId");
-      console.log(result);  
-      $scope.productList = result.data;    
-      $scope.loading = false;
-
-    });
-
-  }
-
-  $scope.authenticated = null;
-
-  function checkAuthentication()
-  {
-    if($scope.userInSession.user_id == $scope.showItem.user_id)
-    {
-      $scope.authenticated = true;
-    }
-  }
-
-  $scope.toggleItem = function(item) {
-    
-    if ($scope.isItemShown(item)) 
-    {
-      $scope.showItem = null;
-    } 
-    else 
-    {
-      $scope.showItem = item;
-      console.log($scope.showItem);
-      $scope.timeAgo = PublicService.getAgoTime(item.updated_at);
-    }
-
-    if($scope.authenticated == null)
-    {
-      checkAuthentication();
-    }
-
-  };
-
-  $scope.isItemShown = function(item) {
-    return $scope.showItem === item;
-  };
-
 });

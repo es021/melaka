@@ -63,8 +63,12 @@ String.prototype.getDate = function(){
   }
 
   //2016-06-04T21:06:16
+  console.log(this);
+
   var date =  this;
   var dateArr = date.split("T")[0].split("-");
+
+  console.log(dateArr);
 
   var year = dateArr[0];
   var month =  monthNumToString(dateArr[1]);

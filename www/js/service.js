@@ -187,16 +187,32 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }  
 
-  getUserByType = function(user_type){
-    return $http ({
+  getUserByType = function(user_type,limit){
+    if(limit != "all")
+    {
+      return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getUserByType',
+        params: {
+          parameters: {
+            user_type: user_type,
+            limit: limit
+          }
+        }
+      })
+    }
+    else
+    {
+      return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getAllUserByType',
         params: {
           parameters: {
             user_type: user_type
           }
         }
       })
+    }
   }  
 
   editTransactionPaymentStatus = function(id,payment_status,timeUpdated){
@@ -311,7 +327,20 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
-  editUserById = function (id, first_name,last_name,state,email,phone_number,about,updated_at){
+  editUserById = function 
+    (id,
+    first_name,
+    last_name,
+    address_line_1,
+    address_line_2,
+    city,
+    state,
+    postal_code,
+    email,
+    phone_number,
+    about,
+    updated_at)
+  {
     return $http ({
         method: 'POST',
         url: Backand.getApiUrl() + '/1/query/data/editUserById',
@@ -320,7 +349,11 @@ myApp.service('BackandService', function ($http, Backand, auth){
             id: id,
             first_name : first_name,
             last_name : last_name,
+            address_line_1 : address_line_1,
+            address_line_2 : address_line_2,
+            city : city,
             state : state,
+            postal_code : postal_code,
             email : email,
             phone_number : phone_number,
             about : about,
@@ -362,6 +395,18 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
+  getUserCountByUserType = function (user_type){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getUserCountByUserType',
+        params: {
+          parameters: {
+            user_type: user_type,
+          }
+        }
+      })
+  }
+
   getAllNotificationByUserId = function (user_id,limit){
     return $http ({
         method: 'GET',
@@ -383,6 +428,34 @@ myApp.service('BackandService', function ($http, Backand, auth){
           parameters: {
             id: id,
             other_user_id : other_user_id
+          }
+        }
+      })
+  }
+
+  editDeliveryDetailByTransId = function (trans_id,delivery_detail,updated_at){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/editDeliveryDetailByTransId',
+        params: {
+          parameters: {
+            trans_id: trans_id,
+            delivery_detail : delivery_detail,
+            updated_at : updated_at
+          }
+        }
+      })
+  }
+
+  editPaymentDetailByTransId = function (trans_id,payment_detail,updated_at){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/editPaymentDetailByTransId',
+        params: {
+          parameters: {
+            trans_id: trans_id,
+            payment_detail : payment_detail,
+            updated_at : updated_at            
           }
         }
       })
@@ -482,6 +555,7 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getSupplierNameById : getSupplierNameById,
     getUserNameById : getUserNameById,
     editUserById : editUserById,
+    getUserCountByUserType : getUserCountByUserType,
 
     //user link
     getUserLink : getUserLink,
@@ -503,6 +577,8 @@ myApp.service('BackandService', function ($http, Backand, auth){
     editTransactionPaymentStatus : editTransactionPaymentStatus,
     getUserCompletedTransaction : getUserCompletedTransaction,
     getTransById : getTransById,
+    editDeliveryDetailByTransId : editDeliveryDetailByTransId,
+    editPaymentDetailByTransId : editPaymentDetailByTransId,
 
     //notification
     getAllNotificationByUserId : getAllNotificationByUserId,

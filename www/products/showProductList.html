@@ -13,7 +13,9 @@
 	<a class="link" href="" ng-click="refresh()">
 		<h2>My Products</h2>
 	</a>
-	<a href="" class="link small" ng-click="addProduct()">Add New Product</a>
+
+	<a href="" class="link" ng-click="addProduct()">Add New Product</a>
+
 </div>
 
 <br>
@@ -72,7 +74,7 @@
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
 
-  <div ng-if="productList.length == 0">
+  <div  class="info-text" ng-if="productList.length == 0">
     	No product available
   </div>
 </p>

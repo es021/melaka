@@ -10,30 +10,57 @@
 <img src="{{authProfile.picture}}" class="img-circle profile-image" width="100">
 <hr>
 
-<div class="text-left">
+<div class="item text-left">
 
 <form role="form">
-<div class="form-group" ng-form='agentform'>
+<div class="form-group" ng-form='registrationForm'>
 
-  <label class="item item-input">
-    <input type="text" class="form-control" id="first_name" placeholder="First Name" ng-model="newUser.first_name" required>
-  </label>
+       
+     <!-- first name -->
+     <label class="item-input">
+      <input type="text" class="form-control" placeholder="First Name" ng-model="newUser.first_name" required>
+    </label>
 
-  <label class="item item-input">
-    <input type="text" class="form-control" id="last_name" placeholder="Last Name" ng-model="newUser.last_name" required>
-  </label>
+     <!-- last name -->
+     <label class="item-input">
+      <input type="text" class="form-control" placeholder="Last Name" ng-model="newUser.last_name" required>
+    </label>
 
-  <label class="item item-input">
-    <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" id="phone_number" ng-model="newUser.phone_number" required data-country="US">
-  </label>  
+    <!-- email -->
+    <label class="item-input">
+      <input type="text" class="form-control" placeholder="Email" ng-model="newUser.email" >
+    </label> 
+      
+    <!-- phone number -->      
+    <label class="item-input">
+      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" ng-model="newUser.phone_number" required data-country="US">
+    </label> 
+   
+    <!-- address-line1 input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="address-line1" name="address-line1" placeholder="Address Line 1" ng-model="newUser.address_line_1" required>
+    </label>    
 
-  <label class="item item-input">
-    <input type="text" class="form-control" placeholder="Email" id="email" ng-model="newUser.email" >
-  </label>  
+    <!-- address-line2 input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="address-line2" name="address-line2" placeholder="Address Line 2" ng-model="newUser.address_line_2">
+    </label>    
 
-  <div class="list">
-    <label class="item item-input item-select">
-      <div class="input-label">State</div>
+    <!-- city input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="newUser.city" required>
+    </label>      
+
+    <!-- postal-code input-->
+    <label class="item-input">
+      <input type="text" class="form-control" id="postal-code" name="postal-code" placeholder="Postal Code" ng-model="newUser.postal_code" required>
+    </label>        
+
+     <!-- state -->
+    <div class="list">
+    <label class="item-input item-select">
+      <div class="input-label" ng-show="newUser.state == null">State</div>
+      <div class="input-label" ng-show="newUser.state != ''">{{newUser.state}}</div>
       <select ng-model="newUser.state" required>
         <option selected>Johor</option>
         <option>Kedah</option>
@@ -54,12 +81,10 @@
       </select>
     </label>
 
-
-  <label class="item item-input">
+    <!-- about -->
+    <label class="item-input">
     <textarea class="form-control" placeholder="Tell more about yourself (optional)" rows="4" ng-model="newUser.about"></textarea>
     </label>
-
-  </div>
 
   <div class="text-center" ng-show="loading">
       Registering Your Account as {{user_type.getUserType()}}<br>
@@ -67,19 +92,19 @@
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
-  <button ng-if="user_type==USER_TYPE.SUPPLIER" ng-disabled="!agentform.$valid || loading" type="submit" 
+  <button ng-if="user_type==USER_TYPE.SUPPLIER" ng-disabled="!registrationForm.$valid || loading" type="submit" 
   class="button button-block button-{{USER_TYPE.ION_COLOR.SUPPLIER}}" ng-click="createNewUser()">Register as New Supplier</button>
 
-  <button ng-if="user_type==USER_TYPE.STOCKIST" ng-disabled="!agentform.$valid || loading" type="submit" 
+  <button ng-if="user_type==USER_TYPE.STOCKIST" ng-disabled="!registrationForm.$valid || loading" type="submit" 
   class="button button-block button-{{USER_TYPE.ION_COLOR.STOCKIST}}" ng-click="createNewUser()">Register as New Stockist</button>
 
-  <button ng-if="user_type==USER_TYPE.DROPSHIP" ng-disabled="!agentform.$valid || loading" type="submit" 
+  <button ng-if="user_type==USER_TYPE.DROPSHIP" ng-disabled="!registrationForm.$valid || loading" type="submit" 
   class="button button-block button-{{USER_TYPE.ION_COLOR.DROPSHIP}}" ng-click="createNewUser()">Register as New Dropship</button>
 
+  </div>
+  </form>
+
 </div>
-</form>
-</div>
-<hr>
 </p>
 </ion-view>
 </ion-content>

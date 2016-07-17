@@ -49,28 +49,44 @@
 <!-------------------------------------------------------- -->
 
 
-  <div class="item item-avatar">
-    <img src="{{showObject.picture}}">
-    <h2>{{showObject.first_name}} {{showObject.last_name}}</h2>
-	<p><strong>{{showObject.user_type.getUserType()}}</strong>  | User Id {{showObject.id}}</p>
-  </div>
+    <div class="item item-body text-center">
+      <img src="{{showObject.picture}}" class="img-circle profile-image-no-shadow" width="50">
 
-  <div class="item item-body">
-    <h3><strong>Location</strong> | {{showObject.state}}</h3>
-    <h3><strong>Email</strong> | {{showObject.email}}</h3>
-    <h3><strong>Phone Number</strong> | {{showObject.phone_number}}</h3>
-    <h3><strong>Member Since</strong> | {{showObject.created_at}}</h3>
-    
-    <hr>
-    <h3><strong>More Information</strong></h3>
-    <p ng-if="showObject.about == ''">
-		There is no other information about this agent
-    </p>    
-    <p ng-if="showObject.about != ''">
-		{{showObject.about}}
-    </p>
 
-  </div>
+      <h2><strong>{{showObject.first_name}} {{showObject.last_name}}</strong><br><span class="small">Member Since {{showObject.created_at}}<span></h2>          
+      <div class="small">
+      <span class="fa fa-phone" aria-hidden="true" style="padding-right:10px;"> </span>{{showObject.phone_number}}<br>
+      <span class="fa fa-envelope" aria-hidden="true" style="padding-right:10px;"> </span>{{showObject.email}}<br>
+      
+      <span class="fa fa-map-marker" aria-hidden="true" style="padding-right:10px;"> </span>
+        <a href="" ng-click="toggleFullAddress()">
+
+          <span ng-show="fullAddress">
+            {{showObject.address_line_1}}<br>
+            <span ng-if="showObject.address_line_2 != ''">{{showObject.address_line_2}}<br></span>
+            {{showObject.city}}<br>{{showObject.state}}, {{showObject.postal_code}}
+            
+          </span>
+
+          <span ng-show="!fullAddress">
+            {{showObject.city}}, {{showObject.state}}
+          </span>
+        </a>
+
+      </div>
+
+      <br>
+
+      <div class="small item item-body">
+        <span ng-if="showObject.about != ''" class="text-muted">{{showObject.about}}</span>
+        <span ng-if="showObject.about == ''" class="text-muted">There is no more information about this user</span>
+      </div>
+
+
+    </div>
+    <div  ng-if="showObject.user_type < USER_TYPE.DROPSHIP" class="item text-center">
+      <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProductList(showObject.id)">See Product</button>
+    </div>
 
 </div>
 

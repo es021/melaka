@@ -76,12 +76,30 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
+myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
   console.log("FROM APP CONTROLLER");
 
   $scope.APP_CONSTANT = APP_CONSTANT;
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile")); 
+  console.log($scope.userInSession); 
+  $scope.USER_TYPE = USER_TYPE;
 
-  $scope.main = function(){
+
+  $scope.main = function()
+  {
+    //to clear off from previous production
+    if($scope.userInSession != null)
+    {
+      if(typeof($scope.userInSession.user_type) == "string")
+      {
+        window.localStorage.removeItem("UserInSession");
+        window.localStorage.removeItem("AuthProfile");
+        $scope.userInSession = null;
+        $scope.authProfile = null;
+      }
+    }
+
     var state = $location.path().replace("/", "");
 
     console.log(state);
@@ -98,23 +116,45 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     }
     else
     {
-      $state.go(state);
+      //filter required login page
+      if($scope.authProfile == null)
+      {
+        var notRequiredLoginPage = ["home","contact","login","signup","about"];
+        var goToLogin = false;
+        goToLogin = notRequiredLoginPage.indexOf(state) < 0;
+        if(goToLogin)
+        {
+          growl.error('Please login first',{title: 'This Page Required Login!'});
+          //$state.go("login");
+
+          var host = "";
+          if(window.location.host == "hosting.backand.io")
+          {
+            host = "hosting.backand.io/wzs21testapp";
+          }
+          else
+          {
+            host = window.location.host;
+          }
+
+          window.location.href = window.location.protocol+"//"+host+"/#/login";
+        }
+        else
+        {
+          $state.go(state);
+        }
+      }
+      else
+      {
+        $state.go(state);
+      }
     }
-  }
 
-  //setting header and footer
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));  
-
-  //to clear off from previous production
-  if($scope.userInSession != null)
-  {
-    if(typeof($scope.userInSession.user_type) == "string")
+    //setting header and footer
+    PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
+    if($scope.authProfile != null)
     {
-        window.localStorage.removeItem("UserInSession");
-        window.localStorage.removeItem("AuthProfile");
-        $scope.userInSession = null;
-        $scope.authProfile = null;
+      PublicService.initSideMenu();
     }
   }
   
@@ -130,14 +170,6 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     //console.log(accessToken);
     //console.log(idToken);
     $state.go('login_success', {accessToken:accessToken,idToken:idToken});
-  }
-
-  $scope.USER_TYPE = USER_TYPE;
-
-  PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
-  if($scope.authProfile != null)
-  {
-    PublicService.initSideMenu();
   }
 
  $scope.comfirmLogout = function()
@@ -202,15 +234,12 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
   $scope.myProducts = function() {
     closeSideMenuBar();
     //$state.go('myProducts');
-    if($scope.userInSession != null)
+    if($scope.userInSession == null)
     {
-      $state.go('showProductList',{user_id:$scope.userInSession.user_id});
-    }
-    else
-    {
-      growl.error('',{title: 'You Are Not Logged In Or Not Registered!'});
+      $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
     }
 
+    $state.go('showProductList',{user_id:$scope.userInSession.user_id});
   };
   
   ///////////////////////////////////////////////
