@@ -13,7 +13,7 @@ myApp.constant("APP_CONSTANT",{
         "FACEBOOK" : "https://www.facebook.com/DropBug-895228623915581/",
         "LOGO_SMALL" : "img/logo_small.png",
         "LOGO_ONLY_SMALL" : "img/logo_only_small.png",
-        "LOADER" : "img/loader.gif"
+        "LOADER" : "img/AjaxLoader.gif"
 });
 
 myApp.constant("USER_LINK_TYPE", {

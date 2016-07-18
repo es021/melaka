@@ -277,6 +277,31 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
+  getProductQuantity = function(id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getProductQuantity',
+        params: {
+          parameters: {
+            id: id
+          }
+        }
+      })
+  }
+
+  editProductQuantity = function(id,quantity){
+    return $http ({
+        method: 'POST',
+        url: Backand.getApiUrl() + '/1/query/data/editProductQuantity',
+        params: {
+          parameters: {
+            id: id,
+            quantity: quantity
+          }
+        }
+      })
+  }
+
   getUserNameById = function(id){
     return $http ({
         method: 'GET',
@@ -570,6 +595,8 @@ myApp.service('BackandService', function ($http, Backand, auth){
     getAllProductByUserId : getAllProductByUserId,
     getShowProductById : getShowProductById,
     editProductById : editProductById,
+    getProductQuantity : getProductQuantity,    
+    editProductQuantity : editProductQuantity,
 
     //transactionQuery
     getUserActiveListing : getUserActiveListing,

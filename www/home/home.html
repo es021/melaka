@@ -25,8 +25,8 @@
 
 		<h4 class="title">Be Part of the Community<br><small>Let's Get Started!</small></h4>
 		<div ng-app="sample" ng-controller="AppController">
-			<button class="button button-block button-assertive" ng-click="login()">Login</button>
-			<button class="button button-block button-assertive" ng-click="signup()">Signup</button>
+			<button class="button button-block button-positive" ng-click="login()">Login</button>
+			<button class="button button-block button-positive" ng-click="signup()">Signup</button>
 		</div>
 
     </div>
@@ -103,22 +103,32 @@
 	    <div class="text-left">
 			<div class="list">
 	          <div ng-repeat="item in myNotification">
-				    <a class="item item-icon-left" ng-click="isRead(item)" href="#{{item.link}}">
-		   			  	
-		   			  	<i ng-if="item.category == NOTI_CATEGORY.GENERAL" class="icon ion-android-notifications"></i>	
-		   			  	<i ng-if="item.category == NOTI_CATEGORY.PROFILE" class="icon ion-person"></i>	
-		   			  	<i ng-if="item.category == NOTI_CATEGORY.LINK" class="icon ion-person-stalker"></i>	
-		   			  	<i ng-if="item.category == NOTI_CATEGORY.PRODUCT" class="icon ion-bag"></i>	
-		   			  	<i ng-if="item.category == NOTI_CATEGORY.TRANSACTION" class="icon ion-arrow-swap"></i>	
-		   			  	<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>	
-
-						{{item.text}}
+				    <a class="item item-body" ng-click="isRead(item)" href="#{{item.link}}">
+		   				
+							<i ng-if="item.category == NOTI_CATEGORY.GENERAL" class="icon ion-android-notifications"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.PROFILE" class="icon ion-person"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.LINK" class="icon ion-person-stalker"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.PRODUCT" class="icon ion-bag"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.TRANSACTION" class="icon ion-arrow-swap"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>	
+							{{item.text}}
 						<br>
-						<span ng-if="!item.isRead" class="label label-primary">New</span>
-						<span class="small text-muted">{{item.created_at.getTime()}} - {{item.created_at.getDate()}}<span>
+						
+							
+							<span ng-if="!item.isRead" class="label label-primary">New</span>
+
+							<span class="small text-muted" style="font-size:10px;">{{item.created_at.getTime()}} - {{item.created_at.getDate()}}</span>
+						
+					</span>
+
 
 				    </a>
 	          </div>
+
+	         
+	          	<a ng-if="myNotification.length == 5" class="item text-right" ng-click="openAllNotification()" href="#">
+	          	    <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="findMore(USER_TYPE.DROPSHIP)">See All Notifications</button>
+				</a>
 			</div>
 		</div>
 

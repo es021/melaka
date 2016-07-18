@@ -129,8 +129,34 @@ ion-side-menu{
   height:40px;
   float:right;
   margin:0 0 0 5px;
+
 }
 
+@media only screen 
+and (max-width : 400px) {
+  .scroll-content{    
+    background:url(../img/background3_small.jpg) no-repeat;
+    background-size: cover;
+    height:100%;
+  }
+
+  ion-side-menu{
+    background:url(../img/background3_small.jpg) repeat;
+    background-size: cover;
+    height:40px;
+    float:right;
+    margin:0 0 0 5px;
+  }
+
+  .notification #text{
+      font-size: 13px;
+  }
+
+  .notification #subtext{
+        font-size: 10px;
+  }
+
+}
 @media only screen 
 and (min-width : 321px) {
   .scroll-content{    
@@ -215,7 +241,7 @@ and (min-width : 1224px) {
 
 
 #mySpinner{
-  opacity: 0.85;
+  opacity: 0.5;
 }
 
 

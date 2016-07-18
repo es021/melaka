@@ -1,33 +1,36 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 
-<div class="text-center" ng-show="showItemLoad">
+<div class="text-center" ng-show="loading">
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 </div>
 
-<div ng-show="!showItemLoad">
+       
+
+<div ng-show="!loading">
 
 <h2 class="title">Transaction Details</h2>
         <div class="item">
-                <h2 ><strong>{{showItem.product_name}}</strong></h2>
+                <h2><a href="" ng-click="showProduct()"><strong>{{showItem.product_name}}</strong></a></h2>
                     
-                    <h3 ng-if="userInSession.user_id == showItem.from_user_id">requested to 
-                        <a ng-click="showUser({{showItem.to_user_id}})">{{showItem.other_user_name}}</a>
-                    </h3 ng-if="userInSession.user_type=='supplier'">
+                    <h3 class="text-muted">
+                    <span ng-if="userInSession.user_id == showItem.from_user_id">requested to 
+                        <a href="" ng-click="showUser({{showItem.to_user_id}})">{{showItem.other_user_name}}</a>
+                    </span ng-if="userInSession.user_type=='supplier'">
 
-                    <h3 ng-if="userInSession.user_id == showItem.to_user_id">requested from 
-                        <a ng-click="showUser({{showItem.from_user_id}})">{{showItem.other_user_name}}</a>
+                    <span ng-if="userInSession.user_id == showItem.to_user_id">requested from 
+                        <a href="" ng-click="showUser({{showItem.from_user_id}})">{{showItem.other_user_name}}</a>
+                    </span>
+                    <br>
+                    <small>Last Updated : {{timeAgo}}</small>
+
                     </h3>
-                    
-                    <h4>
-                        Last Updated : {{timeAgo}}
-                    </h4>
-                
+                </div>
 
                   <!-- ******************************************************************************************************************************* -->
                   <!--- STATUS AND PAYMENT STATUS FOR AGENT ****************************************************************************************** -->
                     <!-- GENERAL STATUS -->
-                    
+            <div class="item">
     
                     <span ng-if="showItem.status == TRANS_STATUS.REQUESTED" class="label label-success">Requested</span>
                     <span ng-if="showItem.status == TRANS_STATUS.DENIED" class="label label-danger">Denied</span>
@@ -63,8 +66,8 @@
                   <!--- ACTION FOR SUPPLIER *************************************************************************************** -->
                   <div ng-if="userInSession.user_id == showItem.to_user_id">
      
-                    <button ng-if="showItem.status == TRANS_STATUS.REQUESTED" 
-                    ng-click="updateTrans({{showItem.id}},'status',TRANS_STATUS.APPROVED)" 
+                    <button ng-if="showItem.status == TRANS_STATUS.REQUESTED"  
+                    ng-click="approveTrans({{showItem.id}})" 
                     class="button button-small button-outline button-balanced icon-left ion-checkmark-round">Approve</button>
                 
                     <button ng-if="showItem.status == TRANS_STATUS.REQUESTED" 
@@ -86,14 +89,18 @@
 
     <!--- TRANSACTION INFO AND -->
     <div class="item">
+      <div class="text-center">
+            <h1 style="font-size:20px;"><small class="icon-left ion-cash"> Total Price</small>
+            <br>
+            RM {{showItem.total_price}}
+            </h1>
 
-        <h4><strong>Price Per Unit</strong> | RM {{showProduct.price_per_unit}}</h4>
-        <h4><strong>Quantity</strong> | {{showItem.quantity}}</h4>
-        <h4><strong>Type</strong> | {{showItem.type}}</h4>
-        <h4><strong>Total Price</strong> | RM {{showItem.total_price}} </h4>  
-
-        <h4><strong>Category</strong> | {{showProduct.category}}</h4>
-
+            <h1 style="font-size:20px;"><small class="icon-left ion-pricetags"> Quantity</small>
+            <br>
+            {{showItem.quantity}}
+            </h1>
+            
+      </div>
 
     </div>
         
@@ -171,18 +178,13 @@
               
               <form role="form" accept="image/gif, image/jpeg">
               <div class="form-group" ng-form='insert_file_form'> 
-                <div  ng-controller="AddFileController">
+                <div>
                 <label ng-if="progress == null" class="item item-input">
 
                     <div>
                         <span class="input-label">Upload A Photo or File <h4>(Size Limit : {{imageSizeLimit}} MB) (only image or pdf accepted)</h4></span>
-                        <input  type="file" id="file" name="file"   onchange="angular.element(this).scope().addPicture()" />
+                        <input  type="file" id="file" name="file"   onchange="angular.element(this).scope().addPicture()" required>
                     </div>      
-
-                    <div class="text-center" ng-show="loadImage">
-                        Adding Picture<br>
-                        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
-                    </div>
 
                     </label> 
 
@@ -191,7 +193,7 @@
                     <div ng-if="progress > 0">
                         <strong>{{filename}}</strong>
                     </div>
-                    <button ng-if="progress > 0" class="button button-clear button-positive" ng-click="removePicture()">Remove File</button>
+                    <button ng-if="progress > 0 && !loadingFile" class="button button-clear button-positive" ng-click="removePicture()">Remove File</button>
 
                     <div class="progress">
                       <div class="progress-bar progress-bar-striped active" role="progressbar"
@@ -202,9 +204,14 @@
 
                 </div>
 
+                    <div class="text-center" ng-show="loadingFile">
+                        {{loadStatus}}<br>
+                        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+                    </div>
                     <br>
+
                     <div class="button-bar">
-                      <a ng-disabled="!insert_file_form.$valid" class="button button-small button-balanced" ng-click="addDetail()">Add</a> 
+                      <a ng-disabled="progress < 100" class="button button-small button-balanced" ng-click="submitFile()">Add</a> 
                       <a class="button button-small button-assertive" ng-click="setShow('info')">Cancel</a>
                     </div>
                 </div>

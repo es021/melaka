@@ -38,13 +38,13 @@ myApp.config(function($stateProvider, BackandProvider) {
 });
 
 
-myApp.controller('TransactionsController', function($state,$stateParams,growl,NOTI_CATEGORY,$ionicModal, $ionicPopup,$scope, BackandService,PublicService, auth, TRANS_STATUS){
+myApp.controller('TransactionsController', function($state,$stateParams,growl,NOTI_CATEGORY,$ionicModal, $ionicPopup,$scope, BackandService,PublicService,FileReaderService, auth, TRANS_STATUS){
   
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.activeListing = {};
-  $scope.showProduct = {};
   $scope.showItem = {};
+  $scope.product_quantity = null;
   $scope.TRANS_STATUS = TRANS_STATUS;
   $scope.stateName = $state.current.name;
   $scope.loading = false;
@@ -76,10 +76,17 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
         if($stateParams.show != null)
         {
           $scope.show = $stateParams.show; 
+          console.log($scope.show);
         }
       }
     }
   }
+
+
+  $scope.showProduct = function()
+  {
+    $state.go('showProduct',{product_id:$scope.showItem.product_id,show:'info'})
+  };
 
   $scope.openLink = function(link)
   {
@@ -125,6 +132,32 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
 
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////// Update Active Listing HELPER FUNCTION /////////////////////////////////////////////////////
+
+  $scope.approveTrans = function(id)
+  {
+    //check the quantity of the product first
+    BackandService.getProductQuantity(id).then(function(result){
+      
+      if(result.status == 200)
+      {
+        $scope.product_quantity = result.data[0].quantity;
+        console.log($scope.product_quantity);
+        if($scope.showItem.quantity <= $scope.product_quantity)
+        {
+          console.log("Valid to be approved");
+          $scope.product_quantity -= $scope.showItem.quantity;
+          console.log($scope.product_quantity);
+          $scope.updateTrans(id,"status",TRANS_STATUS.APPROVED);
+        }
+      }
+
+    },function errorCallback(result) 
+      {
+        PublicService.errorCallbackFunction(result,"default");
+      });
+
+    
+  }
 
   $scope.updateTrans = function(id,key,value)
   {
@@ -229,7 +262,7 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
         {
           $scope.showItem.status = status;
           createNotificationTransaction(id,"status",status);
-          openModal(status);
+          postTransStatusUpdateAction(status);
         }
 
       },function errorCallback(result){
@@ -245,7 +278,7 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
         {
           $scope.showItem.payment_status = payment_status;
           createNotificationTransaction(id,"payment_status",payment_status);
-          openModal(payment_status);
+          postTransStatusUpdateAction(payment_status);
         }
 
       },function errorCallback(result){
@@ -278,56 +311,76 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
       confirmPopup.then(function(result) {
           if(result)
           {
-            var to_user_id = $scope.showItem.other_user_id;
-            
-            var link = "/showTransaction?id="+$scope.showItem.id+"&other_user_id="+$scope.userInSession.user_id;
-            var category = 0;
-            var other_user_name = $scope.userInSession.first_name;
-            
-            var text = other_user_name +" request you to add a proof of "+type;
-
-            var updated_at = PublicService.getTimestampinMysql();
-
-            if(type == "delivery")
-            {
-              category = NOTI_CATEGORY.TRANSACTION;
-              link += "&show=add_delivery_detail";
-
-              BackandService.editDeliveryDetailByTransId($scope.showItem.id,"requested",updated_at).then(function(result){
-                
-                if(result.status == 200)
-                {
-                  $scope.showItem.delivery_detail = "requested";
-                  BackandService.createNotification(to_user_id,text,link,category);
-                }
-
-              },function errorCallbackFunction(result){
-                  PublicService.errorCallbackFunction(result,"default");
-              });
-
-            }
-            
-            if(type == "payment")
-            {
-              category = NOTI_CATEGORY.PAYMENT;
-              link += "&show=add_payment_detail";
-
-              BackandService.editPaymentDetailByTransId($scope.showItem.id,"requested",updated_at).then(function(result){
-                
-                if(result.status == 200)
-                {
-                  $scope.showItem.payment_detail = "requested";
-                  BackandService.createNotification(to_user_id,text,link,category);
-                }
-
-              },function errorCallbackFunction(result){
-                  PublicService.errorCallbackFunction(result,"default");
-              });
-
-            }
-            
+            editTransDetailAndCreateNotification(type,"request","requested");   
           }
        });
+  }
+
+
+  function editTransDetailAndCreateNotification(type,edit_type,edit_value)
+  {
+      $scope.loadStatus = "Editing transaction record";
+      $scope.loadingFile  = true;
+
+      var to_user_id = $scope.showItem.other_user_id;
+      
+      var link = "/showTransaction?id="+$scope.showItem.id+"&other_user_id="+$scope.userInSession.user_id;
+      var category = 0;
+      var other_user_name = $scope.userInSession.first_name;
+      var updated_at = PublicService.getTimestampinMysql();
+
+      var text = "";
+      
+      if(edit_type == "request")
+      {
+        text = other_user_name +" request you to add a proof of "+type;
+        link += "&show=add_"+type+"_detail"
+      } 
+           
+      if(edit_type == "link")
+      {
+        text = other_user_name +" added a proof of "+type;
+      }
+
+      if(type == "delivery")
+      {
+        category = NOTI_CATEGORY.TRANSACTION;
+        BackandService.editDeliveryDetailByTransId($scope.showItem.id,edit_value,updated_at).then(function(result){
+          
+          if(result.status == 200)
+          {
+            $scope.showItem.delivery_detail = edit_value;
+            BackandService.createNotification(to_user_id,text,link,category);
+            $scope.loadingFile  = false;
+            $scope.show = 'info';
+          }
+        },function errorCallbackFunction(result){
+            PublicService.errorCallbackFunction(result,"default");
+            $scope.loadingFile  = false;
+        });
+
+      }
+      
+      if(type == "payment")
+      {
+        category = NOTI_CATEGORY.PAYMENT;
+        BackandService.editPaymentDetailByTransId($scope.showItem.id,edit_value,updated_at).then(function(result){
+          
+          if(result.status == 200)
+          {
+            $scope.showItem.payment_detail = edit_value;
+            BackandService.createNotification(to_user_id,text,link,category);
+            $scope.show = 'info';
+            $scope.loadingFile  = false;
+          }
+
+        },function errorCallbackFunction(result){
+            PublicService.errorCallbackFunction(result,"default");
+            $scope.loadingFile  = false;
+       
+        });
+
+      }
   }
 
   $scope.setShow = function(show)
@@ -335,8 +388,19 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
     $scope.show = show;
   }
 
-  function openModal(status)
+  function postTransStatusUpdateAction (status)
   {
+    if(status == TRANS_STATUS.APPROVED)
+    {
+        console.log("post action");
+        BackandService.editProductQuantity($scope.showItem.product_id,$scope.product_quantity).then(function(result){
+
+        },function errorCallback(result){
+            PublicService.errorCallbackFunction(result,"default");
+        });
+
+    }
+
     if(status == TRANS_STATUS.DELIVERED)
     {
       var confirmPopup = $ionicPopup.confirm({
@@ -379,12 +443,15 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
       $state.go("showTransaction",{id:$scope.showItem.id, other_user_id: $scope.showItem.other_user_id});
    }
 
+
+/*
   function getProductbyId(product_id){
       BackandService.getObjectById("products",product_id).then(function(result){
         $scope.showProduct = result.data;
         console.log($scope.showProduct);
       });
   }  
+  */
 
   function getTransById(trans_id,other_user_id){
       BackandService.getTransById(trans_id,other_user_id).then(function(result){
@@ -392,7 +459,7 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
         console.log($scope.showItem);
         if(result.status == 200 && $scope.showItem != null)
         {
-          getProductbyId($scope.showItem.product_id);
+          //getProductbyId($scope.showItem.product_id);
 
           if($scope.showItem.payment_detail == '')
           {
@@ -405,9 +472,14 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
           }
 
           $scope.timeAgo = PublicService.getAgoTime($scope.showItem.updated_at);
+
+          $scope.loading = false;
+
         }
       },function errorCallback(result){
-        PublicService.errorCallbackFunction(result,"Opps! Something went wrong");
+          PublicService.errorCallbackFunction(result,"Opps! Something went wrong");
+          $scope.loading = false;
+
       });
   }
 
@@ -435,19 +507,14 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
   $scope.isItemShown = function(item) {
     return $scope.showItem === item;
   };  
-});
 
+  // ---------------------------------------------------------------------------------------------------------------------//
+  // ---------------------------------------------------------------------------------------------------------------------//
+  // ---------------------------------------------------------------------------------------------------------------------//
+  // ADD FILE //
+  // ADD FILE //
+  // ADD FILE //
 
-
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-///////////////// AddFileController  ////////////////////////////////////////////////////////////////////////////////////////////
-///////////////// AddFileController  ////////////////////////////////////////////////////////////////////////////////////////////
-
-myApp.controller('AddFileController', function($scope,$http, $stateParams, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
-  
-  
   $scope.imageSizeLimit = 2;
 
   $scope.filePath = null;
@@ -458,9 +525,9 @@ myApp.controller('AddFileController', function($scope,$http, $stateParams, USER_
   $scope.imageSrc = null;
   $scope.progress = null;
 
-$scope.filename = "";
+  $scope.filename = "";
 
-  $scope.loading = false;
+  $scope.loadingFile = false;
   $scope.loadStatus = "";
 
   $scope.file_link = "";
@@ -525,13 +592,13 @@ function tinify(){
     }
     else if($scope.file.type.split("/")[0] != "image" && $scope.file.type.split("/")[1] != "pdf")
     {
-      growl.error('File uploaded is not an image. Please try again',{title: 'Error Upload Image!'});
+      growl.error('File uploaded is not an image or pdf. Please try again',{title: 'Error Upload File!'});
       $scope.file = null;
       return;
     }
     else if(sizeInMB($scope.file.size) > $scope.imageSizeLimit)
     {
-      growl.error('Image Size is Too Large. Please try again',{title: 'Error Upload Image!'});
+      growl.error('File Size is Too Large. Please try again',{title: 'Error Upload File!'});
       $scope.file = null;
       return;
     }
@@ -551,10 +618,10 @@ function tinify(){
     $scope.progress = (progress.loaded / progress.total)*100;
   });
 
-  function uploadFileBackand(){ 
-    $scope.loadStatus = "Saving image of your new product. Might be a while depending on the size of the image"
+  function uploadFileBackand(type){ 
+    $scope.loadStatus = "Saving file to the server. Might be a while depending on the size of the file."
 
-    var filename = generateFileName();
+    var filename = generateFileName(type);
     var filedata = $scope.filedata;
 
       BackandService.uploadFile(filename,filedata).then(function(result){
@@ -565,24 +632,37 @@ function tinify(){
           if(result.status == 200)
           {
             $scope.file_link = result.data.url;
+            editTransDetailAndCreateNotification(type,"link",$scope.file_link);   
           }
+
+          $scope.loadingFile = false;
 
         },function errorCallback(result){
             console.log(result);
+            $scope.loadingFile = false;
         });  
 
   }  
-
  
-  function generateFileName()
+  function generateFileName(type)
   {
     //supplier<id>_<create_at>
-    var imageType = $scope.file.type.split(/[ /]+/)[1];
-    var timeStamp = PublicService.getTimestampForFileName($scope.newProduct.created_at);
+    var fileType = $scope.file.type.split(/[ /]+/)[1];
+    var timeStamp = PublicService.getTimestampForFileName(PublicService.getTimestampinMysql());
 
-    var productName = "user"+$scope.userInSession.user_id +"_"+ timeStamp + "." + imageType;
-    console.log(productName);
-    return productName
+    var fileName = "transactions"+$scope.showItem.id +"_"+type+"_"+ timeStamp + "." + fileType;
+    //console.log(productName);
+    return fileName;
   }
 
+  $scope.submitFile = function(type){
+      $scope.loadingFile = true;
+      var type = $scope.show.split("_")[1];
+      console.log(type);
+      uploadFileBackand(type);
+  }
+
+
+
 });
+
