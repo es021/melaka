@@ -70,8 +70,7 @@ myApp.config(function($stateProvider) {
       data: {
         requiresLogin: true
       }
-  }); 
-
+  });
   
 });
 
@@ -100,7 +99,7 @@ myApp.controller('AllUserController', function($scope, USER_TYPE,UserService, Ba
 
 });
 
-myApp.controller('FindUserController', function($scope, USER_TYPE,UserService, BackandService, auth, $state,$location, $stateParams){
+myApp.controller('FindUserController', function($scope, USER_TYPE,UserService,SearchService, BackandService, auth, $state,$location, $stateParams){
   
   $scope.user_type_request = $stateParams.user_type_request;
   $scope.USER_TYPE = USER_TYPE;
@@ -120,6 +119,59 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,UserService, B
   $scope.stockistsCount = 0;
   $scope.dropshipsCount = 0; 
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////// SEARCH HELPER /////////////////////////////////////////////////////////////////////
+  $scope.search = {};
+  $scope.search.key = $stateParams.searchKey;
+  $scope.user_type = USER_TYPE.ALL;
+
+  $scope.users = [];
+  $scope.searchLoad = false;
+  $scope.isSubmit = false;
+
+  function searchUserNameByType(searchKey,type)
+  {
+    var length = 0;
+    try
+    {
+      length = searchKey.length;
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+
+
+    if(length < 3)
+    {
+      return;
+    }
+
+    $scope.searchLoad = true;
+    SearchService.searchUserByNameByType(searchKey,type).then(function(result){
+      $scope.users = result.data
+      console.log(result);
+      $scope.searchLoad = false;
+
+    },function errorCallback(result){
+
+        PublicService.errorCallbackFunction(result,"default");
+        $scope.searchLoad = false;
+    });
+  }
+
+  $scope.submit = function()
+  {
+    if(!$scope.search.key)
+    {
+      $scope.users = [];
+    }
+    $scope.isSubmit = true;
+    searchUserNameByType($scope.search.key,$scope.search.user_type);    
+  }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////////////////////
 
   $scope.findMore = function(user_type)
   {

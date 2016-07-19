@@ -220,16 +220,16 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
       
       switch(value){
         case TRANS_STATUS.DENIED :
-          text = other_user_name+" DENIED your product request. :("
+          text = other_user_name+" DENIED your product request";
           break;
         case TRANS_STATUS.APPROVED :
-          text = other_user_name+" APPROVED your product request. :)"
+          text = other_user_name+" APPROVED your product request";
           break;
         case TRANS_STATUS.DENIED :
-          text = other_user_name+" has DELIVERED your package. :)"
+          text = other_user_name+" has DELIVERED your package";
           break;
         case TRANS_STATUS.RECEIVED :
-          text = other_user_name+" has COMFIRMED package received. :)"
+          text = other_user_name+" has COMFIRMED package received";
           break;
       }
 
@@ -240,10 +240,10 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
       
       switch(value){
         case TRANS_STATUS.PAID :
-          text = other_user_name+" has PAID for the product request. :)"
+          text = other_user_name+" has PAID for the product request";
           break;
         case TRANS_STATUS.COMFIRMED :
-          text = other_user_name+" has COMFIRMED payment received. :)"
+          text = other_user_name+" has COMFIRMED payment received";
           break;
       }
 

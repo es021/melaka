@@ -9,6 +9,7 @@ var myApp = angular.module('sample.home', [
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {  //$locationProvider.html5Mode(true);
+  
   $stateProvider
     .state("home", {
       url: "/home",
@@ -16,6 +17,15 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {  //$loc
       controller: 'HomeController',
       templateUrl: 'home/home.html'
     });
+  
+  $stateProvider
+    .state("allNotifications", {
+      url: "/allNotifications?pageNumber",
+      cache: false,
+      controller: 'NotificationController',
+      templateUrl: 'home/allNotifications.html'
+    });
+
 });
 
 
@@ -133,6 +143,84 @@ myApp.controller('HomeController', function ($scope,growl, $state, BackandServic
             PublicService.errorCallbackFunction(result,"Opps! Something went wrong.");
       });
 
+  }
+
+
+ 
+
+});
+
+myApp.controller('NotificationController', function ($scope,growl, $state,$stateParams, BackandService,PublicService,USER_TYPE,NOTI_CATEGORY) {
+  
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  console.log($scope.userInSession);
+
+  $scope.pageNumber = $stateParams.pageNumber;
+
+  getNotificationByPage($scope.userInSession.user_id,$scope.pageNumber);
+  
+
+  $scope.refreshNotification = function()
+  {
+    console.log("Refresh");
+    getNotificationByPage($scope.userInSession.user_id,$scope.pageNumber);
+    growl.info('Notification is up to date',{title: 'Refresh Notification!'});
+  }
+
+  function getNotificationByPage(user_id,pageNumber)
+  {
+    $scope.NOTI_CATEGORY = NOTI_CATEGORY;
+    BackandService.getAllNotificationByUserId_page(user_id,pageNumber).then(function(result){
+      console.log("Return Result from getAllNotificationByUserId_page");
+      console.log(result);
+
+        $scope.myNotificationLoad = false;
+        if(result.status == 200)
+        {
+          $scope.myNotification = result.data.data;
+        }
+
+      }, function errorCallback (result){
+            console.log(result);
+            PublicService.errorCallbackFunction(result,"Opps! Something went wrong.");
+            $scope.myNotificationLoad = false;
+      });
+  }
+
+  $scope.isRead = function (item)
+  {
+    item.isRead = true;
+
+    BackandService.setNotificationIsReadTrue(item.id).then(function(result){
+      console.log("Return Result from isRead");
+      console.log(result);
+
+        if(result.status == 200)
+        {
+        }
+
+      }, function errorCallback (result){
+            PublicService.errorCallbackFunction(result,"Opps! Something went wrong.");
+      });
+
+  }
+
+  $scope.getMoreNotification = function(direction)
+  {
+    console.log(direction);
+    if(direction == 'next')
+    {
+      $scope.pageNumber = Number($scope.pageNumber) + 1;
+    }
+
+    if(direction == 'previous')
+    {
+      $scope.pageNumber = Number($scope.pageNumber) - 1;
+    }
+
+
+    $state.go('allNotifications',{pageNumber:$scope.pageNumber});
   }
 
 

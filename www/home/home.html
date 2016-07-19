@@ -119,16 +119,15 @@
 
 							<span class="small text-muted" style="font-size:10px;">{{item.created_at.getTime()}} - {{item.created_at.getDate()}}</span>
 						
-					</span>
-
 
 				    </a>
 	          </div>
 
 	         
-	          	<a ng-if="myNotification.length == 5" class="item text-right" ng-click="openAllNotification()" href="#">
-	          	    <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="findMore(USER_TYPE.DROPSHIP)">See All Notifications</button>
-				</a>
+	            <div ng-if="myNotification.length == 5" class="item text-right">
+	          	    <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="allNotifications()">See More Notifications</button>
+				</div>
+
 			</div>
 		</div>
 

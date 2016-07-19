@@ -1,0 +1,74 @@
+<!--App Controller-->
+<ion-view>
+<ion-content class="text-center has-header has-footer padding">
+
+<p>
+
+		<a class="link" href="" ng-click="refreshNotification()">
+		<h2>My Notifications</h2>
+		</a>
+		  <div class="text-center" ng-show="myNotificationLoad">
+				<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+		  </div>
+	    
+	    <div class="text-left">
+			<div class="list">
+
+
+	         	<div class = "item text-right">
+
+	          	    <span ng-disabled="true" class="button button-small button-dark">{{pageNumber}}</span>
+
+	          	    <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
+	          	    	ng-click="getMoreNotification('previous')">Previous</button>
+
+	          	    <button ng-if="myNotification.length == 10" class="button button-small button-positive icon-right ion-arrow-right-a" 
+	          	    	ng-click="getMoreNotification('next')">Next</button>
+
+				</div>
+
+	          <div ng-repeat="item in myNotification">
+				    <a class="item item-body" ng-click="isRead(item)" href="#{{item.link}}">
+		   				
+							<i ng-if="item.category == NOTI_CATEGORY.GENERAL" class="icon ion-android-notifications"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.PROFILE" class="icon ion-person"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.LINK" class="icon ion-person-stalker"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.PRODUCT" class="icon ion-bag"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.TRANSACTION" class="icon ion-arrow-swap"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>	
+							{{item.text}}
+						<br>
+						
+							
+							<span ng-if="!item.isRead" class="label label-primary">New</span>
+
+							<span class="small text-muted" style="font-size:10px;">{{item.created_at.getTime()}} - {{item.created_at.getDate()}}</span>
+						
+
+				    </a>
+	          </div>
+
+	         	<div class = "item text-right">
+
+	          	    <span ng-disabled="true" class="button button-small button-dark">{{pageNumber}}</span>
+
+	          	    <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
+	          	    	ng-click="getMoreNotification('previous')">Previous</button>
+
+	          	    <button ng-if="myNotification.length == 10" class="button button-small button-positive icon-right ion-arrow-right-a" 
+	          	    	ng-click="getMoreNotification('next')">Next</button>
+
+				</div>
+			</div>
+		</div>
+
+	    <div  class="info-text" ng-if="myNotification.length == 0">
+	    	You Have No Notification
+	    </div>
+
+
+</p>
+
+
+</ion-view>
+</ion-content>

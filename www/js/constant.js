@@ -27,6 +27,7 @@ myApp.constant("USER_LINK_TYPE", {
 });
 
 myApp.constant("USER_TYPE", {
+        "ALL":0,
         "SUPPLIER": 1,
         "STOCKIST": 2,
         "DROPSHIP": 3,

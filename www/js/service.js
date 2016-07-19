@@ -8,7 +8,7 @@ var myApp = angular.module('sample.service', [
 //////////////////// BackandService ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// BackandService ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.service('BackandService', function ($http, Backand, auth){
+myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
   var baseUrl = '/1/objects/';
 
   function getUrl(objectName){
@@ -277,6 +277,30 @@ myApp.service('BackandService', function ($http, Backand, auth){
       })
   }
 
+  sendEmailNotificationCustom = function(notification_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/objects/action/notifications/'+notification_id+'?name=sendEmailNotificationCustom',
+        params: {
+          parameters: {
+          }
+        }
+      })
+  }
+
+  sendEmailToInnovaSeeds = function(email_from,message){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/objects/action/notifications/137?name=emailToInnovaSeeds',
+        params: {
+          parameters: {
+            email_from: email_from,
+            message : message
+          }
+        }
+      })
+  }
+
   getProductQuantity = function(id){
     return $http ({
         method: 'GET',
@@ -443,6 +467,25 @@ myApp.service('BackandService', function ($http, Backand, auth){
           }
         }
       })
+  }
+
+  getAllNotificationByUserId_page = function (user_id,pageNumber){
+    return $http ({
+      method: 'GET',
+      url: Backand.getApiUrl() + '/1/objects/notifications',
+      params: {
+        pageSize: 10,
+        pageNumber: pageNumber,
+        filter: [
+          {
+            fieldName: 'user_id',
+            operator: 'in',
+            value: user_id
+          }
+        ],
+        sort: '[{fieldName:\'created_at\', order:\'desc\'}]'
+      }
+    });
   }  
 
   getTransById = function (id,other_user_id){
@@ -532,21 +575,15 @@ myApp.service('BackandService', function ($http, Backand, auth){
     newNotification.created_at = getTimestampinMysql();
     newNotification.updated_at = getTimestampinMysql();
 
-    //getting the user email first
-    getUserEmailById(user_id).then(function(result){
-      console.log("Getting the user email");
-      console.log(result.data[0].email);
+    console.log("newNotification");
+    console.log(newNotification);
 
+    addObject("notifications",newNotification).then(function(result){
+      console.log(result);
       if(result.status == 200)
       {
-        //create notification
-        newNotification.user_email = result.data[0].email;
-        console.log(newNotification);
-        addObject("notifications",newNotification).then(function(result){
-          console.log(result);
-        },function errorCallback(result){
-          console.log(result);
-        });
+        console.log("sending email notification to user");
+        sendEmailNotificationCustom(result.data.id);
       }
 
     },function errorCallback(result){
@@ -612,7 +649,10 @@ myApp.service('BackandService', function ($http, Backand, auth){
     setNotificationIsReadTrue : setNotificationIsReadTrue,
     createNotification : createNotification,
 
-    uploadFile : uploadFile 
+    uploadFile : uploadFile ,
+    sendEmailToInnovaSeeds: sendEmailToInnovaSeeds,
+
+    getAllNotificationByUserId_page : getAllNotificationByUserId_page
   }
 
 });
@@ -950,6 +990,42 @@ myApp.service('UserService', function ($state){
 
   return{
     showUser : showUser
+  }
+
+});
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////// SearchService ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////// SearchService ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+myApp.service('SearchService', function ($http, Backand, USER_TYPE){
+  var baseUrl = '/1/objects/';
+
+  function getUrl(objectName){
+    return Backand.getApiUrl() + baseUrl + objectName + "/";
+  }
+
+  searchUserByNameByType = function (key,type)
+  {
+  
+
+      return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/searchUserByName',
+        params: {
+          parameters: {
+            key: key
+          }
+        }
+      })
+    
+    
+
+  }
+
+  return{
+      searchUserByNameByType:searchUserByNameByType
   }
 
 });

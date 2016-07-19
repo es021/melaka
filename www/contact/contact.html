@@ -50,15 +50,16 @@
 
 
 <hr>
-<h2 class="title">Send Us Message</h2>
-<h4 class="subtitle">{{APP_CONSTANT.EMAIL}}</h4>
+<h2 class="title">Send Message</h2>
+<h4 class="subtitle">or Report Bug</h2>
+<h5 class="subtitle">{{APP_CONSTANT.EMAIL}}</h5>
 <div class="card text-center">
   <div class="item text-left">
     <form role="form">
     <div class="form-group" ng-form='contactform'>
-          <input type="email" class="form-control" id="email" placeholder=" Your Email (optional)" ng-model="contact.email">
+          <input type="email" class="form-control" id="email" placeholder=" Your Email (optional)" ng-model="newMessage.email_from">
           <br>
-          <textarea class="form-control" placeholder="Your message goes here" rows="4" ng-model="contact.message" required></textarea>
+          <textarea class="form-control" placeholder="Your message goes here" rows="4" ng-model="newMessage.message" required></textarea>
 
       <button ng-disabled="!contactform.$valid" type="submit" class="button button-block button-assertive" ng-click="submit()">Submit</button>
 

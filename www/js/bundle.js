@@ -304,6 +304,14 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
     $state.go('showProductList',{user_id:user_id});
   }
 
+  $scope.allNotifications = function(){
+    closeSideMenuBar();
+    
+    var pageNumber = 1;
+    console.log("Page "+pageNumber);
+    $state.go('allNotifications',{pageNumber:pageNumber});
+  }
+
   $scope.showProduct = function(product_id,show)
   {
     $state.go('showProduct',{product_id:product_id,show:show})
