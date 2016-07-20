@@ -7,11 +7,11 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
     .state('showProductList', {
-      url: '/showProductList?user_id?refresh',
+      url: '/showProductList?user_id&refresh&pageNumber',
       controller: 'ShowProductListController',
       templateUrl: 'products/showProductList.html',
       data: {
-        requiresLogin: false
+        requiresLogin: false,
       }
     });
 
@@ -27,7 +27,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
     .state('editProduct', {
-      url: '/editProduct?id?user_id',
+      url: '/editProduct?id&user_id',
       controller: 'AddEditProductController',
       templateUrl: 'products/addEditProduct.html',
       data: {
@@ -37,7 +37,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 
   $stateProvider
     .state('showProduct', {
-      url: '/showProduct?product_id?show',
+      url: '/showProduct?product_id&show',
       controller: 'ShowProductController',
       templateUrl: 'products/showProduct.html',
       data: {
@@ -147,7 +147,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
       if(result.status == 200)
       {
-        growl.success("Redirecting to Listing Page" ,{title: 'Successfully Added New Request!'});              
+        growl.success("Click on page title [My Active Listing] to update list." ,{title: 'Successfully Added New Request!'});              
         $state.go("myActiveListing");
 
         BackandService.createNotification(result.data.to_user_id,
@@ -263,8 +263,9 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
       if(result.status == 200)
       {
-        growl.success($scope.showObject.name+" Deleted" ,{title: 'Successfully Delete One Product!'});
-        $state.go('showProductList',{user_id:$scope.userInSession.user_id,refresh:'y'});
+        growl.success("Click on page title [My Product] to update list." ,{title: 'Successfully Delete One Product!'});
+        deleteFileBackand($scope.showObject.picture);
+        $state.go('showProductList',{user_id:$scope.userInSession.user_id,refresh:'y',pageNumber:1 });
       }
 
       $scope.loading = false;
@@ -275,6 +276,20 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
         $scope.loading = false;
     });
   };
+
+
+
+  function deleteFileBackand(filename){ 
+      BackandService.deleteFile(filename).then(function(result){
+
+          console.log("Result From Delete Image from Backand");
+          console.log(result);      
+
+        },function errorCallback(result){
+            console.log(result);
+        });  
+  } 
+
 
 
 });
@@ -705,7 +720,7 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
 
       if(result.status == 200)
       {
-        growl.success("Redirecting to product page" ,{title: 'Successfully Added New Product!'}); 
+        growl.success("Click on page title [My Product] to update list." ,{title: 'Successfully Added New Product!'}); 
         $scope.loadingEdit = false;             
         $scope.loading = false;     
         //$state.go("myProducts",{refresh:'y'});
@@ -804,7 +819,6 @@ function tinify(){
       $scope.progress = (progress.loaded / progress.total)*100;
   });
 
-
   function uploadFileBackand(){ 
     $scope.loadStatus = "Saving image of your new product. Might be a while depending on the size of the image"
 
@@ -859,8 +873,10 @@ function tinify(){
 
       if(result.status == 200)
       {
-        growl.success("Redirecting to product page" ,{title: 'Successfully Added New Product!'});              
-        $state.go("myProducts",{refresh:'y'});
+        growl.success("Click on page title [My Product] to update list." ,{title: 'Successfully Added New Product!'});              
+
+        $state.go('showProductList',{user_id:$scope.userInSession.user_id, refresh:'y', pageNumber:1});
+
       }
     });
 
@@ -872,9 +888,9 @@ function tinify(){
     var imageType = $scope.file.type.split(/[ /]+/)[1];
     var timeStamp = PublicService.getTimestampForFileName($scope.newProduct.created_at);
 
-    var productName = "user"+$scope.userInSession.user_id +"_"+ timeStamp + "." + imageType;
+    var productName = "user"+$scope.userInSession.user_id +"_"+$scope.newProduct.name+"_"+ timeStamp + "." + imageType;
     console.log(productName);
-    return productName
+    return productName;
   }
 
   $scope.createNewProduct = function (){
@@ -915,7 +931,7 @@ function tinify(){
 ///////////////// ShowProductListController  ////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////// ShowProductListController  ////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.controller('ShowProductListController', function($scope,growl, USER_TYPE,USER_LINK_TYPE,$stateParams, BackandService,PublicService,$state){
+myApp.controller('ShowProductListController', function($scope,growl,OFFSET, USER_TYPE,USER_LINK_TYPE,$stateParams, BackandService,PublicService,$state){
 
   $scope.userObject = {};
   $scope.userObject.id = $stateParams.user_id;
@@ -930,12 +946,16 @@ myApp.controller('ShowProductListController', function($scope,growl, USER_TYPE,U
 
   $scope.isMyProduct = false;
 
-  function checkIsMyProduct ()
+
+  $scope.pageNumber = $stateParams.pageNumber;
+  console.log($scope.pageNumber);
+  $scope.OFFSET = OFFSET;
+
+  $scope.refresh = function()
   {
-    if($scope.userInSession.user_id == $stateParams.user_id)
-    {
-        $scope.isMyProduct = true;
-    }
+    console.log("Refresh");
+    getAllProductByUserId($stateParams.user_id);
+    growl.info('List is up to date',{title: 'Refresh List!'});
   }
 
   checkIsMyProduct();
@@ -946,6 +966,39 @@ myApp.controller('ShowProductListController', function($scope,growl, USER_TYPE,U
   }
 
   getAllProductByUserId($scope.userObject.id);
+
+  if($stateParams.refresh == 'y')
+  {
+    $scope.refresh();
+  }
+
+
+
+  $scope.getMore = function(direction)
+  {
+    console.log(direction);
+    var pageNumber = $scope.pageNumber;
+    if(direction == 'next')
+    {
+      pageNumber = Number($scope.pageNumber) + 1;
+    }
+
+    if(direction == 'previous')
+    {
+      pageNumber = Number($scope.pageNumber) - 1;
+    }
+
+    console.log(pageNumber);
+    $state.go($state.current.name,{pageNumber:pageNumber});
+  }
+
+  function checkIsMyProduct ()
+  {
+    if($scope.userInSession.user_id == $stateParams.user_id)
+    {
+        $scope.isMyProduct = true;
+    }
+  }
 
   function getUserNameById(id){
     $scope.loading = true;
@@ -966,7 +1019,7 @@ myApp.controller('ShowProductListController', function($scope,growl, USER_TYPE,U
 
   function getAllProductByUserId(user_id){
     $scope.loading = true;
-    BackandService.getAllProductByUserId(user_id).then(function(result){
+    BackandService.getAllProductByUserId(user_id,$scope.pageNumber).then(function(result){
 
       console.log("Result From getAllProductByUserId");
       console.log(result);  
@@ -1024,12 +1077,7 @@ myApp.controller('ShowProductListController', function($scope,growl, USER_TYPE,U
     });      
   }
 
-  $scope.refresh = function()
-  {
-    console.log("Refresh");
-    getAllProductByUserId($stateParams.user_id);
-    growl.info('List is up to date',{title: 'Refresh List!'});
-  }
+
 
   /////////////////////////////////////////////////////////////////////////////////////////////
   //// Helper Function for MyProduct ////////////////////////////////////////

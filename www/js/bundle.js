@@ -221,9 +221,18 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
 
   $scope.myActiveListing = function() {
     closeSideMenuBar();
-    $state.go('myActiveListing');
+    var pageNumber = 1;
+    console.log("Page "+pageNumber);
+    $state.go('myActiveListing',{pageNumber,pageNumber});
   };
   
+
+  $scope.myCompletedTransaction = function() {
+    closeSideMenuBar();
+    var pageNumber = 1;
+    $state.go('myCompletedTransaction',{pageNumber,pageNumber});
+  };
+
 
   $scope.findUser = function(user_type_request) {
     closeSideMenuBar();
@@ -239,7 +248,8 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
       $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
     }
 
-    $state.go('showProductList',{user_id:$scope.userInSession.user_id});
+    var pageNumber = 1;
+    $state.go('showProductList',{user_id:$scope.userInSession.user_id,refresh:'y', pageNumber:pageNumber });
   };
   
   ///////////////////////////////////////////////
@@ -264,13 +274,9 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
 
   $scope.myLinkedUser = function() {
     closeSideMenuBar();
-    $state.go('myLinkedUser');
+    var pageNumber = 1;
+    $state.go('myLinkedUser',{pageNumber,pageNumber});
   };  
-
-  $scope.myCompletedTransaction = function() {
-    closeSideMenuBar();
-    $state.go('myCompletedTransaction');
-  };
 
   $scope.myPendingLinkRequest = function()
   {
@@ -301,7 +307,8 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
 
   $scope.showProductList = function(user_id){
     closeSideMenuBar();
-    $state.go('showProductList',{user_id:user_id});
+    var pageNumber = 1;
+    $state.go('showProductList',{user_id:user_id,refresh:'y', pageNumber:pageNumber});
   }
 
   $scope.allNotifications = function(){

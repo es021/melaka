@@ -5,7 +5,7 @@
     <h2 class="title">My Pending Link Request</h2>
   </a> 
   <br> 
-    <h4 class="title">Link Request To Me</h4>
+    <h4 class="title">To Me</h4>
 
       <div class="text-center" ng-show="requestedToUserLoad">
         <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
@@ -27,7 +27,7 @@
     </div>
 
       <div class="info-text" ng-if="requestedToUser.length == 0">
-        No user are requesting to connect with you right now.
+        None
       </div>
 
           <!--
@@ -36,7 +36,7 @@
     requestedFromUser List
     -->
     <hr>
-    <h4 class="title">Link Request From Me</h4>
+    <h4 class="title">From Me</h4>
 
       <div class="text-center" ng-show="requestedFromUserLoad">
         <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
@@ -58,7 +58,7 @@
     </div>
 
       <div class="info-text" ng-if="requestedFromUser.length == 0">
-        You are not requesting to connect with any users right now.
+        None
       </div>
 
 

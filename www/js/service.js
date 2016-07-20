@@ -8,7 +8,7 @@ var myApp = angular.module('sample.service', [
 //////////////////// BackandService ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// BackandService ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
+myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET){
   var baseUrl = '/1/objects/';
 
   function getUrl(objectName){
@@ -36,13 +36,15 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
 
   //CUSTOM QUERY /////////////////////////////////////////////////
 
-  getAllProductByUserId = function (user_id){
+  getAllProductByUserId = function (user_id,page_number){
+    var start_from = OFFSET.PAGE * (page_number-1);
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getAllProductByUserId',
         params: {
           parameters: {
-            user_id: user_id
+            user_id: user_id,
+            start_from: start_from
           }
         }
       })
@@ -229,13 +231,15 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
       })
   }
 
-  getLinkedUserById = function(id){
+  getLinkedUserById = function(id,page_number){
+    var start_from = OFFSET.PAGE * (page_number-1);
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getLinkedUserById',
         params: {
           parameters: {
-            id: id
+            id: id,
+            start_from : start_from
           }
         }
       })
@@ -352,25 +356,29 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
       })
   }
 
-  getUserActiveListing = function(user_id){
+  getUserActiveListing = function(user_id,page_number){
+    var start_from = OFFSET.PAGE * (page_number-1);
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getUserActiveListing',
         params: {
           parameters: {
-            user_id: user_id
+            user_id: user_id,
+            start_from : start_from
           }
         }
       })
   }
 
-  getUserCompletedTransaction = function(user_id){
+  getUserCompletedTransaction = function(user_id,page_number){
+    var start_from = OFFSET.PAGE * (page_number-1);
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getUserCompletedTransaction',
         params: {
           parameters: {
-            user_id: user_id
+            user_id: user_id,
+            start_from : start_from
           }
         }
       })
@@ -543,6 +551,30 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
 
   var filesActionName = 'files';
   var objectName = 'products';
+  deleteFile = function (filename){
+
+    var fileBaseName = filename.split("/");
+    var fileBaseName = fileBaseName[fileBaseName.length - 1];
+
+    console.log("Deleting file "+fileBaseName);
+    // By calling the files action with POST method in will perform
+    // an upload of the file into Backand Storage
+    return $http({
+      method: 'DELETE',
+      url : Backand.getApiUrl() + '/1/objects/action/' +  objectName,
+      params:{
+        "name": filesActionName
+      },
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      // you need to provide the file name and the file data
+      data: {
+        "filename": fileBaseName,
+      }
+    });
+  }
+
   uploadFile = function (filename,filedata){
     // By calling the files action with POST method in will perform
     // an upload of the file into Backand Storage
@@ -637,9 +669,10 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
 
     //transactionQuery
     getUserActiveListing : getUserActiveListing,
+    getUserCompletedTransaction : getUserCompletedTransaction,
+
     editTransactionStatus : editTransactionStatus,
     editTransactionPaymentStatus : editTransactionPaymentStatus,
-    getUserCompletedTransaction : getUserCompletedTransaction,
     getTransById : getTransById,
     editDeliveryDetailByTransId : editDeliveryDetailByTransId,
     editPaymentDetailByTransId : editPaymentDetailByTransId,
@@ -649,7 +682,8 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE){
     setNotificationIsReadTrue : setNotificationIsReadTrue,
     createNotification : createNotification,
 
-    uploadFile : uploadFile ,
+    uploadFile : uploadFile,
+    deleteFile : deleteFile,
     sendEmailToInnovaSeeds: sendEmailToInnovaSeeds,
 
     getAllNotificationByUserId_page : getAllNotificationByUserId_page

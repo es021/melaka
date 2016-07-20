@@ -54,7 +54,7 @@ myApp.config(function($stateProvider) {
 
   $stateProvider
     .state('myLinkedUser', {
-      url: '/myLinkedUser?refresh',
+      url: '/myLinkedUser?refresh&pageNumber',
       controller: 'LinkedUserController',
       templateUrl: 'users/myLinkedUser.html',
       data: {
@@ -547,9 +547,14 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
 });
 
 
-myApp.controller('LinkedUserController', function ($scope,growl, $state,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+myApp.controller('LinkedUserController', function ($scope,growl,OFFSET, $state,$stateParams,UserService, BackandService,PublicService, USER_LINK_TYPE) {
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+
+  $scope.pageNumber = $stateParams.pageNumber;
+  console.log($scope.pageNumber);
+  $scope.OFFSET = OFFSET;
 
   $scope.refresh = function(){
     initLinkedUser();
@@ -579,7 +584,7 @@ myApp.controller('LinkedUserController', function ($scope,growl, $state,UserServ
   }  
 
   function getLinkedUserById(user_id){
-    BackandService.getLinkedUserById(user_id).then(function(result){
+    BackandService.getLinkedUserById(user_id,$scope.pageNumber).then(function(result){
       console.log("Getting all getLinkedUserById");
       //console.log(result);
 
@@ -592,7 +597,26 @@ myApp.controller('LinkedUserController', function ($scope,growl, $state,UserServ
     },function errorCallback(error){
       PublicService.errorCallbackFunction(error,"Failed : getLinkedUserById");
     });
-  }    
+  }
+
+  $scope.getMore = function(direction)
+  {
+    console.log(direction);
+    var pageNumber = $scope.pageNumber;
+    if(direction == 'next')
+    {
+      pageNumber = Number($scope.pageNumber) + 1;
+    }
+
+    if(direction == 'previous')
+    {
+      pageNumber = Number($scope.pageNumber) - 1;
+    }
+
+    console.log(pageNumber);
+    $state.go($state.current.name,{pageNumber:pageNumber});
+  }
+    
 
 });
 

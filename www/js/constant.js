@@ -64,6 +64,10 @@ myApp.constant("NOTI_CATEGORY", {
         "PAYMENT": 6
 });
 
+myApp.constant("OFFSET", {
+        "PAGE": 7
+});
+
 myApp.constant("PICTURE_CONSTANT", {
         "UNAVAILABLE": "https://www.dropbox.com/s/rdg50p8jvdktnfy/sorry-image-not-available.png?raw=1",
         "TEST":"https://www.dropbox.com/s/mul2zkl4rqnbuxt/image-test.jpeg?raw=0"

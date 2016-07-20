@@ -1,3 +1,39 @@
+    var start_from = OFFSET.PAGE * (page_number-1) + 1;
+
+
+////////////////////////////////////////////////////////////////
+getUserActiveListing
+
+SELECT 
+    t.*,
+    CONCAT(u.first_name," ",u.last_name) AS other_user_name,
+    u.id AS other_user_id,
+    p.name AS product_name
+
+FROM transactions t, users u, products p
+
+WHERE 
+    t.to_user_id LIKE '%{{user_id}}' AND
+    u.id LIKE t.from_user_id AND
+    p.id LIKE t.product_id AND
+        t.type LIKE 'Delivery' AND
+
+    (status < 5 OR payment_status < 8 )
+
+OR
+
+    t.from_user_id LIKE '%{{user_id}}' AND
+    u.id LIKE t.to_user_id AND
+    p.id LIKE t.product_id AND
+        t.type LIKE 'Delivery' AND
+
+    (status < 5 OR payment_status < 8 )
+    
+ORDER BY updated_at DESC;
+
+////////////////////////////////////////////////////////////////
+
+
 getLinkedUserById(id)
 {
 	SELECT DISTINCT l.updated_at AS linked_at , u.*

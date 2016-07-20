@@ -7,7 +7,7 @@ var myApp = angular.module('sample.transactions', [
 myApp.config(function($stateProvider, BackandProvider) {
   $stateProvider
     .state('myActiveListing', {
-      url: "/myActiveListing",
+      url: "/myActiveListing?pageNumber",
       controller: 'TransactionsController',
       templateUrl: 'transactions/myActiveListing.html',
       data: {
@@ -17,7 +17,7 @@ myApp.config(function($stateProvider, BackandProvider) {
 
     $stateProvider
     .state('myCompletedTransaction', {
-      url: "/myCompletedTransaction",
+      url: "/myCompletedTransaction?pageNumber",
       controller: 'TransactionsController',
       templateUrl: 'transactions/myActiveListing.html',
       data: {
@@ -38,7 +38,7 @@ myApp.config(function($stateProvider, BackandProvider) {
 });
 
 
-myApp.controller('TransactionsController', function($state,$stateParams,growl,NOTI_CATEGORY,$ionicModal, $ionicPopup,$scope, BackandService,PublicService,FileReaderService, auth, TRANS_STATUS){
+myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,growl,NOTI_CATEGORY,$ionicModal, $ionicPopup,$scope, BackandService,PublicService,FileReaderService, auth, TRANS_STATUS){
   
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
@@ -50,6 +50,9 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
   $scope.loading = false;
   $scope.show = 'info';
 
+  $scope.pageNumber = $stateParams.pageNumber;
+  console.log($scope.pageNumber);
+  $scope.OFFSET = OFFSET;
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   //////////  Main Listing /////////////////////////////////////////////////////////////////////////
 
@@ -110,12 +113,31 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
     growl.info('List is up to date',{title: 'Refresh List!'});
   }
 
+
+  $scope.getMore = function(direction)
+  {
+    console.log(direction);
+    var pageNumber = $scope.pageNumber;
+    if(direction == 'next')
+    {
+      pageNumber = Number($scope.pageNumber) + 1;
+    }
+
+    if(direction == 'previous')
+    {
+      pageNumber = Number($scope.pageNumber) - 1;
+    }
+
+    console.log(pageNumber);
+    $state.go($state.current.name,{pageNumber:pageNumber});
+  }
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////// my Active Listing /////////////////////////////////////////////////////////////////////////
  
   function getUserActiveListing(user_id){
-      BackandService.getUserActiveListing(user_id).then(function(result){
+      BackandService.getUserActiveListing(user_id,$scope.pageNumber).then(function(result){
         $scope.activeListing = result.data;
+        console.log($scope.activeListing);
         $scope.loading = false;
       });
   }
@@ -124,7 +146,7 @@ myApp.controller('TransactionsController', function($state,$stateParams,growl,NO
 
 
   function getUserCompletedTransaction(user_id){
-      BackandService.getUserCompletedTransaction(user_id).then(function(result){
+      BackandService.getUserCompletedTransaction(user_id,$scope.pageNumber).then(function(result){
         $scope.activeListing  = result.data;
         $scope.loading = false;
       });

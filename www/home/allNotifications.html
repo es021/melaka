@@ -17,7 +17,7 @@
 
 	         	<div class = "item text-right">
 
-	          	    <span ng-disabled="true" class="button button-small button-dark">{{pageNumber}}</span>
+	          	    <span ng-disabled="true" class="button button-small button-dark">Page {{pageNumber}}</span>
 
 	          	    <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
 	          	    	ng-click="getMoreNotification('previous')">Previous</button>
@@ -50,7 +50,7 @@
 
 	         	<div class = "item text-right">
 
-	          	    <span ng-disabled="true" class="button button-small button-dark">{{pageNumber}}</span>
+	          	    <span ng-disabled="true" class="button button-small button-dark">Page {{pageNumber}}</span>
 
 	          	    <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
 	          	    	ng-click="getMoreNotification('previous')">Previous</button>
@@ -62,9 +62,16 @@
 			</div>
 		</div>
 
-	    <div  class="info-text" ng-if="myNotification.length == 0">
-	    	You Have No Notification
-	    </div>
+	   <div  class="item" ng-if="myNotification.length == 0">
+	   	<span ng-if="pageNumber == 1">
+	    	No notification available
+	    </span>
+	    
+	    <span ng-if="pageNumber > 1">
+	    	No more notification available
+	    </span>
+	  	</div>
+	  
 
 
 </p>
