@@ -47,6 +47,8 @@ myApp.controller('ProfileControllerHelper', function($scope, $stateParams, growl
     $scope.loading = true;
 
     $scope.newUser.picture = $scope.authProfile.picture;
+    $scope.newUser.picture_large = $scope.authProfile.picture_large;
+    $scope.newUser.cover_photo = $scope.authProfile.cover_photo;
     $scope.newUser.auth_id = $scope.authProfile.auth_id;
 
     $scope.newUser.user_type = $scope.user_type;
@@ -151,6 +153,8 @@ myApp.controller('RegisterControllerHelper', function($scope, $stateParams, grow
         var userInSession = {};
         userInSession.user_id = result.data.id;
         userInSession.user_type = result.data.user_type;
+        userInSession.first_name = result.data.first_name;
+        userInSession.last_name = result.data.last_name;
 
         window.localStorage.setItem("UserInSession",JSON.stringify(userInSession));
         

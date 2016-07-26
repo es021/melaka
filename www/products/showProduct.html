@@ -1,5 +1,9 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
+
+<!-- NEXT LINE Even if page is dynamically generated and URL contains query parameters -->
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
 <p>
 <h3 class="title">{{showObject.name}}</h3>
 <a href="" class="link small" ng-click="showUser(showObject.user_id)">by {{showObject.user_name}}</a>
@@ -130,6 +134,15 @@
       </div>
 
       <div class="list">
+
+      <!-- ERROR MESSAGE -->
+      <small ng-if="newRequest.quantity > showObject.quantity" class="text-assertive text-center">[Error] The quantity is larger than available product</small>
+
+      <label class="item item-input">
+        <span class="input-label">Quantity</span><br>
+        <input type="number" value="1000" min="0" step="1" placeholder="100" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
+      </label>  
+
         <label class="item item-input item-select">
           <div class="input-label">Request Type</div>
           <select ng-model="newRequest.type" required>
@@ -138,11 +151,60 @@
           </select>
         </label>
 
-      <label class="item item-input item-stacked-label">
-        <span class="input-label">Quantity</span><br>
-        <small ng-if="newRequest.quantity > showObject.quantity" class="text-assertive">[Error] The quantity is larger than available product</small>
-        <input type="number" value="1000" min="0" step="1" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
-      </label>  
+
+        <!-- Delivery Address -->
+        <!-- Delivery Address -->
+      <label ng-show="newRequest.type != 'Pick Up'" class="item item-input item-stacked-label">
+          <div class="input-label">Delivery Address</div>
+
+          <!-- address-line1 input-->
+          <label class="item-input">
+            <input type="text" class="form-control" id="address-line1" name="address-line1" placeholder="Address Line 1" ng-model="delivery_address.address_line_1" required>
+          </label>    
+
+          <!-- address-line2 input-->
+          <label class="item-input">
+            <input type="text" class="form-control" id="address-line2" name="address-line2" placeholder="Address Line 2" ng-model="delivery_address.address_line_2">
+          </label>    
+
+          <!-- city input-->
+          <label class="item-input">
+            <input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="delivery_address.city" required>
+          </label>      
+
+          <!-- postal-code input-->
+          <label class="item-input">
+            <input type="text" class="form-control" id="postal-code" name="postal-code" placeholder="Postal Code" ng-model="delivery_address.postal_code" required>
+          </label>        
+
+           <!-- state -->
+          <div class="list">
+          <label class="item-input item-select">
+            <div class="input-label" ng-show="delivery_address.state == null">State</div>
+            <div class="input-label" ng-show="delivery_address.state != ''">{{delivery_address.state}}</div>
+            <select ng-model="delivery_address.state" required>
+              <option selected>Johor</option>
+              <option>Kedah</option>
+              <option>Kelantan</option>
+              <option>Kuala Lumpur</option>
+              <option>Labuan</option>
+              <option>Malacca</option>
+              <option>Negeri Sembilan</option>
+              <option>Pahang</option>
+              <option>Penang</option>
+              <option>Perak</option>
+              <option>Perlis</option>
+              <option>Putrajaya</option>
+              <option>Sabah</option>
+              <option>Sarawak</option>
+              <option>Selangor</option>
+              <option>Terengganu</option>
+            </select>
+          </label>
+        </div>
+      </label>
+        <!-- Delivery Address -->
+        <!-- Delivery Address -->
 
 
       <label class="item item-input item-stacked-label">
@@ -168,12 +230,26 @@
   <!-- ********************************************************************************************************************** -->
   <!-- **************************** VISIT SUPPLIER **************************************************************************** -->
   <div class="item text-center">
-    <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showUser(showObject.user_id)">Visit Supplier</button>
+    <button class="button button-small button-positive icon-left ion-person" ng-click="showUser(showObject.user_id)">Visit Supplier</button>
+  </div>
+
+  <!-- ********************************************************************************************************************** -->
+  <!-- **************************** VISIT SUPPLIER **************************************************************************** -->
+  <div class="item text-center" ng-if="authenticated">
+    <small class="text-muted">Share This Product</small>
+    <br>
+
+    <div id="social">
+      <a class="facebookBtn smGlobalBtn" ng-click="share('facebook','showProduct',showObject.id,showObject.name,showObject.picture, showObject.description)"></a>
+      <a class="twitterBtn smGlobalBtn" ng-click="share('twitter','showProduct',showObject.id,showObject.name)"></a>
+    </div>      
   </div>
 
 </div>
 
 </p>
+<hr>
+</div>
 
 </ion-view>
 </ion-content>

@@ -56,15 +56,24 @@ myApp.run(function($ionicPlatform) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider) {
+myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider,APP_CONSTANT) {
   //$locationProvider.html5Mode(true);
-  growlProvider.globalTimeToLive(3000);
+  growlProvider.globalTimeToLive(5000);
+  growlProvider.globalPosition('bottom-right');
 
-  BackandProvider.setAppName('wzs21testapp');
-  BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
+  BackandProvider.setAppName(APP_CONSTANT.BACKAND_APP_NAME);
+  BackandProvider.setAnonymousToken(APP_CONSTANT.BACKAND_TOKEN);
+
+  FB.init({ 
+      appId: '153782718362391',
+      status: true, 
+      cookie: true, 
+      xfbml: true,
+      version: 'v2.4'
+      });
 
   //$urlRouterProvider.otherwise('/home');
-
+  
   console.log("From APP CONFIG");
   
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
@@ -119,9 +128,12 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
       //filter required login page
       if($scope.authProfile == null)
       {
-        var notRequiredLoginPage = ["home","contact","login","signup","about"];
+
+        var notRequiredLoginPage = ["home","contact","login","signup","about","showProduct","showUser","showProductList"];
         var goToLogin = false;
+        console.log(state);
         goToLogin = notRequiredLoginPage.indexOf(state) < 0;
+
         if(goToLogin)
         {
           growl.error('Please login first',{title: 'This Page Required Login!'});
@@ -130,7 +142,7 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
           var host = "";
           if(window.location.host == "hosting.backand.io")
           {
-            host = "hosting.backand.io/wzs21testapp";
+            host = "hosting.backand.io/dropbug";
           }
           else
           {
@@ -313,7 +325,13 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
 
   $scope.allNotifications = function(){
     closeSideMenuBar();
-    
+    console.log("here");
+    if($scope.userInSession == null)
+    {
+      $state.go('myProfile'); 
+      return;
+    }
+
     var pageNumber = 1;
     console.log("Page "+pageNumber);
     $state.go('allNotifications',{pageNumber:pageNumber});
@@ -323,6 +341,42 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
   {
     $state.go('showProduct',{product_id:product_id,show:show})
   };
+
+  $scope.share = function(social,page,id,title,picture,description)
+  {
+    console.log(social);
+    console.log(page);
+    console.log(id);
+    console.log(title);
+
+    var url =APP_CONSTANT.DOMAIN+page;
+    var text = "";
+
+    if(page == "showProduct")
+    {
+      //url += "?product_id=" + id +"&show=info";
+      url += "?product_id=" + id;
+      text = title + " on DropBug.";
+    }
+
+    if(page == "showUser")
+    {
+      url += "?id=" + id;
+      text = "Check Out My Profile on DropBug.";
+    }
+
+    console.log(url);
+
+    if(social == "twitter")
+    {
+      PublicService.shareOnTwitter(url,text);
+    }
+
+    if(social == "facebook")
+    {
+      PublicService.shareOnFacebook(url,title,picture,description);
+    }
+  }
 
 });
 

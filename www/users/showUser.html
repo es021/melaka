@@ -1,5 +1,6 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <div class="text-center" ng-show="showObjectLoad">
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
@@ -12,31 +13,29 @@
 
 <div class="list card text-left">
 
-  <div class="item text-center" ng-show="!loading">
+  <div class="item text-center" ng-show="!loading" ng-if="userInSession != null">
+      <button ng-if ="userLinkType == USER_LINK_TYPE.NOT_AUTH" 
+      class="button button-small button-balanced icon-left ion-android-close">Not Authorized</button>
 
-    <button ng-if ="userLinkType == USER_LINK_TYPE.NOT_AUTH" 
-    class="button button-small button-balanced icon-left ion-android-close">Not Authorized</button>
+      <div ng-if ="userLinkType == USER_LINK_TYPE.LINKED">
+          <button class="button button-small button-balanced icon-left ion-android-done">In Your List</button>
+          <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('removeFromList')">Remove From List</button>
+      </div>
+      
+      <button ng-if ="userLinkType == USER_LINK_TYPE.SAME_TYPE" class="button button-small button-balanced icon-left ion-navicon">Same User Type</button>
 
-    <div ng-if ="userLinkType == USER_LINK_TYPE.LINKED">
-        <button class="button button-small button-balanced icon-left ion-android-done">In Your List</button>
-        <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('removeFromList')">Remove From List</button>
-    </div>
-    
-    <button ng-if ="userLinkType == USER_LINK_TYPE.SAME_TYPE" class="button button-small button-balanced icon-left ion-navicon">Same User Type</button>
+      <button ng-if ="userLinkType == USER_LINK_TYPE.NOT_REQUESTED" class="button button-small button-positive button-outline icon-left ion-android-person-add" 
+      ng-click="linkUser('sendRequest')">Add {{showObject.user_type.getUserType()}}</button>    
 
-    <button ng-if ="userLinkType == USER_LINK_TYPE.NOT_REQUESTED" class="button button-small button-positive button-outline icon-left ion-android-person-add" 
-    ng-click="linkUser('sendRequest')">Add {{showObject.user_type.getUserType()}}</button>    
+      <div ng-if ="isRequestToUser">
+          <button class="button button-small button-balanced button-outline icon-left ion-android-done" ng-click="linkUser('confirmRequest')">Comfirm Request</button>
+          <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('ignoreRequest')">Ignore Request</button>
+      </div>    
 
-    <div ng-if ="isRequestToUser">
-        <button class="button button-small button-balanced button-outline icon-left ion-android-done" ng-click="linkUser('confirmRequest')">Comfirm Request</button>
-        <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('ignoreRequest')">Ignore Request</button>
-    </div>    
-
-    <div ng-if ="isRequestByUser">
-        <button class="button button-small button-balanced icon-left ion-android-done" ng-click="linkUser('confirmRequest')">Requested</button>
-        <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('cancelRequest')">Cancel Request</button>
-    </div>
-
+      <div ng-if ="isRequestByUser">
+          <button class="button button-small button-balanced icon-left ion-android-done" ng-click="linkUser('confirmRequest')">Requested</button>
+          <button class="button button-small button-assertive button-outline icon-left ion-android-close" ng-click="linkUser('cancelRequest')">Cancel Request</button>
+      </div>
 
     <!-- linked -->
 
@@ -85,11 +84,12 @@
 
     </div>
     <div  ng-if="showObject.user_type < USER_TYPE.DROPSHIP" class="item text-center">
-      <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProductList(showObject.id)">See Product</button>
+      <button class="button button-small button-positive icon-left ion-bag" ng-click="showProductList(showObject.id)">See Product</button>
     </div>
 
 </div>
 
+</div>
 </div>
 </ion-view>
 </ion-content>

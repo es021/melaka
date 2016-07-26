@@ -38,13 +38,15 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
 
   getAllProductByUserId = function (user_id,page_number){
     var start_from = OFFSET.PAGE * (page_number-1);
+    console.log(start_from);
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getAllProductByUserId',
         params: {
           parameters: {
             user_id: user_id,
-            start_from: start_from
+            start_from: start_from,
+            offset: OFFSET.PAGE
           }
         }
       })
@@ -239,7 +241,8 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
         params: {
           parameters: {
             id: id,
-            start_from : start_from
+            start_from : start_from,
+            offset: OFFSET.PAGE
           }
         }
       })
@@ -295,7 +298,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
   sendEmailToInnovaSeeds = function(email_from,message){
     return $http ({
         method: 'GET',
-        url: Backand.getApiUrl() + '/1/objects/action/notifications/137?name=emailToInnovaSeeds',
+        url: Backand.getApiUrl() + '/1/objects/action/notifications/1?name=emailToInnovaSeeds',
         params: {
           parameters: {
             email_from: email_from,
@@ -364,7 +367,8 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
         params: {
           parameters: {
             user_id: user_id,
-            start_from : start_from
+            start_from : start_from,
+            offset: OFFSET.PAGE
           }
         }
       })
@@ -378,7 +382,8 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
         params: {
           parameters: {
             user_id: user_id,
-            start_from : start_from
+            start_from : start_from,
+            offset: OFFSET.PAGE
           }
         }
       })
@@ -819,7 +824,7 @@ myApp.service('FileReaderService', function ($q, $log){
 ///////////////////// PublicService ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////////// PublicService ///////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.service('PublicService', function ($http,growl){
+myApp.service('PublicService', function ($http,growl,APP_CONSTANT){
 
 
   getTimestampForFileName = function(timestamp)
@@ -1001,6 +1006,81 @@ myApp.service('PublicService', function ($http,growl){
     growl.error(''+error.data,{title: title});
   }
 
+  shareOnTwitter = function(url,text)
+  {
+      var baseUrl = "https://twitter.com/share?";
+      var hashtags = "DropBug,InnovaSeedsSolutions";
+      var via = APP_CONSTANT.TWITTER_NAME;
+      
+      url = encodeURIComponent(url);
+      text = encodeURIComponent(text);
+      via = encodeURIComponent(via);
+
+      //console.log(url);
+      //console.log(text);
+      //console.log(hashtag);
+
+      var urlToOpen = baseUrl+"hashtags="+hashtags+"&url="+url+"&text="+text+"&via="+via;
+
+      //console.log(urlToOpen);
+      
+      var win = window.open(urlToOpen, '_blank');
+      win.focus();
+
+  }
+
+  function getMetaElement(property) { 
+     var metas = document.getElementsByTagName('meta'); 
+     console.log(metas);
+     for (var i=0; i<metas.length; i++) { 
+        if (metas[i].getAttribute("property") == property) { 
+           return metas[i]; 
+        } 
+     } 
+
+  }
+
+  shareOnFacebook= function(url,title,imageUrl,description)
+  {
+      http://www.facebook.com/sharer.php?s=100&p[title]=sdsdsd&p[url]=http://www.mysexyurl.com&p[summary]=mysexysummaryhere&p[images][0]=http://www.urltoyoursexyimage.com
+
+      var baseUrl = "https://www.facebook.com/sharer/sharer.php?";
+      var hashtag = "DropBug,InnovaSeedsSolutions";
+
+      //add hashtag      
+      //url = encodeURIComponent(url);
+      //title = encodeURIComponent(title);
+      //hashtag = encodeURIComponent(hashtag);
+
+      //console.log(url);
+      //console.log(title);
+      //console.log(hashtag);
+
+/*
+      imageUrl = imageUrl.replace("https","http");
+      //var urlToOpen = baseUrl+"u="+url+"&t="+title;
+
+      console.log("Changing meta property");
+
+      var meta = getMetaElement('og:image');
+      console.log(meta);
+      //imageUrl = imageUrl.replace("https","http");
+      meta.setAttribute("content",imageUrl);
+*/
+
+    FB.ui({
+        method: 'feed',
+        name: title,
+        link: url,
+        description: description
+    }, function(response) {
+        if(response && response.post_id){}
+        else{}
+    });
+
+
+  } 
+
   return {
       getTimestampForFileName : getTimestampForFileName,
       getTimestampinMysql : getTimestampinMysql ,
@@ -1011,7 +1091,10 @@ myApp.service('PublicService', function ($http,growl){
       getDate : getDate,
       logout : logout,
       initSideMenu : initSideMenu,
-      errorCallbackFunction : errorCallbackFunction
+      errorCallbackFunction : errorCallbackFunction,
+
+      shareOnTwitter : shareOnTwitter,
+      shareOnFacebook : shareOnFacebook
   };
 });
 
@@ -1042,8 +1125,6 @@ myApp.service('SearchService', function ($http, Backand, USER_TYPE){
 
   searchUserByNameByType = function (key,type)
   {
-  
-
       return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/searchUserByName',
@@ -1053,13 +1134,56 @@ myApp.service('SearchService', function ($http, Backand, USER_TYPE){
           }
         }
       })
-    
-    
+  }
 
+  searchProductByNameByCategory = function (key,user_id)
+  {
+      return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/searchProductByNameByCategory',
+        params: {
+          parameters: {
+            key: key,
+            user_id : user_id
+          }
+        }
+      })
+  }
+
+  searchLinkedUserByNameByState = function (key,user_id)
+  {
+      return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/searchLinkedUserByNameByState',
+        params: {
+          parameters: {
+            key: key,
+            user_id : user_id
+          }
+        }
+      })
+  }
+
+  //for user list all by type
+  searchUserByNameTypeFixed = function (key,user_type)
+  {
+      return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/searchUserByNameTypeFixed',
+        params: {
+          parameters: {
+            key: key,
+            user_type : user_type
+          }
+        }
+      })
   }
 
   return{
-      searchUserByNameByType:searchUserByNameByType
+      searchUserByNameByType : searchUserByNameByType,
+      searchProductByNameByCategory : searchProductByNameByCategory,
+      searchLinkedUserByNameByState : searchLinkedUserByNameByState,
+      searchUserByNameTypeFixed : searchUserByNameTypeFixed
   }
 
 });

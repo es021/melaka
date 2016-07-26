@@ -1,9 +1,93 @@
 @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css');
 
+/* --------------------------------------------------------------------------------------------------------------------- */
+/* ------------------------------------LARGE -------------------------------------------------------------------------- */
+
+#button-round-large {
+  text-align: center;
+}
+
+
+.smGlobalBtnLarge{ /* global button class */
+    display: inline-block;
+    position: relative;
+    cursor: pointer;
+    width: 100px;
+    height: 100px;
+
+    box-shadow: 3px 3px 20px rgba(255, 255, 255, 0.5);
+    padding-top: 25px;
+    
+    text-decoration: none;
+    text-align: center;
+    color: #fff;
+    
+    font-size: 30px;
+    font-weight: normal;
+    
+    line-height: 0.7em;
+    
+    border-radius: 50px;
+    -moz-border-radius:50px;
+    -webkit-border-radius:50px;
+}
+
+
+.large-round-btn-text{
+  font-size:16px; 
+  font-family:'Lucida Sans Unicode', 'Lucida Grande', sans-serif;
+}
+
+.smGlobalBtnLarge:hover{
+  text-decoration: none;
+  font-family: "FontAwesome";
+}
+
+.btn-positive{
+    background: #387ef5;
+}
+
+.btn-positive:hover{
+      color: #387ef5;
+      background: #fff;
+}
+
+.btn-balanced{
+    background: #33cd5f;
+}
+
+.btn-balanced:hover{
+      color: #33cd5f;
+      background: #fff;
+}
+
+.btn-royal{
+    background: #886aea;
+}
+
+.btn-royal:hover{
+      color: #886aea;
+      background: #fff;
+}
+
+.btn-assertive{
+    background: #ef473a;
+}
+
+.btn-assertive:hover{
+      color: #ef473a;
+      background: #fff;
+}
+
+
+/* --------------------------------------------------------------------------------------------------------------------- */
+/* --------------------------------------------------------------------------------------------------------------------- */
+
 #social {
   margin: 20px 10px;
   text-align: center;
 }
+
 
 .smGlobalBtn{ /* global button class */
     display: inline-block;
@@ -122,6 +206,7 @@
 .rssBtn{
     background: #e88845;
 }
+
 
 .rssBtn:before{
       font-family: "FontAwesome";

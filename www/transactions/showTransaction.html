@@ -1,5 +1,6 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <div class="text-center" ng-show="loading">
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
@@ -32,15 +33,15 @@
                     <!-- GENERAL STATUS -->
             <div class="item">
     
-                    <span ng-if="showItem.status == TRANS_STATUS.REQUESTED" class="label label-success">Requested</span>
+                    <span ng-if="showItem.status == TRANS_STATUS.REQUESTED" class="label label-primary">Requested</span>
                     <span ng-if="showItem.status == TRANS_STATUS.DENIED" class="label label-danger">Denied</span>
                     <span ng-if="showItem.status == TRANS_STATUS.APPROVED" class="label label-success">Approved</span>
-                    <span ng-if="showItem.status == TRANS_STATUS.DELIVERED && showItem.type == 'Delivery'" class="label label-success">Delivered</span>
+                    <span ng-if="showItem.status == TRANS_STATUS.DELIVERED && showItem.type == 'Delivery'" class="label label-info">Delivered</span>
                     <span ng-if="showItem.status == TRANS_STATUS.RECEIVED" class="label label-primary">Package Received</span>
 
                     <span ng-if="showItem.payment_status == TRANS_STATUS.NOT_PAID" class="label label-danger">Not Paid</span>
                     <span ng-if="showItem.payment_status == TRANS_STATUS.PAID" class="label label-success">Paid</span>
-                    <span ng-if="showItem.payment_status == TRANS_STATUS.COMFIRMED" class="label label-primary">Payment Comfirmed</span>            
+                    <span ng-if="showItem.payment_status == TRANS_STATUS.COMFIRMED" class="label label-primary">Payment Confirmed</span>            
                     
                     <div style="padding:6px"></div>
                     <!-- ******************************************************************************************************************************* -->
@@ -49,7 +50,7 @@
                                         
                     <button ng-if="showItem.status == TRANS_STATUS.DELIVERED"
                     ng-click="updateTrans({{showItem.id}},'status',TRANS_STATUS.RECEIVED)" 
-                    class="button button-small button-outline button-positive icon-left ion-archive">Comfirm Package</button>
+                    class="button button-small button-outline button-positive icon-left ion-archive">Confirm Package</button>
                 
                     <button ng-if="showItem.payment_status == TRANS_STATUS.NOT_PAID && showItem.status > TRANS_STATUS.DENIED " 
                     ng-click="updateTrans({{showItem.id}},'payment_status',TRANS_STATUS.PAID)" 
@@ -67,7 +68,7 @@
                   <div ng-if="userInSession.user_id == showItem.to_user_id">
      
                     <button ng-if="showItem.status == TRANS_STATUS.REQUESTED"  
-                    ng-click="approveTrans({{showItem.id}})" 
+                    ng-click="approveTrans({{showItem.product_id}})" 
                     class="button button-small button-outline button-balanced icon-left ion-checkmark-round">Approve</button>
                 
                     <button ng-if="showItem.status == TRANS_STATUS.REQUESTED" 
@@ -88,14 +89,8 @@
         </div>
 
     <!--- TRANSACTION INFO AND -->
-    <div class="item">
+    <div class="item item-body">
       <div class="text-center">
-            
-            <h1 style="font-size:20px;"><small class="icon-left ion-bookmark"> Type</small>
-            <br>
-            {{showItem.type}}
-            </h1>
-
             <h1 style="font-size:20px;"><small class="icon-left ion-cash"> Total Price</small>
             <br>
             RM {{showItem.total_price}}
@@ -105,6 +100,21 @@
             <br>
             {{showItem.quantity}}
             </h1>
+
+            <h1 style="font-size:20px;"><small class="icon-left ion-bookmark"> Type</small>
+            <br>
+            {{showItem.type}}
+            </h1>
+
+            <h1 ng-if="showItem.delivery_address != null && showItem.delivery_address != ''" style="font-size:20px;">
+            <small class="icon-left ion-paper-airplane"> Delivery Address</small>
+            <br>
+                {{showItem.delivery_address.address_line_1}}<br>
+                <span ng-if="showItem.delivery_address.address_line_2 != null">{{showItem.delivery_address.address_line_2}}<br></span>
+                {{showItem.delivery_address.city}}<br>{{showItem.delivery_address.state}}, {{showItem.delivery_address.postal_code}}
+            </h1>
+
+    <hr>
             
       </div>
 
@@ -119,7 +129,7 @@
                 <!-- DELIVERY DETAIL-->
                 <button ng-disabled="showItem.delivery_detail == null || showItem.delivery_detail == 'requested' " 
                 ng-click="openLink('delivery_detail')" 
-                class="button button-small button-clear button-positive icon-right ion-paper-airplane">Delivery Comfirmation</button> 
+                class="button button-small button-clear button-positive icon-right ion-paper-airplane">Delivery Confirmation</button> 
             
                 <span ng-if="showItem.delivery_detail == null || showItem.delivery_detail == 'requested' ">
                     
@@ -228,5 +238,10 @@
       </div>
 
 </div>
+
+<hr>    
+
+</div>
+
 </ion-view>
 </ion-content>

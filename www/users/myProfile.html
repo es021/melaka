@@ -1,16 +1,29 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
+  <div class="text-center" ng-show="myProfileLoad">
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+  </div>
+
+
+<div ng-show="!myProfileLoad">
 <h2 class="title">{{authProfile.nickname}}</h2>
 
 <div ng-if= "userInSession == null">
-  <img src="{{authProfile.picture}}" class="img-circle profile-image" width="100">
+  <img ng-if="authProfile.picture_large != '' && authProfile.picture_large != null" src="{{authProfile.picture_large}}" class="img-circle profile-image" width="100">
+  
+  <img ng-if="authProfile.picture_large == '' || authProfile.picture_large == null" src="{{authProfile.picture}}" class="img-circle profile-image" width="100">
+  
   <h4 class="subtitle">It seems that you are new here!</h4>
-  <h4 class="subtitle">Let's get started</h4>
-  <h4 class="subtitle">Register As One of The Following</h4>
+
+<hr>
     <div ng-app="sample" ng-controller="RegisterController">
-      <button class="button button-block button-{{USER_TYPE.ION_COLOR.SUPPLIER}}" ng-click="register(USER_TYPE.SUPPLIER)">Register as Supplier</button>
-      <button class="button button-block button-{{USER_TYPE.ION_COLOR.STOCKIST}}" ng-click="register(USER_TYPE.STOCKIST)">Register as Stockist</button>
-      <button class="button button-block button-{{USER_TYPE.ION_COLOR.DROPSHIP}}" ng-click="register(USER_TYPE.DROPSHIP)">Register as Dropship</button>
+          <h4 class="title">Lets get started<br><small>Choose Your Line of Business</small></h4>
+            <a class="fa fa-home btn-positive smGlobalBtnLarge" ng-click="register(USER_TYPE.SUPPLIER)"><span class="large-round-btn-text"><br>Supplier</span></a>
+            <a class="fa fa-archive btn-royal smGlobalBtnLarge" ng-click="register(USER_TYPE.STOCKIST)"><span class="large-round-btn-text"><br>Stockist</span></a>
+            <a class="fa fa-users btn-assertive smGlobalBtnLarge" ng-click="register(USER_TYPE.DROPSHIP)"><span class="large-round-btn-text"><br>Dropship</span></a>
+            <br>
     </div>
 
 </div>
@@ -62,7 +75,7 @@
 
     </div>
     <div  ng-if="myProfile.user_type < USER_TYPE.DROPSHIP" class="item text-center">
-      <button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProductList(myProfile.id)">See Product</button>
+      <button class="button button-small button-positive icon-left ion-bag" ng-click="showProductList(myProfile.id)">My Product</button>
     </div>
 
 </div>
@@ -149,7 +162,13 @@
 
     <!-- about -->
     <label class="item-input">
-    <textarea class="form-control" placeholder="Tell more about yourself (optional)" rows="4" ng-model="myProfile.about"></textarea>
+      <textarea ng-if="myProfile.user_type==USER_TYPE.SUPPLIER || user_type==USER_TYPE.STOCKIST" class="form-control" 
+      placeholder="Tell more about your business and if you are looking for agents/suppliers/stockists (optional)" 
+      rows="4" ng-model="myProfile.about"></textarea>
+    
+      <textarea ng-if="myProfile.user_type==USER_TYPE.DROPSHIP" class="form-control" 
+      placeholder="Tell more about your business and if you are looking for suppliers/stockists (optional)" 
+      rows="4" ng-model="myProfile.about"></textarea>  
     </label>
 
     <div class="text-center" ng-show="loadingEdit">
@@ -167,7 +186,11 @@
   </form>
 
   </div>
+  </div>
 </div>
+</div>
+
+<hr>
 </div>
 
 </ion-view>

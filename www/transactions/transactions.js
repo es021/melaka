@@ -7,7 +7,7 @@ var myApp = angular.module('sample.transactions', [
 myApp.config(function($stateProvider, BackandProvider) {
   $stateProvider
     .state('myActiveListing', {
-      url: "/myActiveListing?pageNumber",
+      url: "/myActiveListing?pageNumber&refresh",
       controller: 'TransactionsController',
       templateUrl: 'transactions/myActiveListing.html',
       data: {
@@ -17,7 +17,7 @@ myApp.config(function($stateProvider, BackandProvider) {
 
     $stateProvider
     .state('myCompletedTransaction', {
-      url: "/myCompletedTransaction?pageNumber",
+      url: "/myCompletedTransaction?pageNumber&refresh",
       controller: 'TransactionsController',
       templateUrl: 'transactions/myActiveListing.html',
       data: {
@@ -155,13 +155,13 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
   //////////////////////////////////////////////////////////////////////////////////////////////////////
   ////////// Update Active Listing HELPER FUNCTION /////////////////////////////////////////////////////
 
-  $scope.approveTrans = function(id)
+  $scope.approveTrans = function(product_id)
   {
     //check the quantity of the product first
-    BackandService.getProductQuantity(id).then(function(result){
-      
+    BackandService.getProductQuantity(product_id).then(function(result){
       if(result.status == 200)
       {
+        console.log(result);
         $scope.product_quantity = result.data[0].quantity;
         console.log($scope.product_quantity);
         if($scope.showItem.quantity <= $scope.product_quantity)
@@ -169,7 +169,12 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
           console.log("Valid to be approved");
           $scope.product_quantity -= $scope.showItem.quantity;
           console.log($scope.product_quantity);
-          $scope.updateTrans(id,"status",TRANS_STATUS.APPROVED);
+          $scope.updateTrans($scope.showItem.id,"status",TRANS_STATUS.APPROVED);
+        }
+        else
+        {
+            growl.error("The quantity of product '"+$scope.showItem.product_name+"' is less than amount requested",
+              {title: 'Failed to approve request!'});
         }
       }
 
@@ -202,7 +207,7 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
           if(result.status == 200)
           {
             growl.success("Deleted Transaction "+id,{title: 'Successfully Removed Request!'});
-            main();
+            $state.go("myActiveListing",{pageNumber:1, refresh:'y'});
           }
 
         });
@@ -251,7 +256,7 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
           text = other_user_name+" has DELIVERED your package";
           break;
         case TRANS_STATUS.RECEIVED :
-          text = other_user_name+" has COMFIRMED package received";
+          text = other_user_name+" has CONFIRMED package received";
           break;
       }
 
@@ -265,7 +270,7 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
           text = other_user_name+" has PAID for the product request";
           break;
         case TRANS_STATUS.COMFIRMED :
-          text = other_user_name+" has COMFIRMED payment received";
+          text = other_user_name+" has CONFIRMED payment received";
           break;
       }
 
@@ -481,8 +486,8 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
         console.log($scope.showItem);
         if(result.status == 200 && $scope.showItem != null)
         {
-          //getProductbyId($scope.showItem.product_id);
-
+          $scope.showItem.delivery_address = JSON.parse($scope.showItem.delivery_address);
+          console.log($scope.showItem);
           if($scope.showItem.payment_detail == '')
           {
             $scope.showItem.payment_detail = null;

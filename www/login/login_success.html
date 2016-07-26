@@ -1,9 +1,12 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
-<div class="text-center" ng-show="loading">
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
+<div class="text-center info-text" ng-show="loading">
 	Retrieving User Information From Database. Please Wait
 	<br>
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+</div>
 </div>
 </ion-view>
 </ion-content>

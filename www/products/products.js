@@ -76,6 +76,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
   ///// FOR REQUEST FORM ///////////////////////////
   $scope.newRequest = {};
+  $scope.delivery_address = {};
   $scope.newRequest.total_price = 0;
   $scope.loadingRequest = false;
 
@@ -129,17 +130,21 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
     $scope.newRequest.from_user_id = $scope.userInSession.user_id;
     $scope.newRequest.to_user_id = $scope.showObject.user_id;
-    //$scope.newRequest.supplier_id = $scope.showObject.supplier_id;
+
     $scope.newRequest.product_id = $scope.productId;
     $scope.newRequest.status = TRANS_STATUS.REQUESTED;
     $scope.newRequest.payment_status = TRANS_STATUS.NOT_PAID;
     $scope.newRequest.created_at = BackandService.getTimestampinMysql();
     $scope.newRequest.updated_at = BackandService.getTimestampinMysql();
 
-    //$scope.newRequest.total_price
-    //$scope.newRequest.type
-    //$scope.newRequest.quantity
-    //$scope.newRequest.note
+    if($scope.newRequest.type != "Pick Up")
+    {
+      console.log($scope.delivery_address);
+      $scope.newRequest.delivery_address = JSON.stringify($scope.delivery_address);
+      console.log($scope.newRequest.delivery_address);
+    }
+
+
 
     BackandService.addObject("transactions",$scope.newRequest).then(function(result){
       console.log("Result From Creating new Request");
@@ -148,7 +153,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
       if(result.status == 200)
       {
         growl.success("Click on page title [My Active Listing] to update list." ,{title: 'Successfully Added New Request!'});              
-        $state.go("myActiveListing");
+        $state.go("myActiveListing",{pageNumber:1,refresh:'y'});
 
         BackandService.createNotification(result.data.to_user_id,
                                           "New product request from "+$scope.userInSession.first_name,
@@ -931,12 +936,14 @@ function tinify(){
 ///////////////// ShowProductListController  ////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////// ShowProductListController  ////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.controller('ShowProductListController', function($scope,growl,OFFSET, USER_TYPE,USER_LINK_TYPE,$stateParams, BackandService,PublicService,$state){
+myApp.controller('ShowProductListController', function($scope,growl,OFFSET,SearchService, USER_TYPE,USER_LINK_TYPE,$stateParams, BackandService,PublicService,$state){
 
   $scope.userObject = {};
   $scope.userObject.id = $stateParams.user_id;
   $scope.productList = {};
   $scope.showItem = {};
+
+  $scope.loadingLink = false;
   
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
@@ -946,17 +953,68 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET, USER
 
   $scope.isMyProduct = false;
 
-
-  $scope.pageNumber = $stateParams.pageNumber;
-  console.log($scope.pageNumber);
-  $scope.OFFSET = OFFSET;
-
   $scope.refresh = function()
   {
     console.log("Refresh");
     getAllProductByUserId($stateParams.user_id);
     growl.info('List is up to date',{title: 'Refresh List!'});
   }
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////// SEARCH HELPER /////////////////////////////////////////////////////////////////////
+  $scope.pageNumber = $stateParams.pageNumber;
+  console.log($scope.pageNumber);
+  
+  $scope.OFFSET = OFFSET; 
+  $scope.search = {};
+
+  $scope.searchProduct = [];
+  $scope.searchLoad = false;
+  $scope.isSubmit = false;
+
+  function searchProductByNameByCategory(searchKey)
+  {
+    var length = 0;
+    try
+    {
+      length = searchKey.length;
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+
+
+    if(length < 3)
+    {
+      return;
+    }
+
+    $scope.searchLoad = true;
+    SearchService.searchProductByNameByCategory(searchKey,$scope.userObject.id).then(function(result){
+      $scope.searchProduct = result.data
+      console.log(result);
+      $scope.searchLoad = false;
+
+    },function errorCallback(result){
+
+        PublicService.errorCallbackFunction(result,"default");
+        $scope.searchLoad = false;
+    });
+  }
+
+  $scope.submit = function()
+  {
+    if(!$scope.search.key || $scope.search.key == '')
+    {
+      $scope.searchProduct = [];
+    }
+    $scope.isSubmit = true;
+    searchProductByNameByCategory($scope.search.key);    
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////// MAIN ///////////////////////////////////////////////////////////////////
 
   checkIsMyProduct();
   
@@ -972,7 +1030,22 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET, USER
     $scope.refresh();
   }
 
+  if($scope.linked == null)
+  {
+    $scope.loadingLink =  true;
 
+    if($scope.userInSession != null)
+    {
+      checkIsUserLinked($scope.userObject.id,$scope.userInSession.user_id);
+    }
+    else
+    {
+      $scope.loadingLink = false;
+      $scope.linked = false;
+    }
+  }
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////
 
   $scope.getMore = function(direction)
   {
@@ -994,10 +1067,14 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET, USER
 
   function checkIsMyProduct ()
   {
-    if($scope.userInSession.user_id == $stateParams.user_id)
+    if($scope.userInSession != null)
     {
+      if($scope.userInSession.user_id == $stateParams.user_id)
+      {
         $scope.isMyProduct = true;
+      }
     }
+
   }
 
   function getUserNameById(id){
@@ -1035,11 +1112,6 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET, USER
 
   $scope.toggleItem = function(item) {
     //getProductbyId(item.product_id);
-    if($scope.linked == null)
-    {
-      checkIsUserLinked($scope.userObject.id,$scope.userInSession.user_id);
-    }
-
     if ($scope.isItemShown(item)) 
     {
       $scope.showItem = null;
@@ -1071,9 +1143,12 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET, USER
         {
           $scope.linked = false;
         }
+
+        $scope.loadingLink =  false;
       }
     },function errorCallback(result){
         PublicService.errorCallbackFunction(result,"Failed to check users connection");
+        $scope.loadingLink =  false;
     });      
   }
 

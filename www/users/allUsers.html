@@ -1,27 +1,96 @@
 <!--Controller : user.UserController -->
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
 <p>
 <h2 class="title">List of {{user_type.getUserType()}}</h2>
 	<div class="text-center" ng-show="loading">
 		<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   	</div>
-	    
+
+      <div class="card list list-inset">
+      <label class="item item-input">
+        <i class="icon ion-search placeholder-icon"></i>
+
+        <input type="text" class="form-control" placeholder="Search {{user_type.getUserType()}}" ng-model="search.key" ng-change="submit()" required>
+
+      </label>
+
+        <div class="text-left">
+        <div class="list">
+          <div ng-repeat="item in searchUser">
+            <div>
+              <a class="item item-avatar" ng-click="showUser({{item.id}})">
+              <img src="{{item.picture}}">
+                  <h2>{{item.first_name}} {{item.last_name}}</h2>
+                  <p>{{item.state}}</p>
+                  <span class="badge">
+                    {{item.user_type.getUserType()}}
+                  </span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+        <div ng-if="searchUser.length == 0 && isSubmit && search.key.length>2 && !searchLoad">
+          No result found for <strong>'{{search.key}}'</strong>
+        </div>
+
+      <div class="text-center" ng-show="searchLoad">
+        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+      </div>
+          
+    </div>
+
     <div class="text-left">
+
 		<div class="list">
+
+			<div class = "item text-right">
+
+	            <span ng-disabled="true" class="button button-small button-dark">Page {{pageNumber}}</span>
+
+	            <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
+	              ng-click="getMore('previous')">Previous</button>
+
+	            <button ng-if="users.length == OFFSET.PAGE" class="button button-small button-positive icon-right ion-arrow-right-a" 
+	              ng-click="getMore('next')">Next</button>
+      		</div>
+
           <div ng-repeat="item in users">
-	          <a ng-if = "item.id != userInSession.user_id" class="item item-avatar" ng-click="showUser({{item.id}})">
+	          <a class="item item-avatar" ng-click="showUser({{item.id}})">
 	            <img src="{{item.picture}}">
 	              <h2>{{item.first_name}} {{item.last_name}}</h2>
 	              <p><strong>{{item.state}}</strong><small class="text-muted" ng-if="item.about != null"><br>{{item.about}}</small></p>
 	          </a>
           </div>
+		
+
+		    <div class="item item-body text-center" ng-if="users.length == 0">
+		    	No registered {{user_type.getUserType()}}
+		    </div>
+
+
+      		<div class = "item text-right">
+	            <span ng-disabled="true" class="button button-small button-dark">Page {{pageNumber}}</span>
+
+	            <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
+	              ng-click="getMore('previous')">Previous</button>
+
+	            <button ng-if="users.length == OFFSET.PAGE" class="button button-small button-positive icon-right ion-arrow-right-a" 
+	              ng-click="getMore('next')">Next</button>
+      		</div>
+
 		</div>
 	</div>
 
-    <div ng-if="users.length == 0">
-    	No registered {{user_type.getUserType()}}
-    </div>
+
+
+<hr>
+</div>
+
 </div>
 
 </ion-view>

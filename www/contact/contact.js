@@ -83,5 +83,9 @@ myApp.controller('ContactController', function($location,growl,BackandService,Pu
   };
 
 
+$scope.testgrowl =function(){
+    growl.success('Thank you for contacting us.',{title: 'Successfully Send Message!'});
+
+}
 
 });

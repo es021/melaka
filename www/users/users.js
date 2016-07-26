@@ -21,7 +21,7 @@ myApp.config(function($stateProvider) {
 
   $stateProvider
     .state('allUsers', {
-      url: '/allUsers?user_type',
+      url: '/allUsers?user_type&pageNumber',
       controller: 'AllUserController',
       templateUrl: 'users/allUsers.html',
       data: {
@@ -74,11 +74,68 @@ myApp.config(function($stateProvider) {
   
 });
 
-myApp.controller('AllUserController', function($scope, USER_TYPE,UserService, BackandService, auth, $state,$location, $stateParams){
+myApp.controller('AllUserController', function($scope, USER_TYPE,SearchService,UserService,PublicService, BackandService, auth,OFFSET, $state,$location, $stateParams){
   $scope.user_type = $stateParams.user_type;
   $scope.users = [];
   $scope.loading = false;
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////// SEARCH HELPER /////////////////////////////////////////////////////////////////////
+  $scope.pageNumber = $stateParams.pageNumber;
+  console.log($scope.pageNumber);
+  
+  $scope.OFFSET = OFFSET; 
+  $scope.search = {};
+
+  $scope.searchUser = [];
+  $scope.searchLoad = false;
+  $scope.isSubmit = false;
+
+  function searchUserByNameTypeFixed(searchKey)
+  {
+    var length = 0;
+    try
+    {
+      length = searchKey.length;
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+
+
+    if(length < 3)
+    {
+      return;
+    }
+
+    $scope.searchLoad = true;
+    SearchService.searchUserByNameTypeFixed(searchKey,$scope.user_type).then(function(result){
+      $scope.searchUser = result.data
+      console.log(result);
+      $scope.searchLoad = false;
+
+    },function errorCallback(result){
+
+        PublicService.errorCallbackFunction(result,"default");
+        $scope.searchLoad = false;
+    });
+  }
+
+  $scope.submit = function()
+  {
+    if(!$scope.search.key || $scope.search.key == '')
+    {
+      $scope.searchUser = [];
+    }
+    $scope.isSubmit = true;
+    
+    searchUserByNameTypeFixed($scope.search.key);    
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////
 
   function getAllUserByUserType()
   {
@@ -99,7 +156,7 @@ myApp.controller('AllUserController', function($scope, USER_TYPE,UserService, Ba
 
 });
 
-myApp.controller('FindUserController', function($scope, USER_TYPE,UserService,SearchService, BackandService, auth, $state,$location, $stateParams){
+myApp.controller('FindUserController', function($scope, USER_TYPE,PublicService,UserService,SearchService, BackandService, auth, $state,$location, $stateParams){
   
   $scope.user_type_request = $stateParams.user_type_request;
   $scope.USER_TYPE = USER_TYPE;
@@ -176,7 +233,7 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,UserService,Se
   $scope.findMore = function(user_type)
   {
     console.log("find more " + user_type);
-    $state.go("allUsers",{user_type:user_type});
+    $state.go("allUsers",{user_type:user_type, pageNumber:1});
 
   }
 
@@ -248,11 +305,7 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
   $scope.showObject = {};
   $scope.showObjectLoad = false;
 
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
-  $scope.linkObject = {};
-  $scope.show_user_id = $stateParams.id;
-  $scope.session_user_id = $scope.userInSession.user_id;
 
   $scope.USER_LINK_TYPE = USER_LINK_TYPE;
 
@@ -265,6 +318,7 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
   $scope.isRequestByUser = false;
 
   $scope.fullAddress = false;
+  $scope.show_user_id = $stateParams.id;
 
   $scope.toggleFullAddress = function()
   {
@@ -274,15 +328,26 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
         $scope.fullAddress = true;
   }
 
-  if($scope.userInSession.user_id == $scope.show_user_id)
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  if($scope.userInSession != null)
   {
-    $state.go('myProfile');
-    return;
+    console.log("USER IN SESSION");
+    console.log($scope.userInSession);
+    $scope.linkObject = {};
+    $scope.session_user_id = $scope.userInSession.user_id;
+
+    if($scope.userInSession.user_id == $scope.show_user_id)
+    {
+      $state.go('myProfile');
+      return;
+    }
+
+    console.log("Showing User "+$scope.show_user_id)
+    initLink();
   }
 
-  console.log("Showing User "+$scope.show_user_id)
   getObjectById("users", $scope.show_user_id);
-  initLink();
+
 
   function initLink()
   {
@@ -547,14 +612,66 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
 });
 
 
-myApp.controller('LinkedUserController', function ($scope,growl,OFFSET, $state,$stateParams,UserService, BackandService,PublicService, USER_LINK_TYPE) {
+myApp.controller('LinkedUserController', function ($scope,growl,OFFSET, $state,$stateParams,UserService, BackandService,PublicService,SearchService, USER_LINK_TYPE) {
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
 
 
+  /////////////////////////////////////////////////////////////////////////////////////////////////
+  ///////////// SEARCH HELPER /////////////////////////////////////////////////////////////////////
   $scope.pageNumber = $stateParams.pageNumber;
   console.log($scope.pageNumber);
-  $scope.OFFSET = OFFSET;
+  
+  $scope.OFFSET = OFFSET; 
+  $scope.search = {};
+
+  $scope.searchProduct = [];
+  $scope.searchLoad = false;
+  $scope.isSubmit = false;
+
+  function searchProductByNameByCategory(searchKey)
+  {
+    var length = 0;
+    try
+    {
+      length = searchKey.length;
+    }
+    catch(err)
+    {
+      console.log(err);
+    }
+
+
+    if(length < 3)
+    {
+      return;
+    }
+
+    $scope.searchLoad = true;
+    SearchService.searchLinkedUserByNameByState(searchKey,$scope.userInSession.user_id).then(function(result){
+      $scope.searchProduct = result.data
+      console.log(result);
+      $scope.searchLoad = false;
+
+    },function errorCallback(result){
+
+        PublicService.errorCallbackFunction(result,"default");
+        $scope.searchLoad = false;
+    });
+  }
+
+  $scope.submit = function()
+  {
+    if(!$scope.search.key || $scope.search.key == '')
+    {
+      $scope.searchProduct = [];
+    }
+    $scope.isSubmit = true;
+    searchProductByNameByCategory($scope.search.key);    
+  }
+
+  //////////////////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////////////////////////////////////////////
 
   $scope.refresh = function(){
     initLinkedUser();
@@ -771,16 +888,19 @@ myApp.controller('MyProfileController', function ($scope, growl, $state,UserServ
 
   $scope.editProfile = function(){
     $scope.page = "edit";
+    $scope.oldProfile = JSON.parse(JSON.stringify($scope.myProfile));
   }
 
   $scope.showProfile = function(){
     $scope.page = "show";
+    console.log($scope.oldProfile);
+    console.log($scope.myProfile);
     $scope.myProfile = $scope.oldProfile;
   }
 
   $scope.showProductList = function (user_id)
   {
-    $state.go("showProductList",{user_id:user_id});
+    $state.go("showProductList",{user_id:user_id,pageNumber:1});
   }
 
   console.log($scope.userInSession == null);

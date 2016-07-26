@@ -1,24 +1,29 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 
+
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
+
 <h2 class="title">The Team</h2>
+<h4 class="subtitle">InnovaSeeds Solutions</h2>
 
 <ion-list class="text-left">
 <div ng-repeat="member in TEAM_CONSTANT.member">
     <a class="item item-avatar" ng-click="toggleItem(member)" ng-class="{active: isItemShown(member)}">
       <img src="{{member.picture}}">
       <h2>{{member.first_name}}</h2>      
-      <span class="label label-success">{{member.role}}</span>
+      <small class="text-muted">{{member.role}}</small>
     </a>
 
        <ion-item ng-show="isItemShown(member)">
-        <div class = "text-center">
+        <div class = "item-body text-center">
 
           <h2><strong>{{showItem.first_name}} {{member.last_name}}</strong><br><span="text-muted">{{member.role}}<span></h2>          
           <br>
 
           <div class="small item item-body">
-            <span class="text-muted">{{member.description}}</span>
+            <span class="text-muted">" {{member.description}} "</span>
             
             <hr>
             
@@ -27,9 +32,9 @@
           </div>
 
           <div id="social">
-            <a class="facebookBtn smGlobalBtn" target="_blank" ng-href="{{member.facebook}}"></a>
-            <a class="twitterBtn smGlobalBtn" target="_blank" ng-href="{{member.twitter}}"></a>
-            <a class="linkedinBtn smGlobalBtn" target="_blank" ng-href="{{member.linkedin}}"></a>
+            <a ng-if="member.facebook != ''" class="facebookBtn smGlobalBtn" target="_blank" ng-href="{{member.facebook}}"></a>
+            <a ng-if="member.twitter != ''" class="twitterBtn smGlobalBtn" target="_blank" ng-href="{{member.twitter}}"></a>
+            <a ng-if="member.linkedin != ''" class="linkedinBtn smGlobalBtn" target="_blank" ng-href="{{member.linkedin}}"></a>
 
             <!--
             <a class="linkedinBtn smGlobalBtn" href="social-media-profile-url" ></a>
@@ -68,6 +73,8 @@
   </div>
 </div>
 </p>
+<hr>
+</div>
 
 </ion-view>
 </ion-content>

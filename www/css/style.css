@@ -1,5 +1,7 @@
 /* Empty. Add your own CSS if you like */
 
+
+
 .status-text-success {
 	font-family: Courier;
 	color: red;
@@ -156,6 +158,11 @@ and (max-width : 400px) {
         font-size: 10px;
   }
 
+  .nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+  }
+
 }
 @media only screen 
 and (min-width : 321px) {
@@ -172,6 +179,9 @@ and (min-width : 321px) {
     float:right;
     margin:0 0 0 5px;
   }
+
+
+
 }
 
 
@@ -293,4 +303,9 @@ textarea {
   width: auto; 
   margin-left:auto; 
   margin-right:auto;
+}
+
+
+.growl-notification{
+font-size: 30px;
 }

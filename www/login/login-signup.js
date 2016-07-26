@@ -119,6 +119,13 @@ myApp.controller('LoginSuccessContoller',function(auth,$scope, BackandService, $
               //profile ni jgn tukar user_id
               authProfileTemp.auth_id = profile.user_id;
               authProfileTemp.picture = profile.picture;
+              authProfileTemp.picture_large = profile.picture_large;
+
+              if(profile.cover)
+              {
+                authProfileTemp.cover_photo = profile.cover.source;
+              }
+              
               authProfileTemp.nickname = profile.nickname;
 
               window.localStorage.setItem("AuthProfile",JSON.stringify(authProfileTemp));
