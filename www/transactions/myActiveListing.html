@@ -12,7 +12,7 @@
 
 <div ng-if="stateName=='myCompletedTransaction'">
 	
-<a class='link' href="" ng-click="refresh()">
+<a class='link' href="" ng-click="refresh('List')">
 	<h2>My Completed Transaction</h2>
 </a>
     <a href="" class="link small" ng-click="myActiveListing()">See My Active Listing</a>
@@ -185,11 +185,11 @@
 
           </ion-item>
 
-          		<div class="text-center" ng-show="loading">
+          		<div class="item item-body text-center" ng-show="loading">
 				    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 				  </div>
 				  
-				  <div class="item item-body text-center" ng-if="activeListing.length == 0">
+				  <div class="item item-body text-center" ng-if="activeListing.length == 0 && userInSession.user_type > 1">
 				  <span ng-if="pageNumber == 1">
 				    	Looks empty here.<br>
 				    	<small>Start requesting product from your linked user</small>
@@ -198,6 +198,22 @@
 				  <span ng-if="pageNumber > 1">
 				    	No more active listing available.<br>
 				    	<small>Request more product from your linked user</small>
+				  </span>
+
+			  	  <br><br>
+		            <button class="button button-positive icon-left ion-android-contacts" 
+		              ng-click="myLinkedUser()">See My Linked User</button>
+				</div>
+
+				 <div class="item item-body text-center" ng-if="activeListing.length == 0 && userInSession.user_type == 1">
+				  <span ng-if="pageNumber == 1">
+				    	Looks empty here.<br>
+				    	<small>Tell your linked stokicts or dropships to <strong>request product from you</strong></small>
+				  </span> 
+
+				  <span ng-if="pageNumber > 1">
+				    	No more active listing available.<br>
+				    	<small>Tell your linked stokicts or dropships to <strong>request more product from you</strong></small>
 				  </span>
 
 			  	  <br><br>

@@ -101,3 +101,8 @@ String.prototype.getTime = function(){
 
   return time;
 }
+
+String.prototype.getHttpLink = function(){
+
+  return this.replace("https","http");
+}

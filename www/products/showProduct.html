@@ -2,10 +2,16 @@
 <ion-content class="text-center has-header has-footer padding">
 
 <!-- NEXT LINE Even if page is dynamically generated and URL contains query parameters -->
-  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+<div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
+<update-meta property="og:image" content="{{showObject.picture.getHttpLink()}}"></update-meta>
+
+
 
 <p>
-<h3 class="title">{{showObject.name}}</h3>
+<a class='link' href="" ng-click="refresh('Product')">
+<h3>{{showObject.name}}</h3>
+</a>
 <a href="" class="link small" ng-click="showUser(showObject.user_id)">by {{showObject.user_name}}</a>
 
 <div class="list card text-left">
@@ -22,7 +28,7 @@
 
 <!-- ***************************************************************************************************************** -->
   <!-- Product Tabs For Linked User -->
-  <div ng-if="linked" class="item tabs">
+  <div ng-if="linked && userInSession.user_type > showObject.other_user_type" class="item tabs">
     <a ng-show="!loading" ng-click="showFunction('info')" class="button icon-left ion-information-circled button-clear button-dark">Show Info</a>
     <a ng-show="!loading" ng-click="showFunction('request')" class="button icon-left ion-paper-airplane button-clear button-dark">Request Product</a>
 
@@ -92,7 +98,7 @@
 
 <!-- ********************************************************************************************************************** -->
 <!-- **************************** REQUEST FORM **************************************************************************** -->
-  <div ng-if="show=='request'" class="item item-body">
+  <div ng-if="show=='request' && userInSession.user_type > showObject.other_user_type" class="item item-body">
             <div class="text-center">
               <span ng-if="showObject.quantity > 0" class="label label-success">{{showObject.quantity}} available</span>
               <span ng-if="showObject.quantity <= 0 || showObject.quantity == null" class="label label-danger">Out Of Stock</span>  
@@ -218,7 +224,10 @@
           <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
       </div>
 
-      <button ng-disabled="!requestform.$valid || loadingRequest || (newRequest.quantity > showObject.quantity)" 
+      <button ng-if="newRequest.type == 'Delivery' || newRequest.type == null" ng-disabled="!requestform.$valid || loadingRequest || (newRequest.quantity > showObject.quantity)" 
+        type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
+
+      <button ng-if="newRequest.type == 'Pick Up'" ng-disabled="loadingRequest || (newRequest.quantity > showObject.quantity) || newRequest.quantity == null" 
         type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
 
     </div>
@@ -227,10 +236,16 @@
 
   </div>
 
+  <div ng-if="show=='request' && userInSession.user_type <= showObject.other_user_type" class="item item-body text-center">
+    <span class="text-assertive">Opps.. You cannot request product from your {{showObject.other_user_type.getUserType()}}</span><br><br>
+    <button class="button button-positive icon-left ion-arrow-left-a" ng-click="showFunction('info')">Go Back</button>
+
+  </div>
+
   <!-- ********************************************************************************************************************** -->
   <!-- **************************** VISIT SUPPLIER **************************************************************************** -->
   <div class="item text-center">
-    <button class="button button-small button-positive icon-left ion-person" ng-click="showUser(showObject.user_id)">Visit Supplier</button>
+    <button class="button button-small button-positive icon-left ion-person" ng-click="showUser(showObject.user_id)">Visit {{showObject.other_user_type.getUserType()}}</button>
   </div>
 
   <!-- ********************************************************************************************************************** -->

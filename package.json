@@ -1,7 +1,15 @@
 {
-  "name": "melaka",
+  "name": "dropbug",
   "version": "1.1.1",
-  "description": "Melaka: An Ionic project",
+  "description": "Dropbug by InnovaSeeds Solutions",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/es021/melaka.git"
+  },
   "dependencies": {
     "express": "^4.13.4",
     "gulp": "^3.5.6",
@@ -14,6 +22,7 @@
   },
   "devDependencies": {
     "bower": "^1.3.3",
+    "gulp-awspublish": "^3.3.0",
     "gulp-util": "^2.2.14",
     "shelljs": "^0.3.0"
   },

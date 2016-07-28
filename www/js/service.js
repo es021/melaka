@@ -178,17 +178,15 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
   }  
 
   editTransactionStatus = function(id,status,timeUpdated){
-    return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/editTransactionStatus',
-        params: {
-          parameters: {
-            id: id,
-            status : status,
-            timeUpdated : timeUpdated
-          }
+    return $http({
+      method: "PUT",
+      url: Backand.getApiUrl() + "/1/objects/transactions/"+id,
+      data: {
+        status: status,
+        updated_at: timeUpdated
         }
-      })
+    })
+
   }  
 
   getUserByType = function(user_type,limit){
@@ -220,16 +218,13 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
   }  
 
   editTransactionPaymentStatus = function(id,payment_status,timeUpdated){
-    return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/editTransactionPaymentStatus',
-        params: {
-          parameters: {
-            id: id,
-            payment_status : payment_status,
-            timeUpdated : timeUpdated
+    return $http({
+        method: "PUT",
+        url: Backand.getApiUrl() + "/1/objects/transactions/"+id,
+        data: {
+          payment_status: payment_status,
+          updated_at: timeUpdated
           }
-        }
       })
   }
 
@@ -333,10 +328,10 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
-  getUserNameById = function(id){
+  getUserNameTypeById = function(id){
     return $http ({
         method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getUserNameById',
+        url: Backand.getApiUrl() + '/1/query/data/getUserNameTypeById',
         params: {
           parameters: {
             id: id
@@ -554,6 +549,19 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
+  getProductbyUserIdParentId = function (user_id,parent_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getProductbyUserIdParentId',
+        params: {
+          parameters: {
+            user_id: user_id,
+            parent_id: parent_id
+          }
+        }
+      })
+  }
+
   var filesActionName = 'files';
   var objectName = 'products';
   deleteFile = function (filename){
@@ -652,7 +660,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     //userRelatedQuery
     getUserByType : getUserByType,
     getSupplierNameById : getSupplierNameById,
-    getUserNameById : getUserNameById,
+    getUserNameTypeById : getUserNameTypeById,
     editUserById : editUserById,
     getUserCountByUserType : getUserCountByUserType,
 
@@ -671,6 +679,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     editProductById : editProductById,
     getProductQuantity : getProductQuantity,    
     editProductQuantity : editProductQuantity,
+    getProductbyUserIdParentId : getProductbyUserIdParentId,
 
     //transactionQuery
     getUserActiveListing : getUserActiveListing,
@@ -1042,10 +1051,7 @@ myApp.service('PublicService', function ($http,growl,APP_CONSTANT){
 
   shareOnFacebook= function(url,title,imageUrl,description)
   {
-      http://www.facebook.com/sharer.php?s=100&p[title]=sdsdsd&p[url]=http://www.mysexyurl.com&p[summary]=mysexysummaryhere&p[images][0]=http://www.urltoyoursexyimage.com
-
-      var baseUrl = "https://www.facebook.com/sharer/sharer.php?";
-      var hashtag = "DropBug,InnovaSeedsSolutions";
+      //http://www.facebook.com/sharer.php?s=100&p[title]=sdsdsd&p[url]=http://www.mysexyurl.com&p[summary]=mysexysummaryhere&p[images][0]=http://www.urltoyoursexyimage.com
 
       //add hashtag      
       //url = encodeURIComponent(url);

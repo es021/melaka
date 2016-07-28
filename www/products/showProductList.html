@@ -6,7 +6,7 @@
 <p>
 
 <div ng-if="!isMyProduct">
-	<a class="link" href="" ng-click="refresh()">
+	<a class="link" href="" ng-click="refresh('List')">
 		<h2>Products List</h2>
 	</a>
 	<a href="" class="link small" ng-click="showUser(userObject.id)">by {{userObject.user_name}}</a>
@@ -113,7 +113,7 @@
 	
 				<div>
 					<br>
-					<span ng-if="linked">	
+					<span ng-if="linked && userInSession.user_type > userObject.user_type">	
 						<button class="button button-small button-balanced icon-left ion-paper-airplane" 
 						ng-click="showProduct(showItem.id,'request')">Request Product</button>
 					</span>

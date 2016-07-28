@@ -106,11 +106,11 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
     win.focus();
   }
 
-  $scope.refresh = function()
+  $scope.refresh = function(body)
   {
     console.log("Refresh");
     main();
-    growl.info('List is up to date',{title: 'Refresh List!'});
+    growl.info(body+' is up to date',{title: 'Refresh List!'});
   }
 
 
@@ -252,7 +252,7 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
         case TRANS_STATUS.APPROVED :
           text = other_user_name+" APPROVED your product request";
           break;
-        case TRANS_STATUS.DENIED :
+        case TRANS_STATUS.DELIVERED :
           text = other_user_name+" has DELIVERED your package";
           break;
         case TRANS_STATUS.RECEIVED :
@@ -278,8 +278,143 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
     }
     //console.log($scope.showItem);
     //console.log(to_user_id);
+
+    postActionTransacation();
+
     BackandService.createNotification(to_user_id,text,link,category);
   }
+
+  function postActionTransacation()
+  {
+      $scope.isNewProduct = false;
+      $scope.oldProduct = {};
+      $scope.newProduct = {};
+      
+      function createNotificationProduct(key,product_id,product_name){
+
+            var to_user_id = $scope.showItem.from_user_id;
+            var text = "";
+            var link = "/showProduct?product_id="+product_id+"&show=info";
+            var category = NOTI_CATEGORY.PRODUCT;
+            var other_user_name = $scope.userInSession.first_name;
+
+            if(key == "new"){
+                text = "New product ["+product_name+"] has been added to your inventory.";
+            }
+
+            if(key == "update"){
+               text = "Quantity product ["+product_name+"] has been updated.";
+            }
+
+            BackandService.createNotification(to_user_id,text,link,category);        
+      }
+
+      function getProductAndCreateProduct(product_id){
+          BackandService.getObjectById("products",product_id).then(function(result){
+            console.log("getObjectById");
+            $scope.oldProduct = result.data;
+            console.log($scope.showProduct);
+
+            if(result.status == 200)
+            {
+              $scope.newProduct.user_id = $scope.showItem.from_user_id;
+              $scope.newProduct.parent_id = $scope.showItem.product_id;
+              $scope.newProduct.quantity = $scope.showItem.quantity;
+              $scope.newProduct.created_at = $scope.showItem.updated_at;
+              $scope.newProduct.updated_at = $scope.showItem.updated_at;
+
+              $scope.newProduct.name = $scope.oldProduct.name;
+              $scope.newProduct.category = $scope.oldProduct.category;
+              $scope.newProduct.picture = $scope.oldProduct.picture;
+              $scope.newProduct.description = $scope.oldProduct.description;
+              $scope.newProduct.price_per_unit = $scope.oldProduct.price_per_unit;
+              $scope.newProduct.custom_pricing = $scope.oldProduct.custom_pricing;
+              $scope.newProduct.specification = $scope.oldProduct.specification;
+
+
+              BackandService.addObject("products",$scope.newProduct).then(function (result){
+                  console.log("addObject");
+                  console.log(result); 
+                  if(result.status == 200)
+                  {
+                    createNotificationProduct("new",result.data.id,result.data.name);
+                  }              
+              });
+            }
+
+          },function errorCallback(result){
+            PublicService.errorCallbackFunction(result,"default");
+          });
+      }  
+
+      function addNewProduct()
+      {
+        console.log("addNewProduct");
+        getProductAndCreateProduct($scope.showItem.product_id);
+      }
+
+      function updateOldProduct()
+      {
+        console.log("updateOldProduct");
+        var newQuantity = $scope.oldProduct.quantity + $scope.showItem.quantity;
+        console.log(newQuantity);
+
+        BackandService.editProductQuantity($scope.oldProduct.id,newQuantity).then(function(result){
+          console.log("editProductQuantity");
+          console.log(result);
+
+          console.log(result.status == 200)
+          {
+              createNotificationProduct("update",$scope.oldProduct.id,$scope.oldProduct.name);
+          }
+
+        },function errorCallback(result){
+            PublicService.errorCallbackFunction(result,"default");
+        });
+      }
+
+      function checkIfNewProduct(user_id,parent_id){
+        console.log("checkIfNewProduct")
+
+          BackandService.getProductbyUserIdParentId(user_id,parent_id).then(function (result){
+
+            console.log(result);
+
+            if(result.status == 200)
+            {
+              if(result.data.length > 0)
+              {
+                $scope.isNewProduct = false;
+                $scope.oldProduct = result.data[0];
+                updateOldProduct();
+              }
+              else
+              {
+                $scope.isNewProduct = true;
+                addNewProduct();
+              }
+
+            }
+
+          },function errorCallback(result){
+              PublicService.errorCallbackFunction(result,"default");
+          });
+      }
+
+      console.log("postActionTransacation")
+
+      if(($scope.showItem.type == "Delivery" && $scope.showItem.status == TRANS_STATUS.RECEIVED && $scope.showItem.payment_status == TRANS_STATUS.COMFIRMED) ||
+        ($scope.showItem.type == "Pick Up" && $scope.showItem.status == TRANS_STATUS.APPROVED && $scope.showItem.payment_status == TRANS_STATUS.COMFIRMED))
+      {
+          checkIfNewProduct($scope.showItem.from_user_id,$scope.showItem.product_id);
+      }
+
+      else
+      {
+        console.log("Skipping");
+      }
+  }
+
 
   function editTransactionStatus(id,status,timeUpdated){
     BackandService.editTransactionStatus(id,status,timeUpdated).then(function(result){
@@ -468,17 +603,7 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
    {
       console.log($scope.showItem.id);
       $state.go("showTransaction",{id:$scope.showItem.id, other_user_id: $scope.showItem.other_user_id});
-   }
-
-
-/*
-  function getProductbyId(product_id){
-      BackandService.getObjectById("products",product_id).then(function(result){
-        $scope.showProduct = result.data;
-        console.log($scope.showProduct);
-      });
-  }  
-  */
+   }  
 
   function getTransById(trans_id,other_user_id){
       BackandService.getTransById(trans_id,other_user_id).then(function(result){

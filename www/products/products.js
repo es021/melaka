@@ -82,6 +82,14 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
   
 
+  $scope.refresh = function(body)
+  {
+    console.log("Refresh");
+    getShowProductById($scope.productId);
+    growl.info(body+' is up to date',{title: 'Refresh List!'});
+  }
+
+
   $scope.updateTotalPrice = function()
   { 
     if(!$scope.hasCustomPricing)
@@ -953,11 +961,11 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
 
   $scope.isMyProduct = false;
 
-  $scope.refresh = function()
+  $scope.refresh = function(body)
   {
     console.log("Refresh");
     getAllProductByUserId($stateParams.user_id);
-    growl.info('List is up to date',{title: 'Refresh List!'});
+    growl.info(body+' is up to date',{title: 'Refresh List!'});
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1020,7 +1028,7 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
   
   if(!$scope.isMyProduct)
   {
-    getUserNameById($scope.userObject.id);
+    getUserNameTypeById($scope.userObject.id);
   }
 
   getAllProductByUserId($scope.userObject.id);
@@ -1077,11 +1085,12 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
 
   }
 
-  function getUserNameById(id){
+  function getUserNameTypeById(id){
     $scope.loading = true;
-    BackandService.getUserNameById(id).then(function(result){
+    BackandService.getUserNameTypeById(id).then(function(result){
       console.log(result);
       $scope.userObject.user_name = result.data[0].user_name; 
+      $scope.userObject.user_type = result.data[0].user_type; 
       $scope.loading = false;
     },function errorCallback(result){
       PublicService.errorCallbackFunction(result,"default");

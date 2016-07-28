@@ -155,6 +155,7 @@ myApp.controller('NotificationController', function ($scope,growl, $state,$state
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   console.log($scope.userInSession);
+  $scope.myNotificationLoad = false;
 
   $scope.pageNumber = $stateParams.pageNumber;
 
@@ -170,6 +171,8 @@ myApp.controller('NotificationController', function ($scope,growl, $state,$state
 
   function getNotificationByPage(user_id,pageNumber)
   {
+    $scope.myNotificationLoad = true;
+
     $scope.NOTI_CATEGORY = NOTI_CATEGORY;
     BackandService.getAllNotificationByUserId_page(user_id,pageNumber).then(function(result){
       console.log("Return Result from getAllNotificationByUserId_page");

@@ -8,7 +8,8 @@
 var myApp = angular.module('sample', ['ionic','ionic.service.core', 
   'backand',
   'ui.router',
-  'restangular',
+  'restangular',  
+  'updateMeta',
   
   'sample.home',
   'sample.login-signup',
@@ -28,6 +29,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'angular-storage',
   'angular-jwt',
   'angular-growl'
+
   ]);
 
 
@@ -59,7 +61,7 @@ myApp.run(function($ionicPlatform) {
 myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider,APP_CONSTANT) {
   //$locationProvider.html5Mode(true);
   growlProvider.globalTimeToLive(5000);
-  growlProvider.globalPosition('bottom-right');
+  //growlProvider.globalPosition('bottom-right');
 
   BackandProvider.setAppName(APP_CONSTANT.BACKAND_APP_NAME);
   BackandProvider.setAnonymousToken(APP_CONSTANT.BACKAND_TOKEN);

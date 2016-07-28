@@ -167,9 +167,9 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,PublicService,
   $scope.stockists = {};
   $scope.dropships = {};
 
-  $scope.loadSupplier = false;
-  $scope.loadStockist = false;
-  $scope.loadDropship = false;
+  $scope.loadSupplier = true;
+  $scope.loadStockist = true;
+  $scope.loadDropship = true;
 
   $scope.userCount_load = ["count",0,0,0];
   $scope.suppliersCount = 0;
@@ -243,14 +243,22 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,PublicService,
         console.log(result);
 
         if(user_type == USER_TYPE.SUPPLIER)
+        {
           $scope.suppliers = result.data;
+          $scope.loadSupplier = false;
+        }
 
         if(user_type == USER_TYPE.STOCKIST)
+        {
           $scope.stockists = result.data;
+          $scope.loadStockist = false;
+        }
 
         if(user_type == USER_TYPE.DROPSHIP)
+        {
           $scope.dropships = result.data;
-
+          $scope.loadDropship = false;
+        }
       });
     }
 

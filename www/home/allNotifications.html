@@ -7,10 +7,7 @@
 		<a class="link" href="" ng-click="refreshNotification()">
 		<h2>My Notifications</h2>
 		</a>
-		  <div class="text-center" ng-show="myNotificationLoad">
-				<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
-		  </div>
-	    
+
 	    <div class="text-left">
 			<div class="list">
 
@@ -26,6 +23,11 @@
 	          	    	ng-click="getMoreNotification('next')">Next</button>
 
 				</div>
+
+			  <div class="item item-body text-center" ng-show="myNotificationLoad">
+					<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+			  </div>
+		    
 
 	          <div ng-repeat="item in myNotification">
 				    <a class="item item-body" ng-click="isRead(item)" href="#{{item.link}}">
@@ -48,6 +50,16 @@
 				    </a>
 	          </div>
 
+			   <div  class="item text-center" ng-if="myNotification.length == 0">
+			   	<span ng-if="pageNumber == 1">
+			    	No notification available
+			    </span>
+			    
+			    <span ng-if="pageNumber > 1">
+			    	No more notification available
+			    </span>
+			  	</div>
+
 	         	<div class = "item text-right">
 
 	          	    <span ng-disabled="true" class="button button-small button-dark">Page {{pageNumber}}</span>
@@ -62,15 +74,6 @@
 			</div>
 		</div>
 
-	   <div  class="item" ng-if="myNotification.length == 0">
-	   	<span ng-if="pageNumber == 1">
-	    	No notification available
-	    </span>
-	    
-	    <span ng-if="pageNumber > 1">
-	    	No more notification available
-	    </span>
-	  	</div>
 	  
 
 
