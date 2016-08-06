@@ -16,6 +16,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'sample.register',
   'sample.users',
   'sample.transactions',
+  'sample.reviews',
   'sample.products',
   'sample.contact',
   'sample.about',
@@ -87,7 +88,7 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
+myApp.controller('AppController', function (growl,$scope,UserService,$ionicModal,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
   console.log("FROM APP CONTROLLER");
 
   $scope.APP_CONSTANT = APP_CONSTANT;
@@ -185,6 +186,8 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
     //console.log(idToken);
     $state.go('login_success', {accessToken:accessToken,idToken:idToken});
   }
+
+
 
  $scope.comfirmLogout = function()
   {
@@ -327,7 +330,8 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
 
   $scope.allNotifications = function(){
     closeSideMenuBar();
-    console.log("here");
+    console.log($scope.userInSession);
+  
     if($scope.userInSession == null)
     {
       $state.go('myProfile'); 
@@ -379,6 +383,40 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicPopup
       PublicService.shareOnFacebook(url,title,picture,description);
     }
   }
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// MODAL ///////////////////////////////////////////////////////////////////////////////
+
+  $ionicModal.fromTemplateUrl('templates/modal.html', {
+    scope: $scope
+    }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.openModal = function(title,image){
+    $scope.modalTitle = title;
+    $scope.modalImage = image;
+    $scope.modal.show();
+  }
+
+  $ionicModal.fromTemplateUrl('modal/terms.html', {
+    scope: $scope
+    }).then(function(modal) {
+    $scope.modalTerm = modal;
+  });
+    
+////////////////////////////////////////////////////////////////////////////////////////
+
+  $scope.range = function(min, max, step) {
+      step = step || 1;
+      var input = [];
+      for (var i = min; i <= max; i += step) {
+          input.push(i);
+      }
+      return input;
+  };
 
 });
 

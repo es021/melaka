@@ -35,10 +35,10 @@
 		</div>
 
         <div ng-repeat="item in activeListing">
-            <a class="item item-icon-left item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
+            <a class="item item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
 		    
-		    <i ng-if="stateName=='myActiveListing'" class="icon ion-load-a"></i>
-		    <i ng-if="stateName=='myCompletedTransaction'" class="icon ion-android-checkmark-circle"></i>
+		    <i ng-if="item.type == 'Pick Up'" class="fa fa-home"></i>
+		    <i ng-if="item.type == 'Delivery'" class="fa fa-truck"></i>
 			
 			{{item.product_name}} 
 
@@ -49,22 +49,18 @@
         <!--STATUS AND PAYMENT STATUS SHOW ************************************************************************************************* -->
 		<br>
 		<div class="small">
-		    
-		    <span ng-if="item.status == TRANS_STATUS.REQUESTED" class="label label-primary">Requested</span>
-		    <span ng-if="item.status == TRANS_STATUS.DENIED" class="label label-danger">Denied</span>
-		    <span ng-if="item.status == TRANS_STATUS.APPROVED" class="label label-success">Approved</span>
-		    <span ng-if="item.status == TRANS_STATUS.DELIVERED" class="label label-info">Delivered</span>
-		    <span ng-if="item.status == TRANS_STATUS.RECEIVED" class="label label-primary">Package Received</span>
 
-		    <span ng-if="item.payment_status == TRANS_STATUS.NOT_PAID" class="label label-danger">Not Paid</span>
-		    <span ng-if="item.payment_status == TRANS_STATUS.PAID" class="label label-success">Paid</span>
-		    <span ng-if="item.payment_status == TRANS_STATUS.COMFIRMED" class="label label-primary">Payment Confirmed</span>
+			<span ng-if="item.status == TRANS_STATUS.REQUESTED" class="label label-primary"><i class="fa fa-paper-plane"></i> Requested</span>
+            <span ng-if="item.status == TRANS_STATUS.DENIED" class="label label-danger"><i class="fa fa-times"></i> Denied</span>
+            <span ng-if="item.status == TRANS_STATUS.APPROVED" class="label label-success"><i class="fa fa-check"></i> Approved</span>
+            <span ng-if="item.status == TRANS_STATUS.DELIVERED && item.type == 'Delivery'" class="label label-info"><i class="fa fa-truck"></i> Delivered</span>
+            <span ng-if="item.status == TRANS_STATUS.RECEIVED" class="label label-primary"><i class="fa fa-download"></i> Package Received</span>
+
+            <span ng-if="item.payment_status == TRANS_STATUS.NOT_PAID" class="label label-danger"><i class="fa fa-times"></i> Not Paid</span>
+            <span ng-if="item.payment_status == TRANS_STATUS.PAID" class="label label-success"><i class="fa fa-money"></i> Paid</span>
+            <span ng-if="item.payment_status == TRANS_STATUS.COMFIRMED" class="label label-primary"><i class="fa fa-check"></i> Payment Confirmed</span>            
 
 		</div>
-
-		    <span class="badge">
-		    	{{item.type}}
-		    </span>
 		<!--
 		    <div ng-if="stateName=='myActiveListing'">
 		   	<h5 class="text-success" ng-if="item.payment_status == TRANS_STATUS.COMFIRMED">
@@ -91,7 +87,7 @@
 					</h3>
 					
 					<h4>
-						Last Updated : {{timeAgo}}
+						Updated {{timeAgo}} <small>{{item.updated_at.getDate()}}</small>
 					</h4>
 
 				
@@ -180,7 +176,7 @@
 				<div style="padding:3px"></div>
 				<button
 				ng-click="showTransaction()" 
-				class="button button-small button-positive icon-right ion-arrow-right-a">Show More</button>
+				class="button button-small button-orange icon-right ion-arrow-right-a">Show More</button>
 				</div>
 
           </ion-item>
@@ -201,7 +197,7 @@
 				  </span>
 
 			  	  <br><br>
-		            <button class="button button-positive icon-left ion-android-contacts" 
+		            <button class="button button-orange icon-left ion-android-contacts" 
 		              ng-click="myLinkedUser()">See My Linked User</button>
 				</div>
 
@@ -217,7 +213,7 @@
 				  </span>
 
 			  	  <br><br>
-		            <button class="button button-positive icon-left ion-android-contacts" 
+		            <button class="button button-orange icon-left ion-android-contacts" 
 		              ng-click="myLinkedUser()">See My Linked User</button>
 				</div>
 

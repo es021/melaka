@@ -54,6 +54,8 @@
 
       <h2><strong>{{showObject.first_name}} {{showObject.last_name}}</strong><br><span class="small">Member Since {{showObject.created_at}}<span></h2>          
       <div class="small">
+        
+      <span ng-if="showObject.company_name != ''" class="fa fa-building" aria-hidden="true" style="padding-right:10px;"> </span>{{showObject.company_name}}<br>
       <span class="fa fa-phone" aria-hidden="true" style="padding-right:10px;"> </span>{{showObject.phone_number}}<br>
       <span class="fa fa-envelope" aria-hidden="true" style="padding-right:10px;"> </span>{{showObject.email}}<br>
       
@@ -84,10 +86,85 @@
 
     </div>
     <div  ng-if="showObject.user_type < USER_TYPE.DROPSHIP" class="item text-center">
-      <button class="button button-small button-positive icon-left ion-bag" ng-click="showProductList(showObject.id)">See Product</button>
+      <button class="button button-small button-orange icon-left ion-bag" ng-click="showProductList(showObject.id)">See Product</button>
     </div>
 
 </div>
+
+<hr>
+
+<!--- REVIEWS ################################################################################################################################################ -->
+<!--- REVIEWS ################################################################################################################################################ -->
+<div ng-controller="ReviewController" >
+  <a class="link" href="" ng-click="refresh()">
+    <h3>Reviews</h3>
+  </a>
+
+  <span ng-controller="ShowUserController" ng-if="reviews.length > 0 && userLinkType == USER_LINK_TYPE.LINKED">
+    <a href="" class="link small" ng-controller="ReviewController" ng-click="addReview(to_user_id)">Add Review</a><br><br>
+  </span>
+
+    <div class="item text-center" ng-show="loadGet">
+        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+    </div>
+
+    <span ng-show="!loadGet && reviews.length > 0">
+      <div ng-repeat="item in reviews" class="text-left">
+        <div class="item item-avatar">
+          <img src="{{item.from_user_picture}}">
+              <p>
+        
+                <span class="item-body text-muted" style="padding: 0px;">
+                  <!--- STAR -->
+                  <span class="star">
+                    <span ng-repeat="n in range(1,item.star)">
+                      <i class="fa fa-star"></i>
+                    </span>
+                  </span>
+                  <!--- STAR -->
+                  <br>
+                  <small ng-if="item.text != null && item.text != ''" style="font-style:italic;">{{item.text}}<br></small>
+                  <small style="font-size:10px;">by <a href="" ng-click="showUser({{item.from_user_id}})">{{item.from_user_name}}</a></small>
+                  <small style="font-size:8px;"> on <strong>{{item.updated_at.getDate()}}</strong></small>
+                  <!-- your review -->
+                  <span ng-if="userInSession.user_id == item.from_user_id">
+                    <br>
+                    <small style="font-size:10px;"><a  class="text-balanced"  href="" ng-click="editReview(item.id)">Edit</a></small>
+                    <small  style="font-size:10px;"><a class="text-assertive" href="" ng-click="confirmDelete(item.id)">Delete</a></small>
+                  </span>
+
+                </span>
+              
+              </p>
+          </div>
+      </div>
+    
+      <div class ="item item-body text-center">
+          <small style="font-size:10px;">Showing {{loadedReviews}} of {{totalReviews}} reviews</small><br>
+          <button ng-if="loadedReviews < totalReviews" class="button button-small button-orange icon-left ion-load-d" 
+            ng-click="getMore()">Load More Reviews</button>
+      </div>
+    </span>
+
+    <div class="item item-body text-center" ng-show="!loadGet && reviews.length == 0">
+        <small>There is no review yet for this user</small>
+        <span ng-controller="ShowUserController" ng-if="userLinkType == USER_LINK_TYPE.LINKED">
+          <br><br>
+          
+          <button class="button button-small button-orange icon-left ion-compose" 
+            ng-controller="ReviewController" ng-click="addReview(to_user_id)">Add Review</button>
+
+        </span>
+    </div>
+
+  </div>
+<!--- REVIEWS ################################################################################################################################################ -->
+<!--- REVIEWS ################################################################################################################################################ -->
+
+<hr>
+<hr>
+<hr>
+<hr>
 
 </div>
 </div>

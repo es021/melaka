@@ -11,9 +11,8 @@
     <title>DropBug</title>
     
     <!-- compiled css output -->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/button.css" rel="stylesheet">
-    <link href="css/ionic.app.css" rel="stylesheet">
+    
+
     <link rel="icon" type="image/png" href="img/favicons/favicon.ico">
     <!-- time ago -->
     <script src="lib/timeago/jquery-3.0.0.min.js"></script>
@@ -46,16 +45,23 @@
     <script src="products/products.js"></script>
     <script src="contact/contact.js"></script>
     <script src="about/about.js"></script>
+    <script src="reviews/reviews.js"></script>
     
-    <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/button.css" rel="stylesheet">
+    <link href="css/ionic.app.css" rel="stylesheet">
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-    
+
     <!-- Growl Notification -->
     <link href="lib/growl/angular-growl.min.css" rel="stylesheet" media="screen"> 
     <script src="lib/growl/angular-growl.min.js"></script>
 
+
+        <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <link href="css/modal.css" rel="stylesheet">
 
     <!-- auth0-angular -->
     <script src="lib/auth0-angular/build/auth0-angular.js"></script>
@@ -82,6 +88,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.4.1/lodash.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/restangular/1.4.0/restangular.js"></script>
 
+<link href="https://fonts.googleapis.com/css?family=Rakkas" rel="stylesheet">
+
   </head>
 
 <!-- ##################################################################################################################################################### -->
@@ -91,29 +99,56 @@
 <body ng-app="sample" ng-controller="AppController">
 
       <!--HEADER-->
-      
-        <div class="bar bar-header bar-stable">
+        <div class="bar bar-header bar-energized">
 
           <div id="header_logout" style="display:none">
-            <button class="button button-icon icon ion-navicon" ng-click="toggleSideMenuLeft()"></button>
-            <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
+            <button class="button button-icon icon ion-navicon text-maroon" ng-click="toggleSideMenuLeft()"></button>
+            <div class="h1 title header-title text-maroon">Drop<span class="header-title">BUG</span></div>
 
-            <button class="button button-icon icon ion-person" ng-click="toggleSideMenuRight()"></button>
+            <button class="button button-icon icon ion-person text-maroon" ng-click="toggleSideMenuRight()"></button>
           </div>
 
           <div id="header_login" style="display:default">
-            <button class="button button-clear button-assertive" ng-click="signup()">Signup</button>
-            <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
-            <button class="button button-clear button-assertive" ng-click="login()">Login</button>
+            <button class="button button-clear button-orange" ng-click="signup()">Signup</button>
+            <div class="h1 title header-title text-maroon">Drop<span class="header-title">BUG</span></div>
+            <button class="button button-clear button-orange" ng-click="login()">Login</button>
           </div>
 
           <div id="header_newUser" style="display:none">
-            <div class="h1 title">{{APP_CONSTANT.NAME}}</div>
-            <button class="button button-icon icon ion-person" ng-click="toggleSideMenuRight()"></button>
+            <div class="h1 title header-title text-maroon">Drop<span class="header-title">BUG</span></div>
+            <button class="button button-icon icon ion-person text-maroon" ng-click="toggleSideMenuRight()"></button>
           </div>
 
       </div>
       <div growl=""></div> 
+
+
+<!-- MODAL MODAL MODAL -->
+<!-- MODAL MODAL MODAL -->
+<script id="templates/modal.html" type="text/ng-template">
+  <ion-modal-view>
+    <div class="bar bar-header bar-stable">
+        <div class="h1 title header-title text-maroon">{{modalTitle}}</div>
+        <button class="button button-icon button-orange icon ion-close" ng-click="modal.hide()"></button>
+    </div>
+
+    <ion-view>
+        <ion-content class="text-center has-header">
+        <hr>
+        <a class="link" target="_blank" href="{{modalImage}}">
+          <h4><i class="fa fa-download"></i> Download Image</h4>
+        </a>
+        <br>
+          <img style="display:block; margin: auto;width: 70%;" src="{{modalImage}}" class="img-responsive">
+        <hr><hr><hr>
+        </ion-content>
+    </ion-view>
+  </ion-modal-view>
+</script>
+<!-- MODAL MODAL MODAL -->
+<!-- MODAL MODAL MODAL -->
+
+
 
       <!--END OF HEADER-->
 
@@ -134,8 +169,8 @@
           <br>
           <br>
 
-          <ion-list>
-            <a class="item item-icon-left" ng-click="myLinkedUser()">
+          <ion-list class="side-bar">
+            <a class="item item-icon-left " ng-click="myLinkedUser()">
               <i class="icon ion-android-contacts"></i>
                 My Linked User
               <span class="item-note">
@@ -174,7 +209,7 @@
 
 
         <!-- SIDE MENU RIGHT (Only for Authorized User)-->
-        <ion-side-menu side="right">
+        <ion-side-menu side="right" class="side-bar">
           <br>
           <br>
           <br>
@@ -256,7 +291,7 @@
       <!-- ************************************************************************************* --> 
       <!--FOOTER FOR SUPPLIER--> 
       <!--FOOTER FOR SUPPLIER--> 
-      <div class="tabs tabs-icon-top" id="footer_supplier" style="display:none">
+      <div class="tabs tabs-icon-top" id="footer_supplier" style="display:none background-color:blue;">
         <a class="tab-item">
           <i class="icon ion-home" ng-click="home()"></i>
             <div>Home</div>

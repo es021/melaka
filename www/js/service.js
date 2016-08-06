@@ -384,10 +384,26 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
+  getAllReviewsByToUserId = function (to_user_id,page_number){
+    var start_from = OFFSET.PAGE * (page_number-1);
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getAllReviewsByToUserId',
+        params: {
+          parameters: {
+            to_user_id: to_user_id,
+            start_from : start_from,
+            offset: OFFSET.PAGE
+          }
+        }
+      })
+  }
+
   editUserById = function 
     (id,
     first_name,
     last_name,
+    company_name,
     address_line_1,
     address_line_2,
     city,
@@ -406,6 +422,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
             id: id,
             first_name : first_name,
             last_name : last_name,
+            company_name : company_name,
             address_line_1 : address_line_1,
             address_line_2 : address_line_2,
             city : city,
@@ -420,7 +437,20 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
-  editProductById = function (id,name,category,price_per_unit,description,picture,quantity,custom_pricing, updated_at){
+  editReviewById = function(id,text,star,updated_at){
+    return $http({
+      method: "PUT",
+      url: Backand.getApiUrl() + "/1/objects/reviews/"+id,
+      data: {
+        text: text,
+        star: star,
+        updated_at: updated_at
+        }
+    })
+
+  }  
+
+  editProductById = function (id,name,category,price_per_unit,description,picture,quantity,custom_pricing,specification, updated_at){
     return $http ({
         method: 'POST',
         url: Backand.getApiUrl() + '/1/query/data/editProductById',
@@ -434,6 +464,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
             picture : picture,
             quantity : quantity,
             custom_pricing : custom_pricing,
+            specification : specification,
             updated_at : updated_at
           }
         }
@@ -562,6 +593,61 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
+  getUserPicture = function (user_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getUserPicture',
+        params: {
+          parameters: {
+            user_id: user_id
+          }
+        }
+      })
+  }
+
+  getTotalReview = function (to_user_id,product_id){
+    console.log(to_user_id);
+    if(product_id == null)
+    {
+      return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getTotalReviewByToUserId',
+        params: {
+          parameters: {
+            to_user_id: to_user_id
+          }
+        }
+      })
+    }
+    else
+    {
+       return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getTotalReviewByProductId',
+        params: {
+          parameters: {
+            product_id: product_id
+          }
+        }
+      })     
+    }
+
+  }
+
+
+
+  updateLatestPicture = function (authProfile,user_id){
+    return $http({
+        method: "PUT",
+        url: Backand.getApiUrl() + "/1/objects/users/"+user_id,
+        data: {
+          picture: authProfile.picture,
+          picture_large: authProfile.picture_large,
+          cover_photo: authProfile.cover_photo
+          }
+      })
+  }
+
   var filesActionName = 'files';
   var objectName = 'products';
   deleteFile = function (filename){
@@ -663,6 +749,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     getUserNameTypeById : getUserNameTypeById,
     editUserById : editUserById,
     getUserCountByUserType : getUserCountByUserType,
+    getUserPicture : getUserPicture,
 
     //user link
     getUserLink : getUserLink,
@@ -672,6 +759,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     getRequestFromUserById : getRequestFromUserById,
     editUserLinkById : editUserLinkById,
     deleteUserLink : deleteUserLink,
+    updateLatestPicture : updateLatestPicture,
 
     //productQuery
     getAllProductByUserId : getAllProductByUserId,
@@ -695,6 +783,11 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     getAllNotificationByUserId : getAllNotificationByUserId,
     setNotificationIsReadTrue : setNotificationIsReadTrue,
     createNotification : createNotification,
+
+    //reviews
+    getAllReviewsByToUserId : getAllReviewsByToUserId,
+    editReviewById : editReviewById,
+    getTotalReview : getTotalReview,
 
     uploadFile : uploadFile,
     deleteFile : deleteFile,
@@ -1015,6 +1108,11 @@ myApp.service('PublicService', function ($http,growl,APP_CONSTANT){
     growl.error(''+error.data,{title: title});
   }
 
+  successCallbackFunction = function(subtitle, title)
+  { 
+    growl.success(''+subtitle,{title: title});
+  }
+
   shareOnTwitter = function(url,text)
   {
       var baseUrl = "https://twitter.com/share?";
@@ -1098,6 +1196,7 @@ myApp.service('PublicService', function ($http,growl,APP_CONSTANT){
       logout : logout,
       initSideMenu : initSideMenu,
       errorCallbackFunction : errorCallbackFunction,
+      successCallbackFunction:successCallbackFunction,
 
       shareOnTwitter : shareOnTwitter,
       shareOnFacebook : shareOnFacebook

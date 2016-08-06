@@ -47,11 +47,15 @@
     <label class="item item-input item-select">
       <div class="input-label small">Category</div>
       <select ng-model="newProduct.category" required>
-        <option selected>Cloth</option>
+        <option selected>Beauty</option>
+        <option>Cloth</option>
+        <option>Electronic</option>
+        <option>Perfume</option>
+        <option>Beauty</option>
+        <option>Kitchenware</option>
+        <option>Scarf</option>
         <option>Shoe</option>
         <option>Watch</option>
-        <option>Scarf</option>
-        <option>Electronic</option>
         <option>Other</option>
       </select>
     </label>
@@ -139,7 +143,7 @@
     </div>
 
     <li class="item" ng-if="!showCustomPricingForm && !showCustomPricingFormEdit && !showCustomPricingFormLast && !customPricingDone" >
-      <button ng-if="customPricingList.length == 0" class="button button-block button-balanced" ng-click="customPricingOperation('add',0)">Add New Pricing</button>
+      <button ng-if="customPricingList.length == 0" class="button button-block button-orange" ng-click="customPricingOperation('add',0)">Add New Pricing</button>
       
       <div class="button-bar" ng-if="customPricingList.length != 0">
         <a class="button button-small button-balanced" ng-click="customPricingOperation('add',0)">
@@ -249,6 +253,29 @@
 
 </div>
 <!-- ***************************** end hasCustomPricing ****************************************************************************** -->
+   <br>
+
+<!-- ******************************************************************************************************************************************** -->
+<!-- ***************************** Advanced Option (Specification) ****************************************************************************** --> 
+
+   <li class="item item-toggle">
+     Advanced Option ?
+     <label class="toggle toggle-balanced">
+       <input type="checkbox" ng-disabled="loading" ng-model="hasSpecification" ng-change="toogleHasSpecification()">
+       <div class="track">
+         <div class="handle"></div>
+       </div>
+     </label>
+  </li>
+  <div ng-if="hasSpecification">  
+   <label class="item item-input">
+        <span class="input-label small">Minimum Order Quantity</span>
+      <input type="number" placeholder="100" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="specification.min_req_quantity" required>
+    </label>  
+  </div>
+
+
+<!-- ******************************************************************************************************************************************** -->
 
     <div ng-if = "state=='addProduct'" class="text-center" ng-show="loading">
       Adding New Product<br>
@@ -267,13 +294,13 @@
   (!customPricingDone && hasCustomPricing) || 
   (customPricingDone && hasCustomPricing && doneErrorMessageList.length > 0)"
 
-  class="button button-block button-positive" ng-click="createNewProduct()">Add Product</button>
+  class="button button-block button-orange" ng-click="createNewProduct()">Add Product</button>
   
   <button ng-if = "state=='editProduct'" 
   ng-disabled="!productform.$valid || loading || 
   (!customPricingDone && hasCustomPricing) || 
   (customPricingDone && hasCustomPricing && doneErrorMessageList.length > 0)"
-  class="button button-block button-positive" ng-click="editProduct()">Edit Product</button>
+  class="button button-block button-orange" ng-click="editProduct()">Edit Product</button>
 
 </div>
 </form>

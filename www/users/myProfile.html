@@ -96,7 +96,9 @@
 
 
       <h2><strong>{{myProfile.first_name}} {{myProfile.last_name}}</strong><br><span class="small">Member Since {{myProfile.created_at.getDate()}}<span></h2>          
+      
       <div class="small">
+        <span ng-if="myProfile.company_name != ''" class="fa fa-building" aria-hidden="true" style="padding-right:10px;"> </span>{{myProfile.company_name}}<br>
         <span class="fa fa-phone" aria-hidden="true" style="padding-right:10px;"> </span>{{myProfile.phone_number}}<br>
         <span class="fa fa-envelope" aria-hidden="true" style="padding-right:10px;"> </span>{{myProfile.email}}<br>
         <span class="fa fa-map-marker" aria-hidden="true" style="padding-right:10px;"> </span>
@@ -106,7 +108,6 @@
             {{myProfile.address_line_1}}<br>
             <span ng-if="myProfile.address_line_2 != ''">{{myProfile.address_line_2}}<br></span>
             {{myProfile.city}}<br>{{myProfile.state}}, {{myProfile.postal_code}}
-            
           </span>
 
           <span ng-show="!fullAddress">
@@ -126,7 +127,7 @@
 
     </div>
     <div  ng-if="myProfile.user_type < USER_TYPE.DROPSHIP" class="item text-center">
-      <button class="button button-small button-positive icon-left ion-bag" ng-click="showProductList(myProfile.id)">My Product</button>
+      <button class="button button-small button-orange icon-left ion-bag" ng-click="showProductList(myProfile.id)">My Product</button>
     </div>
 
 </div>
@@ -149,12 +150,17 @@
      
      <!-- first name -->
      <label class="item-input">
-      <input type="text" class="form-control" placeholder="First Name" ng-model="myProfile.first_name" required>
+      <input type="text" class="form-control" placeholder="First Name *" ng-model="myProfile.first_name" required>
     </label>
 
      <!-- last name -->
      <label class="item-input">
-      <input type="text" class="form-control" placeholder="Last Name" ng-model="myProfile.last_name" required>
+      <input type="text" class="form-control" placeholder="Last Name *" ng-model="myProfile.last_name" required>
+    </label>
+
+     <!-- company name -->
+     <label class="item-input">
+      <input type="text" class="form-control" placeholder="Company Name" ng-model="myProfile.company_name">
     </label>
 
     <!-- email -->
@@ -164,12 +170,12 @@
       
     <!-- phone number -->      
     <label class="item-input">
-      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" ng-model="myProfile.phone_number" required data-country="US">
+      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number *" ng-model="myProfile.phone_number" required data-country="US">
     </label> 
    
     <!-- address-line1 input-->
     <label class="item-input">
-      <input type="text" class="form-control" id="address-line1" name="address-line1" placeholder="Address Line 1" ng-model="myProfile.address_line_1" required>
+      <input type="text" class="form-control" id="address-line1" name="address-line1" placeholder="Address Line 1 *" ng-model="myProfile.address_line_1" required>
     </label>    
 
     <!-- address-line2 input-->
@@ -179,12 +185,12 @@
 
     <!-- city input-->
     <label class="item-input">
-      <input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="myProfile.city" required>
+      <input type="text" class="form-control" id="city" name="city" placeholder="City *" ng-model="myProfile.city" required>
     </label>      
 
     <!-- postal-code input-->
     <label class="item-input">
-      <input type="text" class="form-control" id="postal-code" name="postal-code" placeholder="Postal Code" ng-model="myProfile.postal_code" required>
+      <input type="text" class="form-control" id="postal-code" name="postal-code" placeholder="Postal Code *" ng-model="myProfile.postal_code" required>
     </label>        
 
      <!-- state -->
@@ -213,7 +219,7 @@
 
     <!-- about -->
     <label class="item-input">
-      <textarea ng-if="myProfile.user_type==USER_TYPE.SUPPLIER || user_type==USER_TYPE.STOCKIST" class="form-control" 
+      <textarea ng-if="myProfile.user_type==USER_TYPE.SUPPLIER || myProfile.user_type==USER_TYPE.STOCKIST" class="form-control" 
       placeholder="Tell more about your business and if you are looking for agents/suppliers/stockists (optional)" 
       rows="4" ng-model="myProfile.about"></textarea>
     
@@ -228,7 +234,7 @@
       </div>
       
       <button ng-disabled="!editForm.$valid || loading" type="submit" 
-      class="button button-block button-balanced" ng-click="submitEditProfile()">Edit Profile</button>
+      class="button button-block button-orange" ng-click="submitEditProfile()">Edit Profile</button>
 
       
     </div>
@@ -240,8 +246,66 @@
   </div>
 </div>
 </div>
+<hr>
+
+
+<!--- REVIEWS ################################################################################################################################################ -->
+<!--- REVIEWS ################################################################################################################################################ -->
+<div ng-controller="ReviewController" >
+  <a class="link" href="" ng-click="refresh()">
+    <h3>Reviews</h3>
+  </a>
+
+
+    <div class="item text-center" ng-show="loadGet">
+        <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+    </div>
+
+    <span ng-show="!loadGet && reviews.length > 0">
+      <div ng-repeat="item in reviews" class="text-left">
+        <div class="item item-avatar">
+          <img src="{{item.from_user_picture}}">
+              <p>
+        
+                <span class="item-body text-muted" style="padding: 0px;">
+                  <!--- STAR -->
+                  <span class="star">
+                    <span ng-repeat="n in range(1,item.star)">
+                      <i class="fa fa-star"></i>
+                    </span>
+                  </span>
+                  <!--- STAR -->
+                  <br>
+                  <small ng-if="item.text != null && item.text != ''" style="font-style:italic;">{{item.text}}<br></small>
+                  <small style="font-size:10px;">by <a href="" ng-click="showUser({{item.from_user_id}})">{{item.from_user_name}}</a></small>
+                  <small style="font-size:8px;"> on <strong>{{item.updated_at.getDate()}}</strong></small>
+
+                </span>
+              
+              </p>
+          </div>
+      </div>
+    
+      <div class ="item item-body text-center">
+          <small style="font-size:10px;">Showing {{loadedReviews}} of {{totalReviews}} reviews</small><br>
+          <button ng-if="loadedReviews < totalReviews" class="button button-small button-orange icon-left ion-load-d" 
+            ng-click="getMore()">Load More Reviews</button>
+      </div>
+
+    </span>
+    
+    <div class="item item-body text center" ng-show="!loadGet && reviews.length == 0">
+        <small>You have no review yet</small>
+        </span>
+    </div>
+
+  </div>
+<!--- REVIEWS ################################################################################################################################################ -->
+<!--- REVIEWS ################################################################################################################################################ -->
+
 
 <hr>
+
 </div>
 
 </ion-view>

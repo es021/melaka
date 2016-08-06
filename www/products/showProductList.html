@@ -6,7 +6,7 @@
 <p>
 
 <div ng-if="!isMyProduct">
-	<a class="link" href="" ng-click="refresh('List')">
+	<a class="link" href="" ng-click="refresh()">
 		<h2>Products List</h2>
 	</a>
 	<a href="" class="link small" ng-click="showUser(userObject.id)">by {{userObject.user_name}}</a>
@@ -123,7 +123,7 @@
 					</span>
 
 
-					<button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id,'info')">Show More</button>
+					<button class="button button-small button-orange icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id,'info')">Show More</button>
 				</div>
 					<br>
 					
@@ -148,7 +148,7 @@
 			Looks empty here.
 			Let's add something    	
 	    	<br><br>
-            <button class="button button-positive icon-left ion-bag" 
+            <button class="button button-orange icon-left ion-bag" 
               ng-click="addProduct()">Add New Product</button>
 
 	    </span>
@@ -156,7 +156,7 @@
 	    <span class="text-center" ng-if="pageNumber > 1">
 	    	No more product available
 	    	<br><br>
-            <button class="button button-positive icon-left ion-bag" 
+            <button class="button button-orange icon-left ion-bag" 
               ng-click="addProduct()">Add More Product</button>
 	    </span>
 	  </div>

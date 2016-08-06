@@ -89,14 +89,56 @@ myApp.controller('HomeController', function ($scope,growl, $state, BackandServic
       getAllUserCount();
   }
 
+  function updateLatestPicture(user_id)
+  {
+      BackandService.getUserPicture(user_id).then(function(result){
+        
+        $scope.userPicture = result.data[0];
+        console.log($scope.userPicture);
+
+        if(result.status == 200)
+        {
+          if($scope.authProfile.picture != $scope.userPicture.picture ||
+              $scope.authProfile.picture_large != $scope.userPicture.picture_large ||
+              $scope.authProfile.cover_photo != $scope.userPicture.cover_photo
+            )
+            {
+                console.log("Updating picture");
+                BackandService.updateLatestPicture($scope.authProfile,$scope.userInSession.user_id).then(function (result){
+                    $scope.myProfileLoad = false;
+
+                },function errorCallback(result){
+                    PublicService.errorCallbackFunction(result,"default");
+                    $scope.myProfileLoad = false;
+                });
+            }
+          else
+          {
+              $scope.myProfileLoad = false;
+          }
+        }
+      },function errorCallbackFunction(result){
+          PublicService.errorCallbackFunction(result,"default");
+          $scope.myProfileLoad = false;
+
+      });
+  }
+
   function initDashboard($scope)
   {
+
     $scope.myNotification = {};
     $scope.myNotificationLoad = true;
 
     //LIMIT 5 je
     getNotification($scope.userInSession.user_id,5);
 
+    
+    if($scope.authProfile.auth_id.split("|")[0] == "facebook")
+    {
+      $scope.myProfileLoad = true;
+      updateLatestPicture($scope.userInSession.user_id);
+    }
   }
 
   $scope.refreshNotification = function()

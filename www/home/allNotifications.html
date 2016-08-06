@@ -1,6 +1,8 @@
 <!--App Controller-->
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
 
 <p>
 
@@ -37,7 +39,9 @@
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.LINK" class="icon ion-person-stalker"></i>	
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.PRODUCT" class="icon ion-bag"></i>	
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.TRANSACTION" class="icon ion-arrow-swap"></i>	
-		   			  		<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.REVIEW" class="icon ion-chatbubble-working"></i>	
+	
 							{{item.text}}
 						<br>
 						
@@ -79,6 +83,7 @@
 
 </p>
 
+		</div>
 
 </ion-view>
 </ion-content>

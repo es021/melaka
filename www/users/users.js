@@ -867,6 +867,7 @@ myApp.controller('MyProfileController', function ($scope, growl, $state,UserServ
     editUserById($scope.myProfile.id,
                 $scope.myProfile.first_name,
                 $scope.myProfile.last_name,
+                $scope.myProfile.company_name,
                 $scope.myProfile.address_line_1,
                 $scope.myProfile.address_line_2,
                 $scope.myProfile.city,

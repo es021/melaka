@@ -16,7 +16,7 @@
 <div class="card list list-inset">
   <label class="item item-input">
     <i class="icon ion-search placeholder-icon"></i>
-    <input type="text" class="form-control" placeholder="Search User Or State" ng-model="search.key" ng-change="submit()" required>
+    <input type="text" class="form-control" placeholder="Search User/Company/State/About" ng-model="search.key" ng-change="submit()" required>
   </label>
 
     <div class="text-left">
@@ -25,7 +25,11 @@
             <a class="item item-avatar" ng-click="showUser({{item.id}})">
               <img src="{{item.picture}}">
                 <h2>{{item.first_name}} {{item.last_name}}</h2>
-                <p><strong>{{item.state}}</strong><small class="text-muted" ng-if="item.about != null"><br>{{item.about}}</small></p>
+                <p>
+                  <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
+                  <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+                  <small class="text-muted" ng-if="item.about != null" style="font-style:italic;"><br>{{item.about}}</small>
+                </p>
             </a>
           </div>
     </div>
@@ -52,8 +56,11 @@
 		    <a class="item item-avatar" ng-click="showUser({{item.id}})">
 		    	<img src="{{item.picture}}">
 		      	<h2>{{item.first_name}} {{item.last_name}}</h2>
-		      	<p><strong>{{item.user_type.getUserType()}}</strong> | {{item.state}}</p>
-		    </a>
+              <p>
+                <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
+                <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+              </p>		    
+        </a>
         </div>
         
         <div class="item text-right" ng-if="suppliers.length > 0">
@@ -85,7 +92,10 @@
           <a class="item item-avatar" ng-click="showUser({{item.id}})">
             <img src="{{item.picture}}">
               <h2>{{item.first_name}} {{item.last_name}}</h2>
-              <p><strong>{{item.user_type.getUserType()}}</strong> | {{item.state}}</p>
+              <p>
+                <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
+                <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+              </p>
           </a>
           </div>
 
@@ -117,8 +127,11 @@
           <a class="item item-avatar" ng-click="showUser({{item.id}})">
             <img src="{{item.picture}}">
               <h2>{{item.first_name}} {{item.last_name}}</h2>
-              <p><strong>{{item.user_type.getUserType()}}</strong> | {{item.state}}</p>
-          </a>
+              <p>
+                <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
+                <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+              </p>
+           </a>
           </div>
 
 

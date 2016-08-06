@@ -80,8 +80,6 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
   $scope.newRequest.total_price = 0;
   $scope.loadingRequest = false;
 
-  
-
   $scope.refresh = function(body)
   {
     console.log("Refresh");
@@ -242,6 +240,16 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
             $scope.customPricingList = JSON.parse($scope.showObject.custom_pricing);
           }
 
+          if($scope.showObject.specification == null || $scope.showObject.specification == "")
+          {
+            $scope.hasSpecification = false;
+          }
+          else
+          {
+            $scope.hasSpecification = true;
+            $scope.showObject.specification = JSON.parse($scope.showObject.specification);
+          }
+
           if($scope.userInSession != null)
           {
             checkAuthentication();
@@ -329,9 +337,12 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
     initEditProduct($scope.editId);
   }
 
-  $scope.imageSizeLimit = 2;
+  $scope.imageSizeLimit = 5;
 
   $scope.newProduct = {};
+  $scope.specification = {};
+  $scope.hasSpecification = false;
+
   $scope.filePath = null;
   $scope.fileToUpload = {};
 
@@ -650,6 +661,17 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
         $scope.customPricingDone = true;
       }
 
+      if($scope.oldProduct.specification == null || $scope.oldProduct.specification == "")
+      {
+        $scope.hasSpecification = false;
+      }
+      else
+      {
+        console.log("getting custom price edit");
+        $scope.specification = JSON.parse($scope.oldProduct.specification);
+        $scope.hasSpecification = true;
+      }
+
       $scope.progress = 100;
 
     },function errorCallback(error){
@@ -657,6 +679,15 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
     });
   }
 
+
+  $scope.toogleHasSpecification = function(){
+    if($scope.hasSpecification)
+      $scope.hasSpecification = false;
+    else
+      $scope.hasSpecification = true;
+
+    console.log($scope.hasSpecification);
+  }
 
   $scope.toogleHasCustomPricing = function(){
     if($scope.hasCustomPricing)
@@ -684,6 +715,18 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
     else
     {
       $scope.newProduct.custom_pricing = null;
+    }
+
+    console.log("spec "+$scope.hasSpecification);
+    if($scope.hasSpecification)
+    {
+      console.log("here");
+      $scope.newProduct.specification = JSON.stringify($scope.specification);
+      console.log($scope.newProduct);
+    }
+    else
+    {
+      $scope.newProduct.specification = null;
     }
 
     console.log($scope.newProduct);
@@ -725,6 +768,7 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
                 $scope.newProduct.picture,
                 $scope.newProduct.quantity,
                 $scope.newProduct.custom_pricing,
+                $scope.newProduct.specification,
                 $scope.newProduct.updated_at)
     .then(function(result){
 
@@ -868,15 +912,9 @@ function tinify(){
     $scope.loadStatus = "Creating new record in database"
 
     $scope.newProduct.user_id = $scope.userInSession.user_id;
+    $scope.newProduct.specification = JSON.stringify($scope.specification);
 
-    console.log($scope.newProduct.user_id);
-    console.log($scope.newProduct.name);
-    console.log($scope.newProduct.category);
-    console.log($scope.newProduct.description);
-    console.log($scope.newProduct.picture);
-    console.log($scope.newProduct.price_per_unit);
-    console.log($scope.newProduct.custom_pricing);
-    console.log($scope.newProduct.specification);
+    console.log($scope.newProduct);
     $scope.loading = false;
 
     BackandService.addObject("products",$scope.newProduct).then(function(result){
@@ -961,11 +999,11 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
 
   $scope.isMyProduct = false;
 
-  $scope.refresh = function(body)
+  $scope.refresh = function()
   {
     console.log("Refresh");
     getAllProductByUserId($stateParams.user_id);
-    growl.info(body+' is up to date',{title: 'Refresh List!'});
+    growl.info('List is up to date',{title: 'Refresh List!'});
   }
 
   /////////////////////////////////////////////////////////////////////////////////////////////////

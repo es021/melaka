@@ -6,9 +6,8 @@
 
 <update-meta property="og:image" content="{{showObject.picture.getHttpLink()}}"></update-meta>
 
-
-
 <p>
+
 <a class='link' href="" ng-click="refresh('Product')">
 <h3>{{showObject.name}}</h3>
 </a>
@@ -47,44 +46,43 @@
             
             <br><br>
             
-            <a style="text-decoration:none;" target="_blank" href="{{showObject.picture}}">
+            <a style="text-decoration:none;" ng-click="openModal(showObject.name,showObject.picture)" href="">
             <img src="{{showObject.picture}}" class="full-image image-fit">
             </a>
 
             <br><br>
-  
-            <span class="info-with-fa">
-                <li class="fa fa-suitcase" >
-                </li>
+
+          <h1 style="font-size:20px;"><small><i class="fa fa-suitcase"></i> Category</small>
+              <br>
                 {{showObject.category}}
-            </span> 
-            
-            <br>
-            
-            <span class="info-with-fa" ng-if="!hasCustomPricing">
-                <li class="fa fa-tag" >
-                </li>
-                RM {{showObject.price_per_unit}} / unit
-                <br><br>
-            </span> 
+          </h1>
 
-            <span class="info-with-fa" ng-if="hasCustomPricing">
-                <br>
-                <li class="fa fa-tag" >
-                </li>
-                <u>Custom Pricing</u>
+          <h1 ng-if="!hasCustomPricing" style="font-size:20px;"><small><i class="fa fa-tag"></i> Price Per Unit</small>
+              <br>
+              RM {{showObject.price_per_unit}} / unit
+          </h1>
 
-            <div>
-              <ul class="list-inline small text-center">
-                <li ng-repeat="custom in customPricingList">
-                  <strong>{{custom.from}}-{{custom.to}}</strong>
-                  <br>
-                  <span class="text-muted">RM {{custom.price}}</span>
+          <h1 ng-if="hasSpecification" style="font-size:20px;"><small><i class="fa fa-list-ol"></i> Minimum Order Quantity</small>
+              <br>
+              {{showObject.specification.min_req_quantity}} unit
+          </h1>
 
-                </li>
-              </ul>
-            </div>
+
+            <span ng-if="hasCustomPricing">
+               <h1 style="font-size:20px;"><small><i class="fa fa-tag"></i> Custom Pricing</small>
+              <div>
+                <ul class="list-inline small text-center">
+                  <li ng-repeat="custom in customPricingList">
+                    <strong>{{custom.from}}-{{custom.to}}</strong>
+                    <br>
+                    <span class="text-muted">RM {{custom.price}}</span>
+
+                  </li>
+                </ul>
+              </div>            
+              </h1>
             </span>
+
 
           <div class="small item item-body text-muted">
             <span ng-if="showObject.description == '' || showObject.description == null">
@@ -103,18 +101,20 @@
               <span ng-if="showObject.quantity > 0" class="label label-success">{{showObject.quantity}} available</span>
               <span ng-if="showObject.quantity <= 0 || showObject.quantity == null" class="label label-danger">Out Of Stock</span>  
               <br>
-            <span class="info-with-fa" ng-if="!hasCustomPricing">
-                <br>
-                <li class="fa fa-tag" >
-                </li>
-                RM {{showObject.price_per_unit}} / unit
-            </span> 
 
-            <span class="info-with-fa" ng-if="hasCustomPricing">
-                <br>
-                <li class="fa fa-tag" >
-                </li>
-                <u>Custom Pricing</u>
+          <h1 ng-if="!hasCustomPricing" style="font-size:20px;"><small><i class="fa fa-tag"></i> Price Per Unit</small>
+              <br>
+              RM {{showObject.price_per_unit}} / unit
+          </h1>
+
+          <h1 ng-if="hasSpecification" style="font-size:20px;"><small><i class="fa fa-list-ol"></i> Minimum Order Quantity</small>
+              <br>
+              {{showObject.specification.min_req_quantity}} unit
+          </h1>
+
+
+            <span ng-if="hasCustomPricing">
+               <h1 style="font-size:20px;"><small><i class="fa fa-tag"></i> Custom Pricing</small>
               <div>
                 <ul class="list-inline small text-center">
                   <li ng-repeat="custom in customPricingList">
@@ -124,8 +124,10 @@
 
                   </li>
                 </ul>
-              </div>
+              </div>            
+              </h1>
             </span>
+
           </div>
     <hr>
     <div class="text-left">
@@ -143,6 +145,7 @@
 
       <!-- ERROR MESSAGE -->
       <small ng-if="newRequest.quantity > showObject.quantity" class="text-assertive text-center">[Error] The quantity is larger than available product</small>
+      <small ng-if="newRequest.quantity < showObject.specification.min_req_quantity" class="text-assertive text-center">[Error] The quantity is smaller than Minumum Order Quantity</small>
 
       <label class="item item-input">
         <span class="input-label">Quantity</span><br>
@@ -224,10 +227,12 @@
           <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
       </div>
 
-      <button ng-if="newRequest.type == 'Delivery' || newRequest.type == null" ng-disabled="!requestform.$valid || loadingRequest || (newRequest.quantity > showObject.quantity)" 
+      <button ng-if="newRequest.type == 'Delivery' || newRequest.type == null" ng-disabled="!requestform.$valid || loadingRequest 
+                      || (newRequest.quantity > showObject.quantity) || (newRequest.quantity < showObject.specification.min_req_quantity)" 
         type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
 
-      <button ng-if="newRequest.type == 'Pick Up'" ng-disabled="loadingRequest || (newRequest.quantity > showObject.quantity) || newRequest.quantity == null" 
+      <button ng-if="newRequest.type == 'Pick Up'" ng-disabled="loadingRequest || (newRequest.quantity > showObject.quantity) 
+                      || newRequest.quantity == null || (newRequest.quantity < showObject.specification.min_req_quantity)" 
         type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
 
     </div>
@@ -245,7 +250,7 @@
   <!-- ********************************************************************************************************************** -->
   <!-- **************************** VISIT SUPPLIER **************************************************************************** -->
   <div class="item text-center">
-    <button class="button button-small button-positive icon-left ion-person" ng-click="showUser(showObject.user_id)">Visit {{showObject.other_user_type.getUserType()}}</button>
+    <button class="button button-small button-orange icon-left ion-person" ng-click="showUser(showObject.user_id)">Visit {{showObject.other_user_type.getUserType()}}</button>
   </div>
 
   <!-- ********************************************************************************************************************** -->

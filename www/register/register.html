@@ -21,27 +21,32 @@
        
      <!-- first name -->
      <label class="item-input">
-      <input type="text" class="form-control" placeholder="First Name" ng-model="newUser.first_name" required>
+      <input type="text" class="form-control" placeholder="First Name *" ng-model="newUser.first_name" required>
     </label>
 
      <!-- last name -->
      <label class="item-input">
-      <input type="text" class="form-control" placeholder="Last Name" ng-model="newUser.last_name" required>
+      <input type="text" class="form-control" placeholder="Last Name *" ng-model="newUser.last_name" required>
+    </label>
+
+     <!-- last name -->
+     <label class="item-input">
+      <input type="text" class="form-control" placeholder="Company Name" ng-model="newUser.company_name">
     </label>
 
     <!-- email -->
     <label class="item-input">
-      <input type="text" class="form-control" placeholder="Email" ng-model="newUser.email" >
+      <input type="text" class="form-control" placeholder="Email *" ng-model="newUser.email" >
     </label> 
       
     <!-- phone number -->      
     <label class="item-input">
-      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number" ng-model="newUser.phone_number" required data-country="US">
+      <input type="text" class="input-medium bfh-phone" placeholder="Phone Number *" ng-model="newUser.phone_number" required data-country="US">
     </label> 
    
     <!-- address-line1 input-->
     <label class="item-input">
-      <input type="text" class="form-control" id="address-line1" name="address-line1" placeholder="Address Line 1" ng-model="newUser.address_line_1" required>
+      <input type="text" class="form-control" id="address-line1" name="address-line1" placeholder="Address Line 1 *" ng-model="newUser.address_line_1" required>
     </label>    
 
     <!-- address-line2 input-->
@@ -51,18 +56,18 @@
 
     <!-- city input-->
     <label class="item-input">
-      <input type="text" class="form-control" id="city" name="city" placeholder="City" ng-model="newUser.city" required>
+      <input type="text" class="form-control" id="city" name="city" placeholder="City *" ng-model="newUser.city" required>
     </label>      
 
     <!-- postal-code input-->
     <label class="item-input">
-      <input type="text" class="form-control" id="postal-code" name="postal-code" placeholder="Postal Code" ng-model="newUser.postal_code" required>
+      <input type="text" class="form-control" id="postal-code" name="postal-code" placeholder="Postal Code *" ng-model="newUser.postal_code" required>
     </label>        
 
      <!-- state -->
     <div class="list">
     <label class="item-input item-select">
-      <div class="input-label" ng-show="newUser.state == null">State</div>
+      <div class="input-label" ng-show="newUser.state == null">State *</div>
       <div class="input-label" ng-show="newUser.state != ''">{{newUser.state}}</div>
       <select ng-model="newUser.state" required>
         <option selected>Johor</option>
@@ -88,13 +93,19 @@
     <!-- about -->
     <label class="item-input">
       <textarea ng-if="user_type==USER_TYPE.SUPPLIER || user_type==USER_TYPE.STOCKIST" class="form-control" 
-      placeholder="Tell more about your business and if you are looking for agents/suppliers/stockists (optional)" 
+      placeholder="Tell more about your business and if you are looking for agents/suppliers/stockists" 
       rows="4" ng-model="newUser.about"></textarea>
       
       <textarea ng-if="user_type==USER_TYPE.DROPSHIP" class="form-control" 
-      placeholder="Tell more about your business and if you are looking for suppliers/stockists (optional)" 
+      placeholder="Tell more about your business and if you are looking for suppliers/stockists" 
       rows="4" ng-model="newUser.about"></textarea>  
     </label>
+
+</div>
+
+  <div class="item-body text-center">
+      <label><input type="checkbox" value="" ng-model="terms"></label><small> I Agree To <a href="" ng-click="modalTerm.show()">Terms and Conditions</a></small>
+  </div>
 
   <div class="text-center" ng-show="loading">
       Registering Your Account as {{user_type.getUserType()}}<br>
@@ -102,16 +113,9 @@
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
   
-  <button ng-if="user_type==USER_TYPE.SUPPLIER" ng-disabled="!registrationForm.$valid || loading" type="submit" 
-  class="button button-block button-{{USER_TYPE.ION_COLOR.SUPPLIER}}" ng-click="createNewUser()">Register as New Supplier</button>
+  <button ng-disabled="!registrationForm.$valid || loading || !terms" type="submit" 
+  class="button button-block button-orange" ng-click="createNewUser()">Register as New {{user_type.getUserType()}}</button>
 
-  <button ng-if="user_type==USER_TYPE.STOCKIST" ng-disabled="!registrationForm.$valid || loading" type="submit" 
-  class="button button-block button-{{USER_TYPE.ION_COLOR.STOCKIST}}" ng-click="createNewUser()">Register as New Stockist</button>
-
-  <button ng-if="user_type==USER_TYPE.DROPSHIP" ng-disabled="!registrationForm.$valid || loading" type="submit" 
-  class="button button-block button-{{USER_TYPE.ION_COLOR.DROPSHIP}}" ng-click="createNewUser()">Register as New Dropship</button>
-
-  </div>
   </form>
 
 </div>

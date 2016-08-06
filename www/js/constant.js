@@ -66,7 +66,8 @@ myApp.constant("NOTI_CATEGORY", {
         "LINK": 3,
         "PRODUCT": 4,
         "TRANSACTION": 5,
-        "PAYMENT": 6
+        "PAYMENT": 6,
+        "REVIEW": 7
 });
 
 myApp.constant("OFFSET", {

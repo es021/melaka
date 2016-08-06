@@ -44,8 +44,6 @@ div.sub-text{
   left: 50%;
   max-width: 100px;
   opacity: 1;
-  box-shadow: 3px 3px 20px rgba(0, 0, 0, 0.5);
-  border: 2px solid rgba(255, 255, 255, 0.5);
 
 }
 
@@ -72,12 +70,10 @@ div.sub-text{
 .profile h3{
   margin: 0 0 5px;
   font-weight: 250;
-  color : white;
 }
 .profile h5{
   display: block;
   opacity: 0.75;
-  color:white;
 }
 
 .text-light{
@@ -116,9 +112,12 @@ div.sub-text{
  color : #444;
 }
 
+
+
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
+/*
 .scroll-content{    
   background:url(../img/background3_small.jpg) no-repeat;
   background-size: cover;
@@ -131,24 +130,25 @@ ion-side-menu{
   height:40px;
   float:right;
   margin:0 0 0 5px;
-
 }
+*/
 
 @media only screen 
 and (max-width : 400px) {
-  .scroll-content{    
+  /*.scroll-content{    
     background:url(../img/background3_small.jpg) no-repeat;
     background-size: cover;
     height:100%;
-  }
+  }*/
 
-  ion-side-menu{
-    background:url(../img/background3_small.jpg) repeat;
+
+  /* ion-side-menu{
+    /*background:url(../img/background3_small.jpg) repeat;
     background-size: cover;
     height:40px;
     float:right;
     margin:0 0 0 5px;
-  }
+  }*/
 
   .notification #text{
       font-size: 13px;
@@ -166,19 +166,20 @@ and (max-width : 400px) {
 }
 @media only screen 
 and (min-width : 321px) {
-  .scroll-content{    
+  /*.scroll-content{    
     background:url(../img/background3_small.jpg) no-repeat;
     background-size: cover;
     height:100%;
-  }
+  }*/
 
-  ion-side-menu{
-    background:url(../img/background3_small.jpg) repeat;
+
+/*  ion-side-menu{
+    /*background:url(../img/background3_small.jpg) repeat;
     background-size: cover;
     height:40px;
     float:right;
     margin:0 0 0 5px;
-  }
+  }*/
 
 
 
@@ -188,44 +189,45 @@ and (min-width : 321px) {
 /* iPads (portrait and landscape) ----------- */
 @media only screen 
 and (min-width : 768px) {
-  .scroll-content{    
+  /*.scroll-content{    
     background:url(../img/background3_medium.jpg) no-repeat;
     background-size: cover;
     height:100%;
-  }
+  }*/
 
-  ion-side-menu{
-    background:url(../img/background3_medium.jpg) repeat;
+  /*ion-side-menu{
+    /*background:url(../img/background3_medium.jpg) repeat;
     background-size: cover;
     height:40px;
     float:right;
     margin:0 0 0 5px;
-  }
+  }*/
 }
 
 /* Desktops and laptops ----------- */
 @media only screen 
 and (min-width : 1224px) {
-    .scroll-content{    
+    /*.scroll-content{    
     background:url(../img/background3_high.jpg) no-repeat;
     background-size: cover;
     height:100%;
   }
 
   ion-side-menu{
-    background:url(../img/background3_high.jpg) repeat;
+    /*background:url(../img/background3_high.jpg) repeat;
     background-size: cover;
     height:40px;
     float:right;
     margin:0 0 0 5px;
   }
+  */
 }
 
 
 /*/////////////////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
 
-
+/*
 .item{
   opacity: 0.80;
 }
@@ -261,11 +263,6 @@ and (min-width : 1224px) {
   font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
 }
 
-.paragraph {
-  font-size: 15px;
-  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
-}
-
 .link {
   color: white;
 }
@@ -277,10 +274,15 @@ and (min-width : 1224px) {
   text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
 }
 
-.button:hover {
-  opacity: 0.70;
-  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+
+*/
+
+.paragraph {
+  font-size: 15px;
+  font-family: "Century Gothic", CenturyGothic, AppleGothic, sans-serif;
 }
+
+
 
 span > .input-label {
   color: white;
@@ -308,4 +310,104 @@ textarea {
 
 .growl-notification{
 font-size: 30px;
+}
+
+.bar-header{
+  background: #faae1f !important;
+}
+
+
+.tabs-icon-top{
+  background: #faae1f !important;
+  padding-top: 1px;
+}
+
+.tabs-icon-top > a{
+  color: #a91e2c !important;
+  opacity: 1;
+}
+
+.background-orange {
+  background: #faae1f !important;
+  color:white !important;
+}
+
+.background-light-orange {
+  background: #fed790 !important;
+}
+
+.text-orange{
+ color : #faae1f;
+}
+
+.text-maroon{
+  color: #a91e2c !important;
+}
+
+.button:hover {
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);
+}
+
+.header-title{
+  font-family: 'Rakkas', cursive;
+  font-size: 30px !important;
+}
+
+.title > small {
+  color: #a91e2c;
+  opacity: 0.85;
+}
+
+.title {
+  color: #a91e2c;
+}
+
+.info-text{
+  color: #a91e2c;
+  opacity: 0.7;
+}
+
+.link {
+  color: #a91e2c;
+  font-style: oblique;
+
+}
+
+.link:hover {
+  color: #faae1f; /*orange*/
+  opacity: 0.70;
+  text-decoration: none;
+  text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+.button-orange{
+  background: #faae1f !important;
+  color:white !important;
+}
+
+.button-orange:hover{
+  color:#a91e2c !important;
+  box-shadow: 2px 2px 1px #a91e2c;
+}
+
+.item{
+}
+
+.card{
+}
+
+.scroll-content{    
+  background-color: #fff3de;
+  font-family: "Oswald", sans-serif;
+}
+
+.side-bar{
+  color: #a91e2c !important;
+
+}
+
+.star{
+  color:yellow;
+  -webkit-text-stroke: 0.7px black;
+
 }

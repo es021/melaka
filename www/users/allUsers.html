@@ -13,7 +13,7 @@
       <label class="item item-input">
         <i class="icon ion-search placeholder-icon"></i>
 
-        <input type="text" class="form-control" placeholder="Search {{user_type.getUserType()}}" ng-model="search.key" ng-change="submit()" required>
+        <input type="text" class="form-control" placeholder="Search {{user_type.getUserType()}}/Company/State/About" ng-model="search.key" ng-change="submit()" required>
 
       </label>
 
@@ -24,10 +24,11 @@
               <a class="item item-avatar" ng-click="showUser({{item.id}})">
               <img src="{{item.picture}}">
                   <h2>{{item.first_name}} {{item.last_name}}</h2>
-                  <p>{{item.state}}</p>
-                  <span class="badge">
-                    {{item.user_type.getUserType()}}
-                  </span>
+                  <p>
+                    <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
+                    <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+                    <small class="text-muted" ng-if="item.about != null" style="font-style:italic;"><br>{{item.about}}</small>
+                  </p>
               </a>
             </div>
           </div>
@@ -35,7 +36,7 @@
       </div>
 
         <div ng-if="searchUser.length == 0 && isSubmit && search.key.length>2 && !searchLoad">
-          No result found for <strong>'{{search.key}}'</strong>
+          No {{user_type.getUserType()}} found<br>for search key <strong>'{{search.key}}'</strong>
         </div>
 
       <div class="text-center" ng-show="searchLoad">
@@ -63,7 +64,12 @@
 	          <a class="item item-avatar" ng-click="showUser({{item.id}})">
 	            <img src="{{item.picture}}">
 	              <h2>{{item.first_name}} {{item.last_name}}</h2>
-	              <p><strong>{{item.state}}</strong><small class="text-muted" ng-if="item.about != null"><br>{{item.about}}</small></p>
+                <p>
+                  <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
+                  <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+                  <small class="text-muted" ng-if="item.about != null" style="font-style:italic;"><br>{{item.about}}</small>
+                </p>
+	     
 	          </a>
           </div>
 		

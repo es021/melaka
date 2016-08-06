@@ -38,7 +38,7 @@ myApp.config(function($stateProvider, BackandProvider) {
 });
 
 
-myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,growl,NOTI_CATEGORY,$ionicModal, $ionicPopup,$scope, BackandService,PublicService,FileReaderService, auth, TRANS_STATUS){
+myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,growl,NOTI_CATEGORY, $ionicPopup,$scope, BackandService,PublicService,FileReaderService, auth, TRANS_STATUS){
   
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));

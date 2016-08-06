@@ -16,7 +16,14 @@ String.prototype.getUserType = function() {
       return "Dropship";
 }
 
-
+Number.prototype.getUserTypeLogo = function(){
+    if(this == 1)
+      return "fa-home";    
+    if(this == 2)
+      return "fa-archive";    
+    if(this == 3)
+      return "fa-users";
+}
 
 Number.prototype.getUserTypeLower = function() {
     if(this == 1)

@@ -26,8 +26,8 @@
 
 		<h4 class="title">Be Part of the Community<br><small>Let's Get Started!</small></h4>
 		<div ng-app="sample" ng-controller="AppController">
-			<button class="button button-block button-positive" ng-click="login()">Login</button>
-			<button class="button button-block button-positive" ng-click="signup()">Signup</button>
+			<button class="button button-block button-orange" ng-click="login()">Login</button>
+			<button class="button button-block button-orange" ng-click="signup()">Signup</button>
 		</div>
     </div>
 
@@ -38,8 +38,7 @@
 	-->
     <div ng-if="authProfile != null && userInSession == null">
 		<h3 class="title">Hello {{authProfile.nickname}}</h3>
-
-
+		
 		  <div class="item item-avatar text-left" ng-click="myProfile()">
 		    <img src="{{authProfile.picture}} ">
 		    <h2>{{authProfile.nickname}}</h2>
@@ -124,7 +123,11 @@
 		Profile Card
 		Profile Card
 		-->
-		<div class="text-left">
+		<div class="text-center" ng-show="myProfileLoad">
+				<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+		</div>
+
+		<div ng-if="!myProfileLoad" class="text-left">
 			
 			<a class="item item-avatar" ng-click="myProfile()">
 				
@@ -162,6 +165,7 @@
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.PRODUCT" class="icon ion-bag"></i>	
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.TRANSACTION" class="icon ion-arrow-swap"></i>	
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>	
+		   			  		<i ng-if="item.category == NOTI_CATEGORY.REVIEW" class="icon ion-chatbubble-working"></i>	
 							{{item.text}}
 						<br>
 						
