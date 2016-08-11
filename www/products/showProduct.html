@@ -46,11 +46,15 @@
             
             <br><br>
             
-            <a style="text-decoration:none;" ng-click="openModal(showObject.name,showObject.picture)" href="">
-            <img src="{{showObject.picture}}" class="full-image image-fit">
-            </a>
+      <!-- %%%%%%%%%%%% -->
+      <!--   IMAGESSS   -->
+       <div ng-repeat="item in imageList" class="col-xs-12 col-sm-12 col-md-12 col-lg-12 center">
+          <a style="text-decoration:none;" ng-click="openModal(showObject.name,item)" href="">
+          <img src="{{item}}" class="img-rounded inline-block" alt="Cinque Terre" width="300" height="300">
+          </a>
+          <br><br>
+       </div>
 
-            <br><br>
 
           <h1 style="font-size:20px;"><small><i class="fa fa-suitcase"></i> Category</small>
               <br>

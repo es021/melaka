@@ -117,3 +117,21 @@ String.prototype.getHttpLink = function(){
 
   return this.replace("https","http");
 }
+
+String.prototype.getFirstPicture = function(){
+
+  if(this[0] == "[")
+  {
+    var JSONObject = JSON.parse(this);
+
+    console.log(JSONObject);
+
+    return JSONObject[0];
+  }
+  else
+  {
+    console.log(this+"");
+    return this+"";
+  }
+
+}

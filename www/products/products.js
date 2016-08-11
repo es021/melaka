@@ -59,6 +59,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
   $scope.lastUpdated = null;
   $scope.hasCustomPricing = null;
   $scope.customPricingList = [];
+  $scope.imageList = [];
 
   $scope.productId = $stateParams.product_id;
   $scope.show = $stateParams.show;
@@ -250,11 +251,22 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
             $scope.showObject.specification = JSON.parse($scope.showObject.specification);
           }
 
+          if($scope.showObject.picture[0] == "[")
+          {
+            $scope.imageList = JSON.parse($scope.showObject.picture);
+            console.log($scope.imageList);
+          }
+          else
+          {
+            $scope.imageList.push($scope.showObject.picture);
+          }
+
           if($scope.userInSession != null)
           {
             checkAuthentication();
             checkIsUserLinked($scope.userInSession.user_id,$scope.showObject.user_id);
           }
+
         }
       
     });
@@ -343,13 +355,13 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
   $scope.specification = {};
   $scope.hasSpecification = false;
 
-  $scope.filePath = null;
-  $scope.fileToUpload = {};
+  $scope.imageFiles = [];
+  $scope.imagePos = 0;
 
-  $scope.file = null;
-  $scope.filedata = null;
-  $scope.imageSrc = null;
-  $scope.progress = null;
+/*  $scope.file = [];
+  $scope.filedata = [];
+  $scope.imageSrc = [];
+  $scope.progress = [];*/
 
   $scope.loading = false;
   $scope.loadStatus = "";
@@ -672,6 +684,37 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
         $scope.hasSpecification = true;
       }
 
+      if($scope.oldProduct.picture[0] == "[")
+      {
+        var JSONObject = JSON.parse($scope.oldProduct.picture);
+
+        for(var i=0; i< JSONObject.length; i++)
+        {
+          var imageFile = {};
+          imageFile.filedata = "Uploaded";
+          imageFile.file = "Uploaded";
+          imageFile.pos = i;
+          imageFile.imageSrc = JSONObject[i];
+
+          $scope.imageFiles.push(imageFile);
+        }
+
+        $scope.imagePos = $scope.imageFiles.length;
+        console.log($scope.imageFiles);
+      }
+      else
+      {
+        var imageFile = {};
+        imageFile.filedata = "Uploaded";
+        imageFile.file = "Uploaded";
+        imageFile.pos = 0;
+        imageFile.imageSrc = $scope.oldProduct.picture;
+        
+        $scope.imageFiles.push(imageFile);
+        
+        $scope.imagePos = 1;
+      }
+
       $scope.progress = 100;
 
     },function errorCallback(error){
@@ -731,25 +774,15 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
 
     console.log($scope.newProduct);
 
-    if($scope.oldImageSrc == $scope.imageSrc) 
+    if($scope.imageFiles.length == 0)
     {
+      $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
       editRecord();
     }
-
     else
     {
-      if($scope.file == null)
-      {
-        $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
-        editRecord();
-      }
-      else
-      {
-        uploadFileBackand();
-      }
+      uploadFileBackand();
     }
-
-
   }
 
   function editRecord(){
@@ -800,75 +833,99 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
     return size / 1000000;
   }
 
-  $scope.removePicture = function () {
-    $scope.filePath = null;
-    $scope.fileToUpload = {};
-
+  $scope.removePicture = function (position) {
+    console.log("Emptying "+position)
     $scope.file = null;
-    $scope.filedata = null;
-    $scope.imageSrc = null;
-    $scope.progress = null;
+
+    if($scope.imageFiles.length == 1)
+    {
+      $scope.imageFiles = [];
+      $scope.imagePos = 0;
+      return;
+    }
+
+    $scope.imageFiles.splice(position,1);
+
+    
+    for(var i=0; i < $scope.imageFiles.length; i++)
+    {
+      if(i >= position)
+      {
+        $scope.imageFiles[i].pos -= 1;
+      } 
+    }
+    //$scope.imageFiles[position] = null;
+    
+    console.log($scope.imageFiles);
+
+    $scope.imagePos -= 1;
+    $scope.progress = 0;
+    
+/*  $scope.file = null;
+  $scope.filedata = null;
+  $scope.imageSrc = null;
+  $scope.progress = null;*/
   }
 
 $scope.loadImage = false;
 
 $scope.addPicture = function(){
-  $scope.loadImage = true;
+  $scope.progress = null;
 
   var f = document.getElementById('file').files[0];
   var r = new FileReader();
 
   r.onload = function(e){
-    $scope.filedata = e.currentTarget.result;
-    $scope.filename = f.name;
+    var imageFile = {};
+    imageFile.filedata = e.currentTarget.result;
+    imageFile.file = f;
+    imageFile.pos = $scope.imagePos;
 
-    $scope.file = f;
-    $scope.loadImage = false;
-    previewFile();
+    if(imageFile.filedata != null && imageFile.file != null)
+    {
+      $scope.imageFiles.push(imageFile);
+      previewFile();
+    }
+
   }
   
-  //r.readAsBinaryString(f);
    r.readAsDataURL(f);
 }
 
-function tinify(){
-    $http ({
-        method: 'POST',
-        url: 'https://api.tinify.com/shrink',
-        Authorization: 'XCi84z1igNgjjp0hDh_QuT-gol_ePm1r',
-        data: $scope.file
-        });
-}
-
   function previewFile(){
-    console.log($scope.file);
-    console.log($scope.file.type.split("/")[0] == "image");
+    console.log($scope.imageFiles);
 
-    if($scope.file == null)
+    //console.log($scope.file.type.split("/")[0] == "image");
+
+    if($scope.imageFiles[$scope.imagePos].file == null)
     {
       $scope.removePicture();
+      $scope.loadImage = false;
       return;
     }
-    else if($scope.file.type.split("/")[0] != "image")
+    else if($scope.imageFiles[$scope.imagePos].file.type.split("/")[0] != "image")
     {
       growl.error('File uploaded is not an image. Please try again',{title: 'Error Upload Image!'});
-      $scope.file = null;
+      $scope.imageFiles[$scope.imagePos].file = null;
+      $scope.loadImage = false;
       return;
     }
-    else if(sizeInMB($scope.file.size) > $scope.imageSizeLimit)
+    else if(sizeInMB($scope.imageFiles[$scope.imagePos].size) > $scope.imageSizeLimit)
     {
       growl.error('Image Size is Too Large. Please try again',{title: 'Error Upload Image!'});
-      $scope.file = null;
+      $scope.imageFiles[$scope.imagePos].file = null;
+      $scope.loadImage = false;      
       return;
     }
 
     //console.log($scope.file);
-    $scope.progress = null;
+    //$scope.progress = null;
 
 
-    FileReaderService.readAsDataURL($scope.file, $scope).then(function(result) {
-        $scope.imageSrc = result;
-        //console.log("RESULT FROM READ URL :" +result);
+    FileReaderService.readAsDataURL($scope.imageFiles[$scope.imagePos].file, $scope).then(function(result) {
+        $scope.imageFiles[$scope.imagePos].imageSrc = result;
+        $scope.imagePos += 1;
+        $scope.loadImage = false;
       });
     };
  
@@ -877,34 +934,55 @@ function tinify(){
   });
 
   function uploadFileBackand(){ 
-    $scope.loadStatus = "Saving image of your new product. Might be a while depending on the size of the image"
+    $scope.loadStatus = "Saving image of your new product."
+    
+    $scope.numberUploaded = 0;
+    $scope.newProduct.picture = [];
+    $scope.loading = true;
 
-    var filename = generateProductName();
-    var filedata = $scope.filedata;
+    for(var i = 0; i< $scope.imageFiles.length; i++)
+    {
+      if($scope.imageFiles[i].filedata == "Uploaded" || $scope.imageFiles[i].file == "Uploaded")
+      {
+        $scope.numberUploaded += 1;
+        $scope.newProduct.picture.push($scope.imageFiles[i].imageSrc);
+        console.log("continue");
+        continue;
+      }
 
-      BackandService.uploadFile(filename,filedata).then(function(result){
+      var filename = generateProductName($scope.imageFiles[i].pos);
+      var filedata = $scope.imageFiles[i].filedata;
+      
+       BackandService.uploadFile(filename,filedata).then(function(result){
 
           console.log("Result From Upload Image to Backand");
           console.log(result);      
 
           if(result.status == 200)
           {
-            $scope.newProduct.picture = result.data.url;
-
-            if($scope.state == "editProduct")
+            $scope.newProduct.picture.push(result.data.url);
+            $scope.numberUploaded += 1;
+            if($scope.numberUploaded == $scope.imageFiles.length)
             {
-              editRecord();
+              $scope.newProduct.picture = JSON.stringify($scope.newProduct.picture);
+              console.log($scope.newProduct);
+              if($scope.state == "editProduct")
+              {
+                editRecord();
+              }
+
+              if($scope.state == "addProduct")
+              {
+                addRecord();
+              }              
             }
 
-            if($scope.state == "addProduct")
-            {
-              addRecord();
-            }
           }
 
         },function errorCallback(result){
             console.log(result);
-        });  
+        });       
+    }
 
   }  
 
@@ -915,7 +993,6 @@ function tinify(){
     $scope.newProduct.specification = JSON.stringify($scope.specification);
 
     console.log($scope.newProduct);
-    $scope.loading = true;
 
     BackandService.addObject("products",$scope.newProduct).then(function(result){
 
@@ -938,13 +1015,13 @@ function tinify(){
 
   }
 
-  function generateProductName()
+  function generateProductName(position)
   {
     //supplier<id>_<create_at>
-    var imageType = $scope.file.type.split(/[ /]+/)[1];
+    var imageType = $scope.imageFiles[position].file.type.split(/[ /]+/)[1];
     var timeStamp = PublicService.getTimestampForFileName($scope.newProduct.created_at);
 
-    var productName = "user"+$scope.userInSession.user_id +"_"+$scope.newProduct.name+"_"+ timeStamp + "." + imageType;
+    var productName = "user"+$scope.userInSession.user_id +"_"+$scope.newProduct.name+"_"+position+" "+timeStamp + "." + imageType;
     console.log(productName);
     return productName;
   }
@@ -966,7 +1043,7 @@ function tinify(){
       $scope.newProduct.custom_pricing = "";
     }
 
-    if($scope.file == null)
+    if($scope.imageFiles.length == 0)
     {
       $scope.newProduct.picture = PICTURE_CONSTANT.UNAVAILABLE;
       console.log($scope.newProduct);

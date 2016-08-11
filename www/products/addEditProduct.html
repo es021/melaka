@@ -10,34 +10,60 @@
   <img src="{{unavailable}}" class="img-responsive img-thumbnail center-block" width="100">
 <button ng-disabled="imageSrc == null" class="button button-block button-positive" ng-click="uploadFileDropbox()">Test Upload Dropbox</button>
 -->
-
 <div class="text-left">
 
 <form role="form" accept="image/gif, image/jpeg">
 <div class="form-group" ng-form='productform'>
-  <label class="item item-input">
-    <div ng-if="imageSrc==null">
-    <span class="input-label">Upload Picture For Your Product <h4>(Size Limit : {{imageSizeLimit}} MB)</h4></span>
-      <input  type="file" id="file" name="file"   onchange="angular.element(this).scope().addPicture()"/>
 
-      <!--<button ng-if="imageSrc==null" class="button button-clear button-positive" ng-click="addPicture()">Add Picture</button>-->
-    </div>      
-
-    <div class="text-center" ng-show="loadImage">
+<!-- 
+    <div class="text-center" ng-show="progress == null">
         Adding Picture<br>
       <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
     </div>
-
-    <img ng-if="imageSrc!=null" src="{{imageSrc}}" class="img-responsive img-thumbnail center-block" width="200">
- <button ng-if="progress > 0" class="button button-clear button-positive" ng-click="removePicture()">Remove Picture</button>
-  </label>  
-       
-        <div class="progress">
-          <div class="progress-bar progress-bar-striped active" role="progressbar"
-          aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress}}%">
-            {{progress}}%
+ -->
+   <div ng-repeat="item in imageFiles" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div ng-if="item.imageSrc != null" class = "item item-body">
+        <div class="thumbnail"> 
+          <div class="text-center" id="image-thumbnail">
+            <a href="" ng-click="openModal(item.name,item.picture)"><img class="img-responsive" src="{{item.imageSrc}}"></img></a>
           </div>
         </div>
+
+        <div class ="text-center caption">
+          <button class="button button-small button-assertive icon-left ion-close" ng-click="removePicture(item.pos)">Remove Picture</button>
+        </div>      
+      </div>
+      <br>
+   </div>
+
+  <div class="row"></div>
+
+<!-- 
+    <div class="item" ng-repeat="item in imageFiles">
+      <button ng-if="item != null" class="button button-clear button-positive" ng-click="removePicture(item.pos)">Remove Picture</button>
+      <img ng-if="item.imageSrc != null" src="{{item.imageSrc}}" class="img-responsive img-thumbnail center-block" width="150">
+    </div> -->
+
+<!--        
+    <div ng-if="imageFiles.length > 0"class="progress">
+      <div class="progress-bar progress-bar-striped active" role="progressbar"
+      aria-valuenow="{{progress}}" aria-valuemin="0" aria-valuemax="100" style="width:{{progress}}%">
+        {{progress}}%
+      </div>
+    </div>
+ -->
+
+  <div ng-if="imageFiles.length < 5" ng-hide="loadImage" class="item">
+    <strong>Upload Picture(s) For Your Product</strong>
+      <h4>
+        <strong>Size Limit</strong> : {{imageSizeLimit}} MB<br>
+        <strong>Picture Limit</strong> : 5
+      </h4>
+    <div>
+      <input type="file" id="file" name="file" onchange="angular.element(this).scope().addPicture()"/>       
+    </div>
+  </div>  
+  
   <label class="item item-input">
     <span class="input-label small">Product Name</span>
     <input type="text" class="form-control" id="name" placeholder="Polo Shirt" ng-model="newProduct.name" required>
@@ -280,12 +306,14 @@
     <div ng-if = "state=='addProduct'" class="text-center" ng-show="loading">
       Adding New Product<br>
       {{loadStatus}} <br>
+      {{numberUploaded}}/{{imageFiles.length}}
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
 
   <div ng-if = "state=='editProduct'" class="text-center" ng-show="loading">
       Editing Your Product<br>
       {{loadStatus}} <br>
+      {{numberUploaded}}/{{imageFiles.length}}
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
   </div>
 
