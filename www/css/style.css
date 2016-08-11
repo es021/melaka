@@ -411,3 +411,96 @@ font-size: 30px;
   -webkit-text-stroke: 0.7px black;
 
 }
+
+.star-empty{
+  color:white;
+  -webkit-text-stroke: 0.7px black;
+
+}
+
+
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////*/
+/* THUMBNAIL */
+/* THUMBNAIL */
+
+/*-----------------------------------------------------------------------------------*/
+/*BASIC*/
+/*BASIC*/
+
+#image-thumbnail{
+  overflow:hidden;
+  height:200px;
+}
+
+/*-----------------------------------------------------------------------------------*/
+/* 1 per row */
+/* 1 per row */
+
+@media only screen 
+and (min-width : 0px) {
+  
+  #image-thumbnail{
+    height:100px;
+  } 
+
+  #description-thumbnail{
+  }
+
+}
+
+@media only screen 
+and (min-width : 321px) {
+
+  #image-thumbnail{
+    height:200px;
+  } 
+
+  #description-thumbnail{
+  }
+
+
+}
+
+/*-----------------------------------------------------------------------------------*/
+/* more than 1 per row */
+/* more than 1 per row */
+
+@media only screen 
+and (min-width : 768px) {
+
+  #image-thumbnail{
+    height:200px;
+  } 
+
+  #description-thumbnail{
+    height:70px; 
+    overflow:hidden;
+  }
+
+}
+
+@media only screen 
+and (min-width : 1200px) 
+and (max-width : 1500px) {
+  
+  #image-thumbnail{
+    height:100px;
+  }
+
+  #image-thumbnail > img{
+    
+  } 
+
+  #description-thumbnail{
+    height:70px; 
+    overflow:hidden;
+  }
+
+}
+
+
+/* THUMBNAIL */
+/* THUMBNAIL */
+/*/////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////*/

@@ -88,7 +88,8 @@ myApp.run(function(auth) {
 });
 
 
-myApp.controller('AppController', function (growl,$scope,UserService,$ionicModal,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
+myApp.controller('AppController', function (growl,Backand,$scope,UserService,$ionicModal,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
+
   console.log("FROM APP CONTROLLER");
 
   $scope.APP_CONSTANT = APP_CONSTANT;
@@ -330,14 +331,6 @@ myApp.controller('AppController', function (growl,$scope,UserService,$ionicModal
 
   $scope.allNotifications = function(){
     closeSideMenuBar();
-    console.log($scope.userInSession);
-  
-    if($scope.userInSession == null)
-    {
-      $state.go('myProfile'); 
-      return;
-    }
-
     var pageNumber = 1;
     console.log("Page "+pageNumber);
     $state.go('allNotifications',{pageNumber:pageNumber});

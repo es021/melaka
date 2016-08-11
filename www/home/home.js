@@ -201,6 +201,13 @@ myApp.controller('NotificationController', function ($scope,growl, $state,$state
 
   $scope.pageNumber = $stateParams.pageNumber;
 
+
+  console.log($scope.userInSession);
+  if($scope.userInSession == null)
+  {
+    $state.go('myProfile'); 
+    return;
+  }
   getNotificationByPage($scope.userInSession.user_id,$scope.pageNumber);
   
 
@@ -271,4 +278,14 @@ myApp.controller('NotificationController', function ($scope,growl, $state,$state
 
  
 
+});
+
+myApp.controller('NotificationController', function ($scope,growl, $state,$stateParams, BackandService,PublicService,USER_TYPE,NOTI_CATEGORY) {
+
+  $scope.user = [];
+
+  function getTopUser(user_type,count){
+    
+  }
+  
 });

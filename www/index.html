@@ -21,7 +21,6 @@
     <!-- ionic/angularjs js -->
     <script src="lib/ionic/js/ionic.bundle.js"></script>
     <script src="lib/ionic-platform-web-client/dist/ionic.io.bundle.min.js"></script>
-    
 
     <!-- Backand -->
     <script src="https://cdn.backand.net/backand/dist/1.8.2/backand.min.js"></script>
@@ -322,6 +321,10 @@
           <i class="icon ion-home" ng-click="home()"></i>
             <div>Home</div>
         </a>
+        <a class="tab-item">
+          <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.SUPPLIER)"></i>
+            Find Users
+        </a>        
         <a class="tab-item" ng-click="about()">
           <i class="icon ion-help-circled" ></i>
               Why {{APP_CONSTANT.NAME}}

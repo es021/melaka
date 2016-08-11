@@ -251,6 +251,7 @@
 
 <!--- REVIEWS ################################################################################################################################################ -->
 <!--- REVIEWS ################################################################################################################################################ -->
+<span ng-if="userInSession != null">
 <div ng-controller="ReviewController" >
   <a class="link" href="" ng-click="refresh()">
     <h3>Reviews</h3>
@@ -274,6 +275,9 @@
                       <i class="fa fa-star"></i>
                     </span>
                   </span>
+                    <span class="star-empty" ng-repeat="n in range(1,item.star.getEmptyStar())">
+                      <i class="fa fa-star"></i>
+                    </span>                   
                   <!--- STAR -->
                   <br>
                   <small ng-if="item.text != null && item.text != ''" style="font-style:italic;">{{item.text}}<br></small>
@@ -296,10 +300,10 @@
     
     <div class="item item-body text center" ng-show="!loadGet && reviews.length == 0">
         <small>You have no review yet</small>
-        </span>
     </div>
 
   </div>
+</span>
 <!--- REVIEWS ################################################################################################################################################ -->
 <!--- REVIEWS ################################################################################################################################################ -->
 

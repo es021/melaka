@@ -25,6 +25,10 @@ Number.prototype.getUserTypeLogo = function(){
       return "fa-users";
 }
 
+Number.prototype.getEmptyStar = function(){
+  return Math.ceil(5-this);
+}
+
 Number.prototype.getUserTypeLower = function() {
     if(this == 1)
       return "supplier";    

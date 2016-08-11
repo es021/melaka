@@ -37,7 +37,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
   //CUSTOM QUERY /////////////////////////////////////////////////
 
   getAllProductByUserId = function (user_id,page_number){
-    var start_from = OFFSET.PAGE * (page_number-1);
+    var start_from = OFFSET.THUMBNAIL * (page_number-1);
     console.log(start_from);
     return $http ({
         method: 'GET',
@@ -46,7 +46,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
           parameters: {
             user_id: user_id,
             start_from: start_from,
-            offset: OFFSET.PAGE
+            offset: OFFSET.THUMBNAIL
           }
         }
       })
@@ -189,32 +189,37 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
 
   }  
 
-  getUserByType = function(user_type,limit){
-    if(limit != "all")
+  getTopUserByUserType = function(user_type,limit,page_number){
+    var start_from = 0;
+    var offset = 0;
+
+    if(limit != null) //use default
     {
-      return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getUserByType',
-        params: {
-          parameters: {
-            user_type: user_type,
-            limit: limit
-          }
-        }
-      })
+      start_from = 0;
+      offset = limit;
     }
     else
     {
-      return $http ({
-        method: 'GET',
-        url: Backand.getApiUrl() + '/1/query/data/getAllUserByType',
-        params: {
-          parameters: {
-            user_type: user_type
-          }
-        }
-      })
+      start_from = OFFSET.PAGE * (page_number-1);
+      offset = OFFSET.PAGE;     
     }
+
+    console.log(start_from);
+    console.log(offset);
+
+
+    return $http ({
+      method: 'GET',
+      url: Backand.getApiUrl() + '/1/query/data/getTopUserByUserType',
+      params: {
+        parameters: {
+          user_type: user_type,
+          start_from: start_from,
+          offset: offset
+        }
+      }
+    })
+    
   }  
 
   editTransactionPaymentStatus = function(id,payment_status,timeUpdated){
@@ -593,6 +598,18 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
+  getProductCountByUserId = function (user_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getProductCountByUserId',
+        params: {
+          parameters: {
+            user_id: user_id
+          }
+        }
+      })
+  }
+
   getUserPicture = function (user_id){
     return $http ({
         method: 'GET',
@@ -744,7 +761,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     getUserbyEmail : getUserbyEmail,
 
     //userRelatedQuery
-    getUserByType : getUserByType,
+    getTopUserByUserType : getTopUserByUserType,
     getSupplierNameById : getSupplierNameById,
     getUserNameTypeById : getUserNameTypeById,
     editUserById : editUserById,
@@ -768,6 +785,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     getProductQuantity : getProductQuantity,    
     editProductQuantity : editProductQuantity,
     getProductbyUserIdParentId : getProductbyUserIdParentId,
+    getProductCountByUserId : getProductCountByUserId,
 
     //transactionQuery
     getUserActiveListing : getUserActiveListing,

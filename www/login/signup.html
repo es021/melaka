@@ -20,7 +20,14 @@
         <input type="password" class="form-control" id="password" placeholder="Create A Password" ng-model="signupInfo.password" required>
     </label>
 
-    <button ng-disabled="!signupform.$valid" type="submit" class="button button-block button-orange" ng-click="signup()">Sign Up</button>
+
+    <div class="text-center">
+      <br>
+        <label><input type="checkbox" value="" ng-model="terms"></label><small> I Agree To <a href="" ng-click="modalTerm.show()">Terms and Conditions</a></small>
+    </div>
+
+    <button ng-disabled="!signupform.$valid || !terms" type="submit" class="button button-block button-orange" ng-click="signup()">Sign Up</button>
+
   </div>
   </form>
 </div>

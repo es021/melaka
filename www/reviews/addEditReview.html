@@ -1,0 +1,60 @@
+<ion-view>
+<ion-content class="text-center has-header has-footer padding">
+  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
+<h3 class="title">{{show}} Review</h3>
+
+<br>
+<div class="item text-left">
+
+<form role="form">
+<div class="form-group" ng-form='reviewForm'>
+
+    <!--- STAR -->
+    <span class="star item-body text-center">
+      <span ng-repeat="n in range(1,newReview.star)">
+        <i class="fa fa-star"></i>
+      </span>
+    </span>
+    <!--- STAR -->
+    
+     <!-- state -->
+    <label class="item-input item-select">
+      <div class="input-label">Star *</div>
+      <select ng-model="newReview.star" required>
+        <option selected>5</option>
+        <option>4</option>
+        <option>3</option>
+        <option>2</option>
+        <option>1</option>
+      </select>
+    </label>
+
+    <!-- about -->
+    <label class="item-input">
+      <textarea class="form-control" 
+      placeholder="Your review" 
+      rows="4" ng-model="newReview.text"></textarea>
+    </label>
+
+</div>
+
+  <div class="text-center" ng-show="loadAdd">
+    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+  </div>
+  
+  <button ng-if="show == 'Add'" ng-disabled="!reviewForm.$valid || loadAdd" type="submit" 
+  class="button button-block button-orange" ng-click="addReviewRecord()">{{show}} Review</button>
+  
+  <button ng-if="show == 'Edit'" ng-disabled="!reviewForm.$valid || loadAdd" type="submit" 
+  class="button button-block button-orange" ng-click="editReviewRecord()">{{show}} Review</button>
+
+  </form>
+
+</div>
+
+<hr>
+</div>
+
+</ion-view>
+</ion-content>

@@ -915,7 +915,7 @@ function tinify(){
     $scope.newProduct.specification = JSON.stringify($scope.specification);
 
     console.log($scope.newProduct);
-    $scope.loading = false;
+    $scope.loading = true;
 
     BackandService.addObject("products",$scope.newProduct).then(function(result){
 
@@ -924,11 +924,16 @@ function tinify(){
 
       if(result.status == 200)
       {
+        $scope.loading = false;
+
         growl.success("Click on page title [My Product] to update list." ,{title: 'Successfully Added New Product!'});              
 
         $state.go('showProductList',{user_id:$scope.userInSession.user_id, refresh:'y', pageNumber:1});
 
       }
+    },function errorCallback(result){
+        PublicService.errorCallbackFunction(result,"default");
+        $scope.loading = false;        
     });
 
   }
@@ -986,7 +991,7 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
 
   $scope.userObject = {};
   $scope.userObject.id = $stateParams.user_id;
-  $scope.productList = {};
+  $scope.productList = [];
   $scope.showItem = {};
 
   $scope.loadingLink = false;
@@ -1002,7 +1007,10 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
   $scope.refresh = function()
   {
     console.log("Refresh");
+    $scope.pageNumber = 1;
+    $scope.productList = [];
     getAllProductByUserId($stateParams.user_id);
+    getProductCountByUserId($scope.userObject.id);  
     growl.info('List is up to date',{title: 'Refresh List!'});
   }
 
@@ -1069,13 +1077,6 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
     getUserNameTypeById($scope.userObject.id);
   }
 
-  getAllProductByUserId($scope.userObject.id);
-
-  if($stateParams.refresh == 'y')
-  {
-    $scope.refresh();
-  }
-
   if($scope.linked == null)
   {
     $scope.loadingLink =  true;
@@ -1083,6 +1084,8 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
     if($scope.userInSession != null)
     {
       checkIsUserLinked($scope.userObject.id,$scope.userInSession.user_id);
+      getProductCountByUserId($scope.userObject.id);
+      getAllProductByUserId($scope.userObject.id);        
     }
     else
     {
@@ -1090,25 +1093,19 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
       $scope.linked = false;
     }
   }
+
+
+  
   //////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////
 
-  $scope.getMore = function(direction)
+  $scope.getMore = function()
   {
-    console.log(direction);
-    var pageNumber = $scope.pageNumber;
-    if(direction == 'next')
-    {
-      pageNumber = Number($scope.pageNumber) + 1;
-    }
+    console.log($scope.pageNumber);
+    $scope.pageNumber = Number($scope.pageNumber) + 1;
+    console.log($scope.pageNumber);
 
-    if(direction == 'previous')
-    {
-      pageNumber = Number($scope.pageNumber) - 1;
-    }
-
-    console.log(pageNumber);
-    $state.go($state.current.name,{pageNumber:pageNumber});
+    getAllProductByUserId($scope.userObject.id);
   }
 
   function checkIsMyProduct ()
@@ -1141,13 +1138,43 @@ myApp.controller('ShowProductListController', function($scope,growl,OFFSET,Searc
     $state.go("showProduct",{product_id:id , show:show});
   }
 
+
+  $scope.loadedProduct = 0;
+  $scope.totalProduct = 0;
+
+  function getProductCountByUserId(user_id){
+    BackandService.getProductCountByUserId(user_id).then(function(result){
+      console.log(result);
+      if(result.status = 200)
+      {
+        $scope.totalProduct = result.data[0].total_product;
+      }
+
+    },function errorCallback(result){
+        PublicService.errorCallbackFunction(result,"default");
+    });
+  }
+
   function getAllProductByUserId(user_id){
     $scope.loading = true;
     BackandService.getAllProductByUserId(user_id,$scope.pageNumber).then(function(result){
 
       console.log("Result From getAllProductByUserId");
       console.log(result);  
-      $scope.productList = result.data;    
+
+      if(result.status == 200)
+      {
+        if($scope.productList.length == 0)
+        {
+          $scope.productList = result.data;    
+        }
+        else
+        {
+           $scope.productList = $scope.productList.concat(result.data);    
+        }
+        $scope.loadedProduct = $scope.productList.length;
+      }
+
       $scope.loading = false;
 
     },function errorCallbackFunction(result){

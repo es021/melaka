@@ -1,7 +1,7 @@
 <ion-view>
 <ion-content class="text-center has-header has-footer padding">
 
-  <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+<div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2">
 
 <p>
 
@@ -69,75 +69,51 @@
 
   <div class="text-center" ng-show="searchLoad">
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
-  </div>
-      
+  </div>    
 </div>
-
-
-  
-
+ <br>
 <!-- ******************************************************************************************************************************* -->
-      <ion-list class="text-left">
 
-      <div class = "item text-right">
+   <div ng-repeat="item in productList" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-xs-12">
+      <div class = "item item-body">
+      	<div class="thumbnail"> 
+      		<div class="text-center" id="image-thumbnail">
+      			<a href="" ng-click="openModal(item.name,item.picture)"><img class="img-responsive" src="{{item.picture}}"></img></a>
+      		</div>
+      		<span ng-if="item.quantity > 0" class="label label-success">{{item.quantity}} available</span>
+      		<span ng-if="item.quantity <= 0 || item.quantity == null" class="label label-danger">Out Of Stock</span>
+        </div>
 
-            <span ng-disabled="true" class="button button-small button-dark">Page {{pageNumber}}</span>
-
-            <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
-              ng-click="getMore('previous')">Previous</button>
-
-            <button ng-if="productList.length == OFFSET.PAGE" class="button button-small button-positive icon-right ion-arrow-right-a" 
-              ng-click="getMore('next')">Next</button>
-
-    </div>
-
-
-        <div ng-repeat="item in productList">
-
-	    	<a class="item item-avatar item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
-			    <img src="{{item.picture}}">
-			    <h2>{{item.name}}</h2>
-				
-				<span ng-if="item.quantity > 0" class="label label-success">{{item.quantity}} available</span>
-      			<span ng-if="item.quantity <= 0 || item.quantity == null" class="label label-danger">Out Of Stock</span>
-
-				<span class="badge">{{item.category}}</span>
-		  	</a>
-		
-		<!-- ******************************************************************************************************************************* -->
-		<!-- ******************************************************************************************************************************* -->
-        <!--EXPAND ************************************************************************************************************************* -->
-          <ion-item ng-show="isItemShown(item)">
-          	<div class = "item-body text-left">
-			    	<h2 ><strong>{{item.name}}</strong><br><span class="small">Last Updated {{timeAgo}}<span></h2>
-	
-				<div>
-					<br>
+        <div class = "caption">
+			 <h3><strong>{{item.name}}</strong><br><span class="small">Last Updated {{item.updated_at.getDate()}}</span></h3>	         
+	         <p id="description-thumbnail">
+	         	<small>
+				<span class="glyphicon glyphicon-tag" aria-hidden="true"> </span>
+			   	<strong ng-if="item.custom_pricing == '' || item.custom_pricing == null" > RM {{item.price_per_unit}} / unit</strong>
+				<strong ng-if="item.custom_pricing != null && item.price_per_unit == 0" > Custom Price</strong>
+				</small>
+				<br>
+	         	<small style="font-style:italic;">{{item.description}}</small>
+	         </p>
+	         
+	         	<div>
 					<span ng-if="linked && userInSession.user_type > userObject.user_type">	
 						<button class="button button-small button-balanced icon-left ion-paper-airplane" 
-						ng-click="showProduct(showItem.id,'request')">Request Product</button>
+						ng-click="showProduct(item.id,'request')">Request Product</button>
 					</span>
 					<span ng-if="isMyProduct">	
 						<button class="button button-small button-balanced icon-left ion-edit" 
-					ng-click="editProduct(showItem.id,showItem.user_id)">Edit Product</button>
+					ng-click="editProduct(item.id,item.user_id)">Edit Product</button>
 					</span>
 
 
-					<button class="button button-small button-orange icon-right ion-arrow-right-a" ng-click="showProduct(showItem.id,'info')">Show More</button>
-				</div>
-					<br>
-					
-			    <!--- TRANSACTION INFO ************************************************************************************************************* -->
-				<div class="small item item-body">
-					<span class="glyphicon glyphicon-tag" aria-hidden="true"> </span>
-				   	<strong ng-if="item.custom_pricing == '' || item.custom_pricing == null" > RM {{item.price_per_unit}} / unit</strong>
-					<strong ng-if="item.custom_pricing != null && item.price_per_unit == 0" > Custom Price</strong>
-					<br>
-				   	{{item.description}}
-				</div>
-			</div>
-          </ion-item>
-        </div>
+					<button class="button button-small button-orange icon-right ion-arrow-right-a" ng-click="showProduct(item.id,'info')">Show More</button>
+				</div>	         
+	      </div>      
+      </div>
+      <br>
+   </div>
+
 
 	  <div class="item text-center" ng-show="loading">
 	    <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
@@ -165,28 +141,28 @@
 	  	No product added yet.
 	  </div>
 
-
-	      <div class = "item text-right">
-
-	    <span ng-disabled="true" class="button button-small button-dark">Page {{pageNumber}}</span>
-
-	    <button ng-if="pageNumber > 1" class="button button-small button-assertive icon-left ion-arrow-left-a" 
-	      ng-click="getMore('previous')">Previous</button>
-
-	    <button ng-if="productList.length == OFFSET.PAGE" class="button button-small button-positive icon-right ion-arrow-right-a" 
-	      ng-click="getMore('next')">Next</button>
-
-	    </div>
-
-
-      </ion-list>
- 
+	  <br>
 
   </div>	
+ 
+ <hr>
+
+	<div class="row"></div>
+
+      <div ng-if="linked || isMyProduct" ng-hide="productList.length == 0" class ="text-center">
+          <small style="font-size:10px;">Showing {{loadedProduct}} of {{totalProduct}} products</small><br>
+          <button ng-if="loadedProduct < totalProduct" class="button button-small button-orange icon-left ion-load-d" 
+            ng-click="getMore()">Load More Products</button>
+      </div>
+
+	<hr>
+	<hr>
 
 </p>
-<hr>
-</div>
+
+</div>	
+
+
 
 </ion-view>
 </ion-content>

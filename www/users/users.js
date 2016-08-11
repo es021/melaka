@@ -134,13 +134,31 @@ myApp.controller('AllUserController', function($scope, USER_TYPE,SearchService,U
     searchUserByNameTypeFixed($scope.search.key);    
   }
 
+  $scope.getMore = function(direction)
+  {
+    console.log(direction);
+    var pageNumber = $scope.pageNumber;
+    if(direction == 'next')
+    {
+      pageNumber = Number($scope.pageNumber) + 1;
+    }
+
+    if(direction == 'previous')
+    {
+      pageNumber = Number($scope.pageNumber) - 1;
+    }
+
+    console.log(pageNumber);
+    $state.go($state.current.name,{user_type:$stateParams.user_type, pageNumber:pageNumber});
+  }
+
   //////////////////////////////////////////////////////////////////////////////////////////////
   //////////////////////////////////////////////////////////////////////////////////////////////
 
   function getAllUserByUserType()
   {
     $scope.loading = true;
-    BackandService.getUserByType($scope.user_type,"all").then(function(result){
+    BackandService.getTopUserByUserType($scope.user_type,null,$stateParams.pageNumber).then(function(result){
       $scope.users = result.data
       console.log(result);
       $scope.loading = false;
@@ -237,8 +255,10 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,PublicService,
 
   }
 
-  function getUserByType(user_type,limit){
-      BackandService.getUserByType(user_type,limit).then(function(result){
+  function getTopUserByUserType(user_type){
+      var limit = 3;
+      var page_number = 1;
+      BackandService.getTopUserByUserType(user_type,limit,page_number).then(function(result){
         console.log("getUserByType");
         console.log(result);
 
@@ -289,10 +309,9 @@ myApp.controller('FindUserController', function($scope, USER_TYPE,PublicService,
 
   function main()
   {
-    var limitGetUser = 3;
     for(var i=1; i<=3 ;i++)
     {
-      getUserByType(i,limitGetUser);
+      getTopUserByUserType(i);
       $scope.userCount_load[i] = true;
       getUserCountByUserType(i);
     }

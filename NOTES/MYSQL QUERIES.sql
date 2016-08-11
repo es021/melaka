@@ -1,4 +1,4 @@
-var start_from = OFFSET.PAGE * (page_number-1) + 1;
+var start_from = OFFSET.PAGE * (page_number-1);
 
 "BACKAND_APP_NAME" : "dropbug",
 "BACKAND_TOKEN" : "5ee54b6c-f992-4a78-b789-0a36721791c7"
