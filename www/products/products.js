@@ -19,7 +19,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
     .state('addProduct', {
       url: '/addProduct',
       controller: 'AddEditProductController',
-      templateUrl: 'products/addEditProduct.html',
+      templateUrl: 'products/addEditProduct.html',      
       data: {
         requiresLogin: false
       }
@@ -344,6 +344,7 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
   if($scope.state == "editProduct")
   {
     $scope.editId =  $stateParams.id;
+
     $scope.product_user_id =  $stateParams.user_id;
 
     initEditProduct($scope.editId);
@@ -660,6 +661,14 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
       $scope.oldImageSrc = $scope.newProduct.picture;
       $scope.imageSrc = $scope.newProduct.picture;
       console.log( $scope.oldProduct);
+
+
+      if($scope.oldProduct.user_id != $scope.userInSession.user_id)
+      {
+        growl.error('Redirecting to home..',{title: 'You are not authenticated to edit this product!'});
+        $state.go("home");        
+        return;
+      }
 
       if($scope.oldProduct.custom_pricing == null || $scope.oldProduct.custom_pricing == "")
       {
@@ -983,6 +992,16 @@ $scope.addPicture = function(){
             console.log(result);
         });       
     }
+
+    if($scope.state == "editProduct")
+    {
+      editRecord();
+    }
+
+    if($scope.state == "addProduct")
+    {
+      addRecord();
+    }  
 
   }  
 

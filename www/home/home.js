@@ -274,18 +274,6 @@ myApp.controller('NotificationController', function ($scope,growl, $state,$state
 
     $state.go('allNotifications',{pageNumber:$scope.pageNumber});
   }
-
-
  
 
-});
-
-myApp.controller('NotificationController', function ($scope,growl, $state,$stateParams, BackandService,PublicService,USER_TYPE,NOTI_CATEGORY) {
-
-  $scope.user = [];
-
-  function getTopUser(user_type,count){
-    
-  }
-  
 });

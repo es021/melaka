@@ -12,6 +12,27 @@
     
     <!-- compiled css output -->
     
+    <?php
+
+    /**
+     *  Given a file, i.e. /css/base.css, replaces it with a string containing the
+     *  file's mtime, i.e. /css/base.1221534296.css.
+     *  
+     *  @param $file  The file to be loaded.  Must be an absolute path (i.e.
+     *                starting with slash).
+     */
+    function auto_version($file)
+    {
+      if(strpos($file, '/') !== 0 || !file_exists($_SERVER['DOCUMENT_ROOT'] . $file))
+        return $file;
+
+      //$mtime = filemtime($_SERVER['DOCUMENT_ROOT'] . $file);
+      
+      return preg_replace('{\\.([^./]+)$}', ".v2.", $file);
+    }
+
+
+    ?>
 
     <link rel="icon" type="image/png" href="img/favicons/favicon.ico">
     <!-- time ago -->
@@ -41,7 +62,8 @@
     <script src="register/register.js"></script>
     <script src="users/users.js"></script>
     <script src="transactions/transactions.js"></script>
-    <script src="products/products.js"></script>
+
+    <script src="products/products.js"></script>    
     <script src="contact/contact.js"></script>
     <script src="about/about.js"></script>
     <script src="reviews/reviews.js"></script>
@@ -61,7 +83,7 @@
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <link href="css/modal.css" rel="stylesheet"><!-- 
-
+  
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
  -->
