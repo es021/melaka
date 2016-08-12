@@ -958,8 +958,29 @@ $scope.addPicture = function(){
     $scope.loadStatus = "Saving image of your new product."
     
     $scope.numberUploaded = 0;
-    $scope.newProduct.picture = [];
+    //$scope.newProduct.picture = [];
     $scope.loading = true;
+    var uploadedCount = 0;
+
+    function finishUpload()
+    {
+      $scope.newProduct.picture = JSON.stringify($scope.newProduct.picture);
+      console.log($scope.newProduct.picture);
+      $scope.showObject = $scope.newProduct;
+
+      if($scope.state == "editProduct")
+      {
+        editRecord();
+      }
+
+      if($scope.state == "addProduct")
+      {
+        addRecord();
+      }  
+    }
+
+    console.log($scope.imageFiles);
+    $scope.newProduct.picture = [];
 
     for(var i = 0; i< $scope.imageFiles.length; i++)
     {
@@ -968,6 +989,7 @@ $scope.addPicture = function(){
         $scope.numberUploaded += 1;
         $scope.newProduct.picture.push($scope.imageFiles[i].imageSrc);
         console.log("continue");
+        uploadedCount += 1;
         continue;
       }
 
@@ -983,19 +1005,12 @@ $scope.addPicture = function(){
           {
             $scope.newProduct.picture.push(result.data.url);
             $scope.numberUploaded += 1;
+            
             if($scope.numberUploaded == $scope.imageFiles.length)
             {
-              $scope.newProduct.picture = JSON.stringify($scope.newProduct.picture);
-              console.log($scope.newProduct);
-              if($scope.state == "editProduct")
-              {
-                editRecord();
-              }
-
-              if($scope.state == "addProduct")
-              {
-                addRecord();
-              }              
+              //$scope.newProduct.picture = JSON.stringify($scope.newProduct.picture);
+              //console.log($scope.newProduct);
+              finishUpload();
             }
 
           }
@@ -1005,15 +1020,14 @@ $scope.addPicture = function(){
         });       
     }
 
-    if($scope.state == "editProduct")
+    if(uploadedCount == $scope.imageFiles.length)
     {
-      editRecord();
+      console.log("no change in picture");
+      finishUpload();
     }
+ 
 
-    if($scope.state == "addProduct")
-    {
-      addRecord();
-    }  
+
 
   }  
 
