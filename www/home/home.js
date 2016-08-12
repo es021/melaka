@@ -13,7 +13,6 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {  //$loc
   $stateProvider
     .state("home", {
       url: "/home",
-      cache: false,
       controller: 'HomeController',
       templateUrl: 'home/home.html'
     });
@@ -21,7 +20,6 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {  //$loc
   $stateProvider
     .state("allNotifications", {
       url: "/allNotifications?pageNumber",
-      cache: false,
       controller: 'NotificationController',
       templateUrl: 'home/allNotifications.html'
     });

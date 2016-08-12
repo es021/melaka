@@ -682,7 +682,7 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
         $scope.customPricingDone = true;
       }
 
-      if($scope.oldProduct.specification == null || $scope.oldProduct.specification == "")
+      if($scope.oldProduct.specification == null || $scope.oldProduct.specification == "" || $scope.oldProduct.specification == "{}")
       {
         $scope.hasSpecification = false;
       }
@@ -883,6 +883,7 @@ $scope.addPicture = function(){
 
   var f = document.getElementById('file').files[0];
   var r = new FileReader();
+  var isValid = false;
 
   r.onload = function(e){
     var imageFile = {};
@@ -890,39 +891,48 @@ $scope.addPicture = function(){
     imageFile.file = f;
     imageFile.pos = $scope.imagePos;
 
-    if(imageFile.filedata != null && imageFile.file != null)
+
+  if(e.currentTarget.result != null)
     {
-      $scope.imageFiles.push(imageFile);
-      previewFile();
+      isValid = true;
+      console.log("valid");      
+      previewFile(imageFile);
+    }
+    else
+    {
+      isValid = false;
+      console.log("not valid");
     }
 
   }
   
-   r.readAsDataURL(f);
+   r.readAsDataURL(f);      
 }
 
-  function previewFile(){
+  function previewFile(imageFile){
     console.log($scope.imageFiles);
 
     //console.log($scope.file.type.split("/")[0] == "image");
 
-    if($scope.imageFiles[$scope.imagePos].file == null)
+    if(imageFile.file == null)
     {
-      $scope.removePicture();
+      //$scope.removePicture($scope.imagePos);
       $scope.loadImage = false;
       return;
     }
-    else if($scope.imageFiles[$scope.imagePos].file.type.split("/")[0] != "image")
+    else if(imageFile.file.type ==null || imageFile.file.type.split("/")[0] != "image")
     {
       growl.error('File uploaded is not an image. Please try again',{title: 'Error Upload Image!'});
-      $scope.imageFiles[$scope.imagePos].file = null;
+      //$scope.removePicture($scope.imagePos);
+      //$scope.imageFiles[$scope.imagePos].file = null;
       $scope.loadImage = false;
       return;
     }
-    else if(sizeInMB($scope.imageFiles[$scope.imagePos].size) > $scope.imageSizeLimit)
+    else if(sizeInMB(imageFile.file.size) > $scope.imageSizeLimit)
     {
       growl.error('Image Size is Too Large. Please try again',{title: 'Error Upload Image!'});
-      $scope.imageFiles[$scope.imagePos].file = null;
+      //$scope.removePicture($scope.imagePos);      
+      //$scope.imageFiles[$scope.imagePos].file = null;
       $scope.loadImage = false;      
       return;
     }
@@ -930,10 +940,12 @@ $scope.addPicture = function(){
     //console.log($scope.file);
     //$scope.progress = null;
 
+    $scope.imagePos += 1;
 
-    FileReaderService.readAsDataURL($scope.imageFiles[$scope.imagePos].file, $scope).then(function(result) {
-        $scope.imageFiles[$scope.imagePos].imageSrc = result;
-        $scope.imagePos += 1;
+    FileReaderService.readAsDataURL(imageFile.file, $scope).then(function(result) {
+        imageFile.imageSrc = result;
+        $scope.imageFiles.push(imageFile);
+        console.log($scope.imageFiles);
         $scope.loadImage = false;
       });
     };

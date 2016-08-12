@@ -11,7 +11,6 @@
 <button ng-disabled="imageSrc == null" class="button button-block button-positive" ng-click="uploadFileDropbox()">Test Upload Dropbox</button>
 -->
 <div class="text-left">
-
 <form role="form" accept="image/gif, image/jpeg">
 <div class="form-group" ng-form='productform'>
 
@@ -22,10 +21,10 @@
     </div>
  -->
    <div ng-repeat="item in imageFiles" class="col-xl-2 col-lg-4 col-md-6 col-sm-6 col-xs-12">
-      <div ng-if="item.imageSrc != null" class = "item item-body">
+      <div  class = "item item-body">
         <div class="thumbnail"> 
           <div class="text-center" id="image-thumbnail">
-            <a href="" ng-click="openModal(item.name,item.picture)"><img class="img-responsive" src="{{item.imageSrc}}"></img></a>
+            <img class="img-responsive" src="{{item.imageSrc}}"></img>
           </div>
         </div>
 

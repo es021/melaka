@@ -51,7 +51,7 @@
     <div class="list">
           <div ng-repeat="item in searchProduct">
             <a class="item item-avatar" ng-click="showProduct(item.id,'info')">
-              <img src="{{item.picture.getFirstPicture()}}">
+              <img ng-init="picture = item.picture.getFirstPicture()" src="{{picture}}">
                 <h2>{{item.name}}</h2>
 				<span ng-if="item.quantity > 0" class="label label-success">{{item.quantity}} available</span>
       			<span ng-if="item.quantity <= 0 || item.quantity == null" class="label label-danger">Out Of Stock</span>
@@ -78,7 +78,7 @@
       <div class = "item item-body">
       	<div class="thumbnail"> 
       		<div class="text-center" id="image-thumbnail">
-      			<a href="" ng-click="openModal(item.name,item.picture.getFirstPicture())"><img class="img-responsive" src="{{item.picture.getFirstPicture()}}"></img></a>
+      			<a href="" ng-init="picture = item.picture.getFirstPicture()" ng-click="openModal(item.name,picture)"><img class="img-responsive" src="{{picture}}"></img></a>
       		</div>
       		<span ng-if="item.quantity > 0" class="label label-success">{{item.quantity}} available</span>
       		<span ng-if="item.quantity <= 0 || item.quantity == null" class="label label-danger">Out Of Stock</span>

@@ -124,7 +124,8 @@ String.prototype.getFirstPicture = function(){
   {
     var JSONObject = JSON.parse(this);
 
-    console.log(JSONObject);
+    //console.log(JSONObject);
+    console.log(JSONObject[0]);
 
     return JSONObject[0];
   }
