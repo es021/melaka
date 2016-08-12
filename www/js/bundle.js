@@ -228,6 +228,11 @@ myApp.controller('AppController', function (growl,Backand,$scope,UserService,$io
     $state.go('allUsers');
   };
 
+  $scope.addProduct = function(){
+    console.log("Add Product Page");
+    $state.go("addProduct");
+  }
+
   $scope.login = function() {
     console.log("here");
     $state.go('login');    

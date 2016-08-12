@@ -127,13 +127,31 @@
 	FOR REGISTERED USER
 	-->
     <div ng-if="authProfile != null && userInSession != null">
-		<h3 class="title">Welcome Back {{authProfile.nickname}}</h3>
+
+    	<!--
+		-------------------------------------------------------------------------------------------------------------------------------------------------------------
+		NEW INFO
+		UPDATES
+		-->
+		<div ng-if="userInSession.user_type < USER_TYPE.DROPSHIP && update" class="alert alert-info">
+		<a href="#" class="close" data-dismiss="alert" aria-label="close" ng-click="closeUpdate()">&times;</a>
+	    	<small><strong>New Update !!!</strong>
+	    	<br>
+	    	Now you can add up to <strong>five (5)</strong> photos for your product
+	    	<br>
+	    	<small>Hit refresh at <strong><a href="" ng-click="addProduct()">Add Product</a></strong> and <strong><a href="" ng-click="myProducts()">My Products</a></strong> page to see the changes.</small>
+	  		</small>
+  		</div>
+
+
 
 		<!--
 		-------------------------------------------------------------------------------------------------------------------------------------------------------------
 		Profile Card
 		Profile Card
 		-->
+		<h3 class="title">Welcome Back {{authProfile.nickname}}</h3>
+
 		<div class="text-center" ng-show="myProfileLoad">
 				<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 		</div>
@@ -150,7 +168,7 @@
 					<p ng-if="userInSession == null">New User</p>		    
 				</a>   
 		</div>   
-		
+
 		<!--
 		-------------------------------------------------------------------------------------------------------------------------------------------------------------
 		NOTIFICATION

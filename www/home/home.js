@@ -31,6 +31,12 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {  //$loc
 
 myApp.controller('HomeController', function ($scope,growl, $state, BackandService,PublicService,USER_TYPE,NOTI_CATEGORY) {
   
+  $scope.update = true;
+  
+  $scope.closeUpdate = function(){
+    $scope.update = false;
+  }
+
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   console.log($scope.userInSession);

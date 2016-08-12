@@ -54,7 +54,7 @@
  -->
 
   <div ng-if="imageFiles.length < 5" ng-hide="loadImage" class="item">
-    <strong>Upload Picture(s) Of Your Product</strong>
+    <strong>Upload Picture(s) Of' Your Product</strong>
       <h4>
         <strong>Size Limit</strong> : {{imageSizeLimit}} MB<br>
         <strong>Picture Limit</strong> : 5
@@ -295,8 +295,8 @@
   </li>
   <div ng-if="hasSpecification">  
    <label class="item item-input">
-        <span class="input-label small">Minimum Order Quantity</span>
-      <input type="number" placeholder="100" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="specification.min_req_quantity" required>
+        <span class="input-label small">Minimum Order Quantity *</span>
+      <input type="number" placeholder="" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="specification.min_req_quantity" required>
     </label>  
   </div>
 
