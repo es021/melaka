@@ -1128,6 +1128,7 @@ myApp.service('PublicService', function ($http,growl,APP_CONSTANT){
 
   successCallbackFunction = function(subtitle, title)
   { 
+    console.log("here");
     growl.success(''+subtitle,{title: title});
   }
 

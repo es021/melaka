@@ -312,7 +312,10 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
 
 
-  function deleteFileBackand(filename){ 
+  function deleteFileBackand(picture){ 
+
+    function deleteOneFile(filename)
+    {
       BackandService.deleteFile(filename).then(function(result){
 
           console.log("Result From Delete Image from Backand");
@@ -320,10 +323,24 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
         },function errorCallback(result){
             console.log(result);
-        });  
+      }); 
+    }
+
+    if(picture[0] == "[")
+    {
+      var JSONObject = JSON.parse(picture);
+
+      for(var i=0; i< JSONObject.length; i++)
+      {
+        deleteOneFile(JSONObject[i]);
+      }
+
+    }
+    else
+    {
+      deleteOneFile(picture);
+    } 
   } 
-
-
 
 });
 
@@ -333,7 +350,7 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 ///////////////// AddEditProductController  ////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////// AddEditProductController  ////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.controller('AddEditProductController', function($scope,$http, $stateParams, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
+myApp.controller('AddEditProductController', function($scope,$http,$ionicPopup, $stateParams, USER_TYPE, BackandService, DropboxService, PublicService,FileReaderService, auth, $state,growl, PICTURE_CONSTANT){
   
   //MB
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
@@ -842,9 +859,37 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
     return size / 1000000;
   }
 
+  $scope.checkRemovePicture = function(position)
+  {
+    var confirmPopup = $ionicPopup.confirm({
+       title: 'Are you sure you want to remove this picture?',
+       template: 'This action cannot be undone'
+     });
+     
+    confirmPopup.then(function(result) {
+        if(result)
+        {
+          $scope.removePicture(position);
+        }
+     });
+  }
+
   $scope.removePicture = function (position) {
     console.log("Emptying "+position)
-    $scope.file = null;
+    
+    if($scope.imageFiles[position].file == "Uploaded")
+    {
+      console.log("Delete File From Server");
+      var picToRemove = $scope.imageFiles[position].imageSrc;
+      BackandService.deleteFile(picToRemove).then(function(result){
+        if(result.status == 200)
+        {
+          PublicService.successCallbackFunction(picToRemove,"Successfully Deleted One Picture From Server")
+        }
+      },function errorCallback(result){
+          PublicService.errorCallbackFunction(result,"Failed to delete picture from server");
+      });
+    }
 
     if($scope.imageFiles.length == 1)
     {
@@ -863,17 +908,12 @@ myApp.controller('AddEditProductController', function($scope,$http, $stateParams
         $scope.imageFiles[i].pos -= 1;
       } 
     }
-    //$scope.imageFiles[position] = null;
     
     console.log($scope.imageFiles);
 
     $scope.imagePos -= 1;
     $scope.progress = 0;
     
-/*  $scope.file = null;
-  $scope.filedata = null;
-  $scope.imageSrc = null;
-  $scope.progress = null;*/
   }
 
 $scope.loadImage = false;
@@ -1062,11 +1102,11 @@ $scope.addPicture = function(){
 
   function generateProductName(position)
   {
-    //supplier<id>_<create_at>
     var imageType = $scope.imageFiles[position].file.type.split(/[ /]+/)[1];
     var timeStamp = PublicService.getTimestampForFileName($scope.newProduct.created_at);
+    var newName = $scope.newProduct.name.replace(/\s+/g, '_');
 
-    var productName = "user"+$scope.userInSession.user_id +"_"+$scope.newProduct.name+"_"+position+" "+timeStamp + "." + imageType;
+    var productName = "user"+$scope.userInSession.user_id +"_"+newName+"_"+position+"_"+timeStamp + "." + imageType;
     console.log(productName);
     return productName;
   }

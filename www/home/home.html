@@ -219,16 +219,26 @@
 	    	You Have No Notification
 	    </div>
 
+		<!--
+		-------------------------------------------------------------------------------------------------------------------------------------------------------------
+		ADMIN VIEW
+		ADMIN VIEW
+		-->
+		<div ng-if="userInSession.user_id == 1" ng-controller="AdminController">
+			<hr>
+			<h4 class="title">Admin Panel</h4>
+			<div class="item item-body text-left">
+			Picture Link<input type="text" ng-model="picture"></input>
+			<button class="button button-small button-positive icon-right ion-arrow-right-a" ng-click="deletePicture()">DELETE PICTURE</button>
+			</div>
+		</div>
 
     </div>
 
-    <!--
-    FOR REGISTERED USER
-	FOR REGISTERED USER
-	FOR REGISTERED USER
- 	-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
- 	-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-	-->
+
+
+
+
 
 </p>
 <hr>

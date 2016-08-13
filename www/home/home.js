@@ -13,6 +13,7 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {  //$loc
   $stateProvider
     .state("home", {
       url: "/home",
+      cache:false,
       controller: 'HomeController',
       templateUrl: 'home/home.html'
     });
@@ -279,5 +280,26 @@ myApp.controller('NotificationController', function ($scope,growl, $state,$state
     $state.go('allNotifications',{pageNumber:$scope.pageNumber});
   }
  
+
+});
+
+
+myApp.controller('AdminController', function ($scope,growl, $state,$stateParams, BackandService,PublicService,USER_TYPE,NOTI_CATEGORY) {
+
+  $scope.picture = "";
+
+  $scope.deletePicture = function(){
+    console.log("Deleting "+ $scope.picture);
+
+    BackandService.deleteFile($scope.picture).then(function(result){
+
+      if(result.status == 200)
+      {
+        console.log(result);
+        PublicService.successCallbackFunction($scope.picture,"Successfully Delete One Picture");
+      }
+
+    });
+  }
 
 });
