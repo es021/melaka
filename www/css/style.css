@@ -533,3 +533,13 @@ ion-content {
 .link-in-item{
   color:black;
 }
+
+.list-normal > li{
+      margin-bottom: 5px;
+      list-style-type: decimal;
+}
+
+
+.alert-tip{
+  opacity: 0.7;
+}
