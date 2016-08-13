@@ -517,3 +517,19 @@ img {
   max-width: 100%;
   vertical-align: middle;
 }
+
+
+* {
+-webkit-user-select: auto !important;
+-moz-user-select: auto !important;
+-ms-user-select: auto !important;
+user-select: auto !important;
+}
+
+ion-content {
+    overflow-y: scroll !important;
+}
+
+.link-in-item{
+  color:black;
+}

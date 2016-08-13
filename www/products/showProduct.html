@@ -1,10 +1,13 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" scroll="false">
 
 <!-- NEXT LINE Even if page is dynamically generated and URL contains query parameters -->
 <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <update-meta property="og:image" content="{{showObject.picture.getHttpLink()}}"></update-meta>
+
+      <ion-refresher on-refresh="refresh('Product')">
+      </ion-refresher>
 
 <p>
 
@@ -153,7 +156,7 @@
 
       <label class="item item-input">
         <span class="input-label">Quantity</span><br>
-        <input type="number" value="1000" min="0" step="1" placeholder="100" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
+        <input onwheel="blur()" type="number" value="1000" min="0" step="1" placeholder="100" ng-model="newRequest.quantity" ng-change="updateTotalPrice()" required>
       </label>  
 
         <label class="item item-input item-select">

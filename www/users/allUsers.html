@@ -1,6 +1,6 @@
 <!--Controller : user.UserController -->
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" scroll="false">
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <p>
@@ -21,9 +21,9 @@
         <div class="list">
           <div ng-repeat="item in searchUser">
             <div>
-              <a class="item item-avatar" ng-click="showUser({{item.id}})">
+              <div class="item item-avatar" >
               <img src="{{item.picture}}">
-                  <h2>{{item.first_name}} {{item.last_name}}</h2>
+                  <a ng-click="showUser({{item.id}})" href=""><h2>{{item.first_name}} {{item.last_name}}</h2></a>
                   <p>
                     <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
                     <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
@@ -46,7 +46,7 @@
                   <span>
                   <!--- STAR -->                  
                   </p>
-              </a>
+              </div>
             </div>
           </div>
         </div>
@@ -78,9 +78,9 @@
       		</div>
 
           <div ng-repeat="item in users">
-	          <a class="item item-avatar" ng-click="showUser({{item.id}})">
+	          <div class="item item-avatar">
 	            <img src="{{item.picture}}">
-	              <h2>{{item.first_name}} {{item.last_name}}</h2>
+                  <a ng-click="showUser({{item.id}})" href=""><h2>{{item.first_name}} {{item.last_name}}</h2></a>
                 <p>
                   <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
                   <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
@@ -104,7 +104,7 @@
                   <!--- STAR -->                 
                 </p>
 	     
-	          </a>
+	          </div>
           </div>
 		
 

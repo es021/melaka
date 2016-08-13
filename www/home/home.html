@@ -1,6 +1,9 @@
 <!--App Controller-->
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" scroll="false">
+      <ion-refresher on-refresh="refreshNotification()">
+                     
+      </ion-refresher>
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <p>
@@ -158,15 +161,15 @@
 
 		<div ng-if="!myProfileLoad" class="text-left">
 			
-			<a class="item item-avatar" ng-click="myProfile()">
+			<div class="item item-avatar">
 				
 			    <img src="{{authProfile.picture}} ">
 	
-			    <h2><strong>{{authProfile.nickname}}</strong></h2>
+			    <a href="" ng-click="myProfile()"><h2><strong>{{authProfile.nickname}}</strong></h2></a>
 				
 					<p ng-if="userInSession != null">{{userInSession.user_type.getUserType()}}</p>
 					<p ng-if="userInSession == null">New User</p>		    
-				</a>   
+			</div>   
 		</div>   
 
 		<!--
@@ -186,8 +189,9 @@
 	    <div class="text-left">
 			<div class="list">
 	          <div ng-repeat="item in myNotification">
-				    <a class="item item-body" ng-click="isRead(item)" href="#{{item.link}}">
+				    <div class="item item-body" >
 		   				
+		   				<a class="link-in-item" ng-click="isRead(item)" href="#{{item.link}}">
 							<i ng-if="item.category == NOTI_CATEGORY.GENERAL" class="icon ion-android-notifications"></i>	
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.PROFILE" class="icon ion-person"></i>	
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.LINK" class="icon ion-person-stalker"></i>	
@@ -196,6 +200,7 @@
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.PAYMENT" class="icon ion-cash"></i>	
 		   			  		<i ng-if="item.category == NOTI_CATEGORY.REVIEW" class="icon ion-chatbubble-working"></i>	
 							{{item.text}}
+						</a>
 						<br>
 						
 							
@@ -204,7 +209,7 @@
 							<span class="small text-muted" style="font-size:10px;">{{item.created_at.getTime()}} - {{item.created_at.getDate()}}</span>
 						
 
-				    </a>
+				    </div>
 	          </div>
 
 	         
@@ -243,5 +248,5 @@
 </p>
 <hr>
 </div>
-</ion-view>
 </ion-content>
+</ion-view>

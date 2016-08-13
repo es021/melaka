@@ -30,4 +30,3 @@ myApp.directive('fileInput', ['$parse',function($parse){
           }
         }
 }]);
-

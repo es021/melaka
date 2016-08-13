@@ -1,5 +1,5 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" scroll="false">
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
   <!-- #################################### -->
@@ -22,9 +22,9 @@
     <div class="text-left">
     <div class="list">
           <div ng-repeat="item in users">
-            <a class="item item-avatar" ng-click="showUser({{item.id}})">
+            <div class="item item-avatar">
               <img src="{{item.picture}}">
-                <h2>{{item.first_name}} {{item.last_name}}</h2>
+                <a href="" ng-click="showUser({{item.id}})"><h2>{{item.first_name}} {{item.last_name}}</h2></a>
                 <p>
                   <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
                   <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
@@ -47,7 +47,7 @@
                   <span>
                   <!--- STAR -->               
                 </p>
-            </a>
+            </div>
           </div>
     </div>
   </div>
@@ -70,9 +70,9 @@
     <div class="text-left">
 		<div class="list">
         <div ng-repeat="item in suppliers">
-		    <a class="item item-avatar" ng-click="showUser({{item.id}})">
+          <div class="item item-avatar">
 		    	<img src="{{item.picture}}">
-		      	<h2>{{item.first_name}} {{item.last_name}}</h2>
+              <a href="" ng-click="showUser({{item.id}})"><h2>{{item.first_name}} {{item.last_name}}</h2></a>
               <p>
                 <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
                 <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
@@ -95,7 +95,7 @@
                   <!--- STAR -->
 
               </p>		    
-        </a>
+        </div>
         </div>
         
         <div class="item text-right" ng-if="suppliers.length > 0">
@@ -124,9 +124,9 @@
     <div class="text-left">
     <div class="list">
           <div ng-repeat="item in stockists">
-          <a class="item item-avatar" ng-click="showUser({{item.id}})">
+          <div class="item item-avatar">
             <img src="{{item.picture}}">
-              <h2>{{item.first_name}} {{item.last_name}}</h2>
+              <a href="" ng-click="showUser({{item.id}})"><h2>{{item.first_name}} {{item.last_name}}</h2></a>
               <p>
                 <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
                 <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
@@ -150,7 +150,7 @@
                   <!--- STAR -->
 
               </p>
-          </a>
+          </div>
           </div>
 
         <div class="item text-right" ng-if="stockists.length > 0">
@@ -178,9 +178,9 @@
     <div class="text-left">
     <div class="list">
           <div ng-repeat="item in dropships">
-          <a class="item item-avatar" ng-click="showUser({{item.id}})">
+          <div class="item item-avatar">
             <img src="{{item.picture}}">
-              <h2>{{item.first_name}} {{item.last_name}}</h2>
+              <a href="" ng-click="showUser({{item.id}})"><h2>{{item.first_name}} {{item.last_name}}</h2></a>
               <p>
                 <span ng-if="item.company_name != null"><span class="fa fa-building"></span> {{item.company_name}}<br></span>
                 <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
@@ -202,7 +202,7 @@
                   <span>
                   <!--- STAR -->            
               </p>
-           </a>
+           </div>
           </div>
 
 
@@ -220,8 +220,7 @@
     <div  class="info-text item item-body" ng-if="dropships.length == 0">
       No registered dropship found
     </div>
-
-     <hr>
+<hr>
 </div>
 </div>
 </ion-view>

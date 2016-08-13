@@ -1,18 +1,24 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" scroll="false">
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <p>
 <div ng-if="stateName=='myActiveListing'" >
-<a class='link' href="" ng-click="refresh()">
+
+      <ion-refresher on-refresh="refresh('Active Listing')">
+      </ion-refresher>
+
+<a class='link' href="" ng-click="refresh('Active Listing')">
 	<h2>My Active Listing</h2>
 </a>
     <a href="" class="link small" ng-click="myCompletedTransaction()">See My Completed Transactions</a>
 </div>
 
 <div ng-if="stateName=='myCompletedTransaction'">
-	
-<a class='link' href="" ng-click="refresh('List')">
+	  <ion-refresher on-refresh="refresh('Transaction History')">
+      </ion-refresher>
+
+<a class='link' href="" ng-click="refresh('Transaction History')">
 	<h2>My Completed Transaction</h2>
 </a>
     <a href="" class="link small" ng-click="myActiveListing()">See My Active Listing</a>
@@ -235,5 +241,5 @@
 </p>
 <hr>
 </div>
-</ion-view>
 </ion-content>
+</ion-view>

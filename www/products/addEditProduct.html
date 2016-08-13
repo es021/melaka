@@ -1,5 +1,5 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" scroll="false">
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <p>
@@ -87,12 +87,12 @@
 
    <label class="item item-input">
         <span class="input-label small">Quantity</span>
-      <input type="number" placeholder="100" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.quantity" required>
+      <input onwheel="blur()" type="number" placeholder="100" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.quantity" required>
     </label>  
 
     <label ng-if="!hasCustomPricing" class="item item-input">
       <span class="input-label small">Price Per Unit (RM)</span>
-      <input type="number" placeholder="21" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.price_per_unit" required>
+      <input onwheel="blur()" type="number" placeholder="21" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newProduct.price_per_unit" required>
     </label>  
 
     <label class="item item-input">
@@ -184,17 +184,17 @@
 
         <label class="item item-input">
           <span class="input-label small">From</span>
-          <input ng-disabled="true" type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.from" required>
+          <input onwheel="blur()" ng-disabled="true" type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.from" required>
         </label>  
         
         <label class="item item-input">
           <span class="input-label small">To</span>
-          <input type="number" placeholder="100" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.to" required>
+          <input onwheel="blur()" type="number" placeholder="100" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.to" required>
         </label>
 
         <label class="item item-input">
           <span class="input-label small">Price (RM)</span>
-          <input type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.price" required>
+          <input onwheel="blur()" type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.price" required>
         </label>    
       
       <li class="item">
@@ -216,7 +216,7 @@
 
         <label class="item item-input">
           <span class="input-label small">From</span>
-          <input ng-disabled="true" type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.from" required>
+          <input onwheel="blur()" ng-disabled="true" type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.from" required>
         </label>  
         
         <label class="item item-input">
@@ -226,7 +226,7 @@
 
         <label class="item item-input">
           <span class="input-label small">Price (RM)</span>
-          <input type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.price" required>
+          <input onwheel="blur()" type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="newCustomPricing.price" required>
         </label>    
       
       <li class="item">
@@ -248,12 +248,12 @@
 
         <label class="item item-input">
           <span class="input-label small">From</span>
-          <input type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.from" required>
+          <input onwheel="blur()" type="number" placeholder="0" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.from" required>
         </label>  
         
         <label ng-if="!showCustomPricingFormLast" class="item item-input">
           <span class="input-label small">To</span>
-          <input type="number" placeholder="100" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.to" required>
+          <input onwheel="blur()" type="number" placeholder="100" value="1000" min="0" step="1" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.to" required>
         </label>
    
         <label ng-if="showCustomPricingFormLast" class="item item-input">
@@ -263,7 +263,7 @@
 
         <label class="item item-input">
           <span class="input-label small">Price (RM)</span>
-          <input type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.price" required>
+          <input onwheel="blur()" type="number" placeholder="50.00" value="1000" min="0" step="0.01" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="tempCustomPricing.price" required>
         </label>    
 
       <li class="item">
@@ -295,7 +295,7 @@
   <div ng-if="hasSpecification">  
    <label class="item item-input">
         <span class="input-label small">Minimum Order Quantity *</span>
-      <input type="number" placeholder="" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="specification.min_req_quantity" required>
+      <input onwheel="blur()" type="number" placeholder="" value="1000" min="0" step="10" data-number-to-fixed="2" data-number-stepfactor="100" class="form-control currency" ng-model="specification.min_req_quantity" required>
     </label>  
   </div>
 

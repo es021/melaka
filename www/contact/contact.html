@@ -1,5 +1,5 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" scroll="false">
 
 
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
@@ -10,16 +10,18 @@
 
 <ion-list class="text-left">
 <div ng-repeat="member in TEAM_CONSTANT.member">
-    <a class="item item-avatar" ng-click="toggleItem(member)" ng-class="{active: isItemShown(member)}">
+    <div class="item item-avatar" ng-class="{active: isItemShown(member)}">
       <img src="{{member.picture}}">
-      <h2>{{member.first_name}}</h2>      
+      <a ng-click="toggleItem(member)" href=""><h2>{{member.first_name}}</h2></a>      
       <small class="text-muted">{{member.role}}</small>
-    </a>
+    </div>
 
        <ion-item ng-show="isItemShown(member)">
         <div class = "item-body text-center">
 
-          <h2><strong>{{showItem.first_name}} {{member.last_name}}</strong><br><span="text-muted">{{member.role}}<span></h2>          
+          <h2>
+            <strong>{{showItem.first_name}} {{member.last_name}}</strong>
+            <br><span="text-muted">{{member.role}}<span></h2>          
           <br>
 
           <div class="small item item-body">
