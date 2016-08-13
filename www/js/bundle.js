@@ -20,6 +20,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'sample.products',
   'sample.contact',
   'sample.about',
+  'sample.faq',
   'sample.service',
   'sample.constant',
   'sample.directive',
@@ -310,6 +311,11 @@ myApp.controller('AppController', function (growl,Backand,$scope,UserService,$io
   $scope.contact = function() {   
     closeSideMenuBar();
     $state.go('contact');    
+  };
+
+  $scope.faq = function() {   
+    closeSideMenuBar();
+    $state.go('faq');    
   };
 
   $scope.about = function() {   
