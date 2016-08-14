@@ -609,6 +609,12 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
       BackandService.getTransById(trans_id,other_user_id).then(function(result){
         $scope.showItem = result.data[0];
         console.log($scope.showItem);
+
+        if($scope.showItem == null)
+        {
+          $scope.errorMessage = "There is no transaction with id "+trans_id+" and other_user_id "+other_user_id;
+        }
+
         if(result.status == 200 && $scope.showItem != null)
         {
           $scope.showItem.delivery_address = JSON.parse($scope.showItem.delivery_address);
@@ -625,9 +631,10 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
 
           $scope.timeAgo = PublicService.getAgoTime($scope.showItem.updated_at);
 
-          $scope.loading = false;
-
         }
+
+        $scope.loading = false;
+
       },function errorCallback(result){
           PublicService.errorCallbackFunction(result,"Opps! Something went wrong");
           $scope.loading = false;

@@ -219,12 +219,19 @@ myApp.controller('ShowProductController', function($scope,$ionicPopup, $location
 
   function getShowProductById(id)
   {
+    $scope.loading = true;
     BackandService.getShowProductById(id).then(function(result){
       console.log("Data from show object");
 
         $scope.showObject = result.data[0];
         console.log(result);
         console.log($scope.showObject);
+        $scope.loading = false;
+
+        if($scope.showObject == null)
+        {
+          $scope.errorMessage = "There is no product with id "+id;
+        }
 
         if(result.status == 200 && $scope.showObject != null)
         {

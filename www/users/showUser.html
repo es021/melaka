@@ -1,12 +1,21 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding" scroll="false">
+<ion-content class="text-center has-header has-footer padding">
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <div class="text-center" ng-show="showObjectLoad">
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 </div>
 
-<div ng-show="!showObjectLoad">
+<div ng-if="errorMessage != null && !showObjectLoad">
+  <hr>
+  <div class ="item item-body text-center">
+    <h1>Opps.. something missing :(</h1>
+    <br>
+    {{errorMessage}}
+  </div>
+</div>
+
+<div ng-show="errorMessage == null && !showObjectLoad">
 
 <h2 class="title">{{showObject.user_type.getUserType()}} Details</h2>
 <a href="" ng-if="showObject.user_type < USER_TYPE.DROPSHIP" class="link small" ng-click="showProductList(showObject.id)">Show Product List For This User</a>

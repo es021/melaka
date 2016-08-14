@@ -537,6 +537,7 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
       console.log("Data from show object");
       $scope.showObject = result.data;
       console.log($scope.showObject);
+
       if(result.status == 200)
       {
         $scope.showObject.created_at = PublicService.getDate($scope.showObject.created_at);
@@ -545,6 +546,7 @@ myApp.controller('ShowUserController', function($scope,NOTI_CATEGORY,$ionicPopup
 
     }, function errorCallback (result){
           userLinkErrorCallback(result,"Error in Retrieving Info");
+          $scope.errorMessage = "There is no user with id "+id;
           $scope.showObjectLoad = false;
     });
   }

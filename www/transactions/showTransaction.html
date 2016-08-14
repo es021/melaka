@@ -1,5 +1,5 @@
     <ion-view>
-<ion-content class="text-center has-header has-footer padding" scroll="false">
+<ion-content class="text-center has-header has-footer padding">
   <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 
@@ -7,9 +7,16 @@
     <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
 </div>
 
-       
+<div ng-if="showItem == null && !loading">
+  <hr>
+  <div class ="item item-body text-center">
+    <h1>Opps.. something missing :(</h1>
+    <br>
+    {{errorMessage}}
+  </div>
+</div>
 
-<div ng-show="!loading">
+<div ng-show="showItem != null && !loading">
 
 <a class='link' href="" ng-click="refresh('Transaction')">
 <h2>Transaction Details</h2>

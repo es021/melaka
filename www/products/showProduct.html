@@ -1,13 +1,25 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding" scroll="false">
+<ion-content class="text-center has-header has-footer padding">
 
 <!-- NEXT LINE Even if page is dynamically generated and URL contains query parameters -->
 <div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <update-meta property="og:image" content="{{showObject.picture.getHttpLink()}}"></update-meta>
 
-<p>
+<div ng-show="loading">
+<img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
+</div>
 
+<div ng-if="showObject == null && !loading">
+  <hr>
+  <div class ="item item-body text-center">
+    <h1>Opps.. something missing :(</h1>
+    <br>
+    {{errorMessage}}
+  </div>
+</div>
+
+<div ng-if="showObject != null && !loading">
 <a class='link' href="" ng-click="refresh('Product')">
 <h3>{{showObject.name}}</h3>
 </a>
@@ -271,7 +283,7 @@
 
 </div>
 
-</p>
+</div>
 <hr>
 </div>
 
