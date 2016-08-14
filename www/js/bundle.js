@@ -128,13 +128,17 @@ myApp.controller('AppController', function (growl,Backand,$scope,UserService,$io
     {
       $state.go("home");
     }
+    else if(state.includes("faq_anchor"))
+    {
+      $state.go("faq");
+    }
     else
     {
       //filter required login page
       if($scope.authProfile == null)
       {
 
-        var notRequiredLoginPage = ["home","contact","login","signup","about","showProduct","showUser","showProductList"];
+        var notRequiredLoginPage = ["home","contact","login","faq","findUser","signup","about","showProduct","showUser"];
         var goToLogin = false;
         console.log(state);
         goToLogin = notRequiredLoginPage.indexOf(state) < 0;
@@ -160,12 +164,33 @@ myApp.controller('AppController', function (growl,Backand,$scope,UserService,$io
         {
           $state.go(state);
         }
+      } 
+      else if($scope.authProfile != null && $scope.userInSession == null)
+      {
+          var notRequiredRegisterPage = ["home","contact","login","findUser","faq","signup","about","showProduct","showUser"];
+          var goToHome = false;
+          goToHome = notRequiredRegisterPage.indexOf(state) < 0;
+          if(goToHome)
+          {
+              growl.error('Please register first',{title: 'Opps.. Sorry, this page is only for Authorized Registered User'});        
+              var host = "";
+              if(window.location.host == "hosting.backand.io")
+              {
+                host = "hosting.backand.io/dropbug";
+              }
+              else
+              {
+                host = window.location.host;
+              }
+
+              window.location.href = window.location.protocol+"//"+host+"/#/home";
+          }
       }
       else
       {
         $state.go(state);
       }
-    }
+  }
 
     //setting header and footer
     PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
