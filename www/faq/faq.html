@@ -5,28 +5,22 @@
 
     <h2 class="title"><small>New To Dropbug?</small><br>Frequently Asked Question</h2>
 
-<!--     <img ng-src="{{APP_CONSTANT.LOGO_ONLY_SMALL}}" style="height: 150px; width: auto; margin-left:auto; margin-right:auto;" class="img-responsive" alt="logo">
-    
 
-    <div id="social">
-      <a class="facebookBtn smGlobalBtn" target="_blank" ng-href="{{APP_CONSTANT.FACEBOOK}}"></a>
-      <a class="fa fa-globe btn-assertive smGlobalBtn" target="_blank" ng-href="{{APP_CONSTANT.WEBSITE}}"></a>
-    </div> -->
-    <a href="#faq_anchor1" target="_self">
-      <span class="ion-person"> How do I register an account?</span>
-    </a><br>
-    <a href="#faq_anchor2" target="_self">
-      <span class="ion-bag"> How to add a new product?</span>
-    </a><br>
-    <a href="#faq_anchor3" target="_self">
-      <span class="ion-person-stalker"> How to link with other users?</span>
-    </a><br>
-    <a href="#faq_anchor4" target="_self">
-      <span class="ion-arrow-swap"> How do I order or request a product?</span>
-    </a><br>
-    <a href="#faq_anchor5" target="_self">
-      <span class="ion-iphone"> How to add DropBug to my homescreen (phone/tablet)?</span>
-    </a>
+<!--   <a href="#faq_anchor1" target="_self">
+    <span class="ion-person"> How do I register an account?</span>
+  </a><br>
+  <a href="#faq_anchor2" target="_self">
+    <span class="ion-bag"> How to add a new product?</span>
+  </a><br>
+  <a href="#faq_anchor3" target="_self">
+    <span class="ion-person-stalker"> How to link with other users?</span>
+  </a><br>
+  <a href="#faq_anchor4" target="_self">
+    <span class="ion-arrow-swap"> How do I order or request a product?</span>
+  </a><br>
+  <a href="#faq_anchor5" target="_self">
+    <span class="ion-iphone"> How to add DropBug to my homescreen (phone/tablet)?</span>
+  </a> -->
 
 <div class="card text-left">
             <div class="item item-body text-muted" id="faq_anchor1">
@@ -35,7 +29,7 @@
                 <div style="padding-left:20px;">
                 <small>
                 <ul class="list-normal">
-                <li>If you have not already signed up, go to <a href="/#/signup" target="_blank"><strong>Sign Up</strong></a> page.</li>
+                <li>If you have not already signed up, go to <a ng-click="signup()" href=""><strong>Sign Up</strong></a> page.</li>
                 <li>Put in your email and create your password.</li>
                 <li>Alternatively, you can sign up with your <strong><span class="fa fa-facebook-official"></span> Facebook</strong> or <strong><span class="fa fa-google"></span> Google+</strong> account.</li>
                 <li>Choose your <strong>business line</strong>, it determines what type of account you will be registered as.
@@ -207,7 +201,7 @@
   <!-- FOOTER -->
   <!-- FOOTER -->
   <div class="item item-body small">
-  <p class="paragraph text-muted text-center">If you do have more questions do <a href="/#/contact" target="_blank"><strong><span class="ion-email"></span> Contact Us</strong></a> anytime
+  <p class="paragraph text-muted text-center">If you do have more questions do <a ng-click="contact()" href=""><strong><span class="ion-email"></span> Contact Us</strong></a> anytime
   </p>
 
 </div>
