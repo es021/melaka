@@ -1,21 +1,23 @@
-
 // Ionic Starter App
 
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var myApp = angular.module('sample', ['ionic','ionic.service.core', 
+var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'backand',
   'ui.router',
-  'restangular',
-  //'tinify',
+  'restangular',    
   'sample.home',
   'sample.login-signup',
   'sample.register',
   'sample.users',
   'sample.transactions',
+  'sample.reviews',
   'sample.products',
   'sample.contact',
+  'sample.about',
+  'sample.faq',
+  //'sample.redirect',
   'sample.service',
   'sample.constant',
   'sample.directive',
@@ -26,11 +28,12 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'angular-storage',
   'angular-jwt',
   'angular-growl'
+
   ]);
 
 
 
-myApp.run(function($ionicPlatform) {
+myApp.run(["$ionicPlatform", function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -46,7 +49,11 @@ myApp.run(function($ionicPlatform) {
       StatusBar.styleDefault();
     }
   });
-});
+
+  //ar config = require('../server.js');
+
+
+}]);
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -54,32 +61,60 @@ myApp.run(function($ionicPlatform) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.config( function ($urlRouterProvider, $httpProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider) {
+myApp.config( ["$urlRouterProvider", "$stateProvider", "authProvider", "$httpProvider", "growlProvider", "BackandProvider", "$locationProvider", "APP_CONSTANT", function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider,APP_CONSTANT) {
   //$locationProvider.html5Mode(true);
-  growlProvider.globalTimeToLive(3000);
+  growlProvider.globalTimeToLive(5000);
+  //growlProvider.globalPosition('bottom-right');
 
-  BackandProvider.setAppName('wzs21testapp');
-  BackandProvider.setAnonymousToken('19251d3d-7ae7-4ca1-993b-60c67ddc0385');
-  
-  //BackandProvider.setAppName('dropbug');
-  //BackandProvider.setAnonymousToken('5ee54b6c-f992-4a78-b789-0a36721791c7');
-  
-  console.log("From app config");
-  
-  //$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-});
+  BackandProvider.setAppName(APP_CONSTANT.BACKAND_APP_NAME);
+  BackandProvider.setAnonymousToken(APP_CONSTANT.BACKAND_TOKEN);
 
+  FB.init({ 
+      appId: '153782718362391',
+      status: true, 
+      cookie: true, 
+      xfbml: true,
+      version: 'v2.4'
+      });
 
-myApp.run(function(auth) {
+  //$urlRouterProvider.otherwise('/home');
+  
+  console.log("From APP CONFIG");
+  
+  $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+
+}]);
+
+myApp.run(["auth", function(auth) {
   auth.hookEvents();
-});
+}]);
 
 
-myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
-  
+myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", "$ionicModal", "$ionicPopup", "$ionicSideMenuDelegate", "auth", "$state", "$stateParams", "PublicService", "$location", "AUTH_CONSTANT", "USER_TYPE", "APP_CONSTANT", function (growl,Backand,$scope,UserService,$ionicModal,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
+
+  console.log("FROM APP CONTROLLER");
+
   $scope.APP_CONSTANT = APP_CONSTANT;
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile")); 
+  console.log($scope.userInSession); 
+  $scope.USER_TYPE = USER_TYPE;
 
-  $scope.main = function(){
+
+  $scope.main = function()
+  {
+    //to clear off from previous production
+    if($scope.userInSession != null)
+    {
+      if(typeof($scope.userInSession.user_type) == "string")
+      {
+        window.localStorage.removeItem("UserInSession");
+        window.localStorage.removeItem("AuthProfile");
+        $scope.userInSession = null;
+        $scope.authProfile = null;
+      }
+    }
+
     var state = $location.path().replace("/", "");
 
     console.log(state);
@@ -94,25 +129,75 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     {
       $state.go("home");
     }
+    else if(state.includes("faq_anchor"))
+    {
+      $state.go("faq");
+    }
     else
     {
-      $state.go(state);
-    }
+      //filter required login page
+      if($scope.authProfile == null)
+      {
+
+        var notRequiredLoginPage = ["home","contact","login","faq","findUser","signup","about","showProduct","showUser"];
+        var goToLogin = false;
+        console.log(state);
+        goToLogin = notRequiredLoginPage.indexOf(state) < 0;
+
+        if(goToLogin)
+        {
+          growl.error('Please login first',{title: 'This Page Required Login!'});
+          //$state.go("login");
+
+          var host = "";
+          if(window.location.host == "hosting.backand.io")
+          {
+            host = "hosting.backand.io/dropbug";
+          }
+          else
+          {
+            host = window.location.host;
+          }
+
+          window.location.href = window.location.protocol+"//"+host+"/#/login";
+        }
+        else
+        {
+          $state.go(state);
+        }
+      } 
+      else if($scope.authProfile != null && $scope.userInSession == null)
+      {
+          var notRequiredRegisterPage = ["home","contact","login","findUser","faq","signup","about","showProduct","showUser"];
+          var goToHome = false;
+          goToHome = notRequiredRegisterPage.indexOf(state) < 0;
+          if(goToHome)
+          {
+              growl.error('Please register first',{title: 'Opps.. Sorry, this page is only for Authorized Registered User'});        
+              var host = "";
+              if(window.location.host == "hosting.backand.io")
+              {
+                host = "hosting.backand.io/dropbug";
+              }
+              else
+              {
+                host = window.location.host;
+              }
+
+              window.location.href = window.location.protocol+"//"+host+"/#/home";
+          }
+      }
+      else
+      {
+        $state.go(state);
+      }
   }
 
-  //setting header and footer
-  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
-  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));  
-
-  //to clear off from previous production
-  if($scope.userInSession != null)
-  {
-    if(typeof($scope.userInSession.user_type) == "string")
+    //setting header and footer
+    PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
+    if($scope.authProfile != null)
     {
-        window.localStorage.removeItem("UserInSession");
-        window.localStorage.removeItem("AuthProfile");
-        $scope.userInSession = null;
-        $scope.authProfile = null;
+      PublicService.initSideMenu();
     }
   }
   
@@ -130,13 +215,7 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     $state.go('login_success', {accessToken:accessToken,idToken:idToken});
   }
 
-  $scope.USER_TYPE = USER_TYPE;
 
-  PublicService.initHeaderFooter( $scope.authProfile,$scope.userInSession);
-  if($scope.authProfile != null)
-  {
-    PublicService.initSideMenu();
-  }
 
  $scope.comfirmLogout = function()
   {
@@ -176,6 +255,11 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     $state.go('allUsers');
   };
 
+  $scope.addProduct = function(){
+    console.log("Add Product Page");
+    $state.go("addProduct");
+  }
+
   $scope.login = function() {
     console.log("here");
     $state.go('login');    
@@ -187,9 +271,18 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.myActiveListing = function() {
     closeSideMenuBar();
-    $state.go('myActiveListing');
+    var pageNumber = 1;
+    console.log("Page "+pageNumber);
+    $state.go('myActiveListing',{pageNumber,pageNumber});
   };
   
+
+  $scope.myCompletedTransaction = function() {
+    closeSideMenuBar();
+    var pageNumber = 1;
+    $state.go('myCompletedTransaction',{pageNumber,pageNumber});
+  };
+
 
   $scope.findUser = function(user_type_request) {
     closeSideMenuBar();
@@ -199,7 +292,14 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.myProducts = function() {
     closeSideMenuBar();
-    $state.go('myProducts');
+    //$state.go('myProducts');
+    if($scope.userInSession == null)
+    {
+      $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+    }
+
+    var pageNumber = 1;
+    $state.go('showProductList',{user_id:$scope.userInSession.user_id,refresh:'y', pageNumber:pageNumber });
   };
   
   ///////////////////////////////////////////////
@@ -224,13 +324,9 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.myLinkedUser = function() {
     closeSideMenuBar();
-    $state.go('myLinkedUser');
+    var pageNumber = 1;
+    $state.go('myLinkedUser',{pageNumber,pageNumber});
   };  
-
-  $scope.myCompletedTransaction = function() {
-    closeSideMenuBar();
-    $state.go('myCompletedTransaction');
-  };
 
   $scope.myPendingLinkRequest = function()
   {
@@ -240,7 +336,17 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.contact = function() {   
     closeSideMenuBar();
-    $state.go();    
+    $state.go('contact');    
+  };
+
+  $scope.faq = function() {   
+    closeSideMenuBar();
+    $state.go('faq');    
+  };
+
+  $scope.about = function() {   
+    closeSideMenuBar();
+    $state.go('about');    
   };
 
   $scope.showUser = function (id){
@@ -251,22 +357,20 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
 
   $scope.myProfile = function (){
     closeSideMenuBar();
-   
-
-    if($scope.userInSession != null)
-    {
-      $state.go('myProfile');     
-    }
-    else
-    {
-      growl.error("Supplier, Stockist or Dropship" ,{title: 'You have to Register First!'});    
-    }
-
+    $state.go('myProfile'); 
   };
 
   $scope.showProductList = function(user_id){
     closeSideMenuBar();
-    $state.go('showProductList',{user_id:user_id});
+    var pageNumber = 1;
+    $state.go('showProductList',{user_id:user_id,refresh:'y', pageNumber:pageNumber});
+  }
+
+  $scope.allNotifications = function(){
+    closeSideMenuBar();
+    var pageNumber = 1;
+    console.log("Page "+pageNumber);
+    $state.go('allNotifications',{pageNumber:pageNumber});
   }
 
   $scope.showProduct = function(product_id,show)
@@ -274,4 +378,74 @@ myApp.controller('AppController', function ($scope,UserService,$ionicPopup,$ioni
     $state.go('showProduct',{product_id:product_id,show:show})
   };
 
-});
+  $scope.share = function(social,page,id,title,picture,description)
+  {
+    console.log(social);
+    console.log(page);
+    console.log(id);
+    console.log(title);
+
+    var url =APP_CONSTANT.DOMAIN+page;
+    var text = "";
+
+    if(page == "showProduct")
+    {
+      //url += "?product_id=" + id +"&show=info";
+      url += "?product_id=" + id;
+      text = title + " on DropBug.";
+    }
+
+    if(page == "showUser")
+    {
+      url += "?id=" + id;
+      text = "Check Out My Profile on DropBug.";
+    }
+
+    console.log(url);
+
+    if(social == "twitter")
+    {
+      PublicService.shareOnTwitter(url,text);
+    }
+
+    if(social == "facebook")
+    {
+      PublicService.shareOnFacebook(url,title,picture,description);
+    }
+  }
+
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////
+// MODAL ///////////////////////////////////////////////////////////////////////////////
+
+  $ionicModal.fromTemplateUrl('templates/modal.html', {
+    scope: $scope
+    }).then(function(modal) {
+    $scope.modal = modal;
+  });
+
+  $scope.openModal = function(title,image){
+    $scope.modalTitle = title;
+    $scope.modalImage = image;
+    $scope.modal.show();
+  }
+
+  $ionicModal.fromTemplateUrl('modal/terms.html', {
+    scope: $scope
+    }).then(function(modal) {
+    $scope.modalTerm = modal;
+  });
+    
+////////////////////////////////////////////////////////////////////////////////////////
+
+  $scope.range = function(min, max, step) {
+      step = step || 1;
+      var input = [];
+      for (var i = min; i <= max; i += step) {
+          input.push(i);
+      }
+      return input;
+  };
+
+}]);

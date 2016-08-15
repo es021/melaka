@@ -3,7 +3,7 @@ var myApp = angular.module('sample.contact', [
   'auth0'
 ]);
 
-myApp.config(function($stateProvider) {
+myApp.config(["$stateProvider", function($stateProvider) {
 
   $stateProvider
     .state('contact', {
@@ -15,9 +15,9 @@ myApp.config(function($stateProvider) {
       }
     });
 
-});
+}]);
 
-myApp.controller('ContactController', function($location,growl,BackandService,PublicService, $scope, $state, APP_CONSTANT,TEAM_CONSTANT){
+myApp.controller('ContactController', ["$location", "growl", "BackandService", "PublicService", "$scope", "$state", "APP_CONSTANT", "TEAM_CONSTANT", function($location,growl,BackandService,PublicService, $scope, $state, APP_CONSTANT,TEAM_CONSTANT){
   
   $scope.TEAM_CONSTANT = TEAM_CONSTANT;
   $scope.showItem = null;
@@ -88,4 +88,4 @@ $scope.testgrowl =function(){
 
 }
 
-});
+}]);

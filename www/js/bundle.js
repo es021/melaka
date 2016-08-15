@@ -5,12 +5,10 @@
 // angular.module is a global place for creating, registering and retrieving Angular modules
 // 'starter' is the name of this angular module example (also set in a <body> attribute in index.html)
 // the 2nd parameter is an array of 'requires'
-var myApp = angular.module('sample', ['ionic','ionic.service.core', 
+var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'backand',
   'ui.router',
-  'restangular',  
-  'updateMeta',
-  
+  'restangular',    
   'sample.home',
   'sample.login-signup',
   'sample.register',
@@ -37,7 +35,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
 
 
 
-myApp.run(function($ionicPlatform) {
+myApp.run(["$ionicPlatform", function($ionicPlatform) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -53,7 +51,11 @@ myApp.run(function($ionicPlatform) {
       StatusBar.styleDefault();
     }
   });
-});
+
+  //ar config = require('../server.js');
+
+
+}]);
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -61,7 +63,7 @@ myApp.run(function($ionicPlatform) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider,APP_CONSTANT) {
+myApp.config( ["$urlRouterProvider", "$stateProvider", "authProvider", "$httpProvider", "growlProvider", "BackandProvider", "$locationProvider", "APP_CONSTANT", function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider,APP_CONSTANT) {
   //$locationProvider.html5Mode(true);
   growlProvider.globalTimeToLive(5000);
   //growlProvider.globalPosition('bottom-right');
@@ -83,14 +85,14 @@ myApp.config( function ($urlRouterProvider, $stateProvider, authProvider, $httpP
   
   $httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
-});
+}]);
 
-myApp.run(function(auth) {
+myApp.run(["auth", function(auth) {
   auth.hookEvents();
-});
+}]);
 
 
-myApp.controller('AppController', function (growl,Backand,$scope,UserService,$ionicModal,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
+myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", "$ionicModal", "$ionicPopup", "$ionicSideMenuDelegate", "auth", "$state", "$stateParams", "PublicService", "$location", "AUTH_CONSTANT", "USER_TYPE", "APP_CONSTANT", function (growl,Backand,$scope,UserService,$ionicModal,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
 
   console.log("FROM APP CONTROLLER");
 
@@ -448,6 +450,6 @@ myApp.controller('AppController', function (growl,Backand,$scope,UserService,$io
       return input;
   };
 
-});
+}]);
 
 },{}]},{},[1]);

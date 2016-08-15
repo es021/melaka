@@ -104,7 +104,7 @@ myApp.constant("TEAM_CONSTANT",
             "twitter":"https://twitter.com/AlZawier",
             "picture":"img/zawier.jpg",
             "phone":"+6 019-6262500",
-            "description":"I’m an open door. Reach me anytime, anywhere"
+            "description":"Iâ€™m an open door. Reach me anytime, anywhere"
         }, 
         
         {
