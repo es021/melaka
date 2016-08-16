@@ -29,7 +29,7 @@
     <script src="https://cdn.backand.net/backand/dist/1.8.2/backand.min.js"></script>
     <script src="https://cdn.auth0.com/w2/auth0-6.7.js"></script>
 
-    <!--
+    
     <script src="js/app.js"></script>
     <script src="js/service.js"></script>
     <script src="js/constant.js"></script>
@@ -45,10 +45,11 @@
     <script src="about/about.js"></script>
     <script src="faq/faq.js"></script>
     <script src="reviews/reviews.js"></script>
-    -->
+    <script src="invite/invite.js"></script>
+    
 
     <!-- MINIFIED VERSION -->
-    <script src="js/app.js"></script>
+<!--    <script src="js/app.js"></script>
     <script src="js/service.js.min.js"></script>
     <script src="js/constant.js.min.js"></script>
     <script src="js/directive.js.min.js"></script>
@@ -108,6 +109,8 @@
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/restangular/1.4.0/restangular.js"></script>
 
     <link href="https://fonts.googleapis.com/css?family=Rakkas" rel="stylesheet">
+    <script src="http://connect.facebook.net/en_US/all.js"></script>
+
 
   </head>
 
@@ -284,6 +287,11 @@
             Connect
         </a>
 
+    <a class="tab-item">
+          <i class="icon ion-share" ng-click="invite()"></i>
+            Invite
+        </a>
+
         <a class="tab-item">
           <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
             My Active Listing
@@ -303,7 +311,10 @@
           <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.STOCKIST)"></i>
             Connect
         </a>
-
+         <a class="tab-item">
+          <i class="icon ion-share" ng-click="invite()"></i>
+            Invite
+        </a>
         <a class="tab-item">
           <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
             My Active Listing
@@ -328,7 +339,10 @@
           <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.SUPPLIER)"></i>
             Connect
         </a>
-
+        <a class="tab-item">
+          <i class="icon ion-share" ng-click="invite()"></i>
+            Invite
+        </a> 
         <a class="tab-item">
           <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
             My Active Listing
@@ -358,6 +372,10 @@
           <i class="icon ion-help-circled" ></i>
               Why {{APP_CONSTANT.NAME}}
         </a>       
+        <a class="tab-item">
+          <i class="icon ion-share" ng-click="invite()"></i>
+            Invite
+        </a> 
         <a class="tab-item" ng-click="faq()">
           <i class="icon ion-help" ></i>
               F.A.Q

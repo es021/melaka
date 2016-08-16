@@ -308,6 +308,19 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
+  invitationEmail = function(email_to,sender_name){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/objects/action/notifications/1?name=invitationEmail',
+        params: {
+          parameters: {
+            email_to: email_to,
+            sender_name : sender_name
+          }
+        }
+      })
+  }
+
   getProductQuantity = function(id){
     return $http ({
         method: 'GET',
@@ -810,6 +823,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     uploadFile : uploadFile,
     deleteFile : deleteFile,
     sendEmailToInnovaSeeds: sendEmailToInnovaSeeds,
+    invitationEmail : invitationEmail,
 
     getAllNotificationByUserId_page : getAllNotificationByUserId_page
   }
@@ -1146,7 +1160,8 @@ myApp.service('PublicService', function ($http,growl,APP_CONSTANT){
       //console.log(text);
       //console.log(hashtag);
 
-      var urlToOpen = baseUrl+"hashtags="+hashtags+"&url="+url+"&text="+text+"&via="+via;
+      //var urlToOpen = baseUrl+"url="+url+"&text="+text+"&via="+via+"&hashtags="+hashtags;
+      var urlToOpen = baseUrl+"url="+url+"&text="+text+"&via="+via;
 
       //console.log(urlToOpen);
       
@@ -1168,28 +1183,7 @@ myApp.service('PublicService', function ($http,growl,APP_CONSTANT){
 
   shareOnFacebook= function(url,title,imageUrl,description)
   {
-      //http://www.facebook.com/sharer.php?s=100&p[title]=sdsdsd&p[url]=http://www.mysexyurl.com&p[summary]=mysexysummaryhere&p[images][0]=http://www.urltoyoursexyimage.com
-
-      //add hashtag      
-      //url = encodeURIComponent(url);
-      //title = encodeURIComponent(title);
-      //hashtag = encodeURIComponent(hashtag);
-
-      //console.log(url);
-      //console.log(title);
-      //console.log(hashtag);
-
-/*
-      imageUrl = imageUrl.replace("https","http");
-      //var urlToOpen = baseUrl+"u="+url+"&t="+title;
-
-      console.log("Changing meta property");
-
-      var meta = getMetaElement('og:image');
-      console.log(meta);
-      //imageUrl = imageUrl.replace("https","http");
-      meta.setAttribute("content",imageUrl);
-*/
+    console.log(url);
 
     FB.ui({
         method: 'feed',

@@ -1,0 +1,97 @@
+<ion-view>
+<ion-content class="text-center has-header has-footer padding">
+
+<div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+
+<h2 class="title">Spread The Love <span class="ion-heart"></span></h2>
+<h4 class="subtitle">Share DropBug with your <br>
+  friends and followers</h4></h2>
+    <div id="social">
+      <a class="facebookBtn smGlobalBtn" ng-click="shareOnFacebook()"></a>
+      <a class="twitterBtn smGlobalBtn" ng-click="shareOnTwitter()"></a>
+    </div>
+{{senderName}}
+<hr>
+
+    <h3 class="subtitle">{{APP_CONSTANT.DOMAIN_SIMPLE}}</h3>
+     <button type="submit" class="button button-orange" ng-click="copyToClipboard('{{APP_CONSTANT.DOMAIN}}')"><span class="fa fa-clipboard"></span> Copy Link</button>
+<hr>
+
+<h4 class="subtitle">Invite through Email<br></h4>
+<div class="card text-center">
+  <div class="item item-body text-center">
+
+  <div ng-show="!sent && !loading">
+    <form role="form">
+    <div class="form-group" ng-form='inviteForm'>
+
+    <div class="text-left">
+      <label>Sending as:</label>
+      <input type="text" placeholder='Enter your name' class="form-control" ng-model="newInvitation.sender_name" required>
+    </div>
+
+      <br>
+      <span ng-if="!sent && !loading" id="emailInvitation">
+        <div class="text-left"><label>Email list:</label></div>
+        <input ng-repeat="item in invalidEmail" style="border: 1px solid red;" type='email' class='form-control' placeholder="Your friend email" value="{{item}}">
+        
+        <input type='email' class='form-control' placeholder="Your friend email">
+      </span>
+        <button class="button button-small button-clear button-positive" ng-click="addEmail()">Add Email</button>
+        <button ng-disabled="!inviteForm.$valid" type="submit" class="button button-block button-orange" ng-click="sendInvitation()">Send Invitation</button>
+    </div>
+    </form>
+  
+        <small ng-if="empty">
+        <div class="text-left alert alert-danger alert-tip">
+          <span class="fa fa-exclamation"></span> Please enter at least one email.
+        </div>
+      </small>
+
+  </div>
+
+
+    <div ng-if="sent && !loading">
+      <small ng-if="invalidEmail.length > 0">
+        <div class="text-left alert alert-danger alert-tip">
+          <span class="fa fa-exclamation"></span> Opps... there are <strong>{{invalidEmail.length}} invalid email(s)</strong> found in form :
+            <div style="padding-left:20px;">
+              <small>
+                <ul class="list-normal">
+                  <li ng-repeat="item in invalidEmail">{{item}}</li>
+                </ul>
+              </small>
+            </div>
+        </div>
+      </small>
+
+      <small ng-if="validEmail.length > 0">
+        <div class="text-left alert alert-success alert-tip">
+          <span class="fa fa-envelope"></span> Successfully sent invitation to the following email(s) :
+            <div style="padding-left:20px;">
+              <small>
+                <ul class="list-normal">
+                  <li ng-repeat="item in validEmail">{{item}}</li>
+                </ul>
+              </small>
+            </div>
+        </div>
+        
+        <h2 class="subtitle">Thank you for making <strong>DropBug</strong> a better place :)<br></h2>
+      </small>
+
+      <button class="button button-clear button-positive" ng-click="sendAgain()">Send Again</button>
+  
+
+    </div>
+
+  </div>
+</div>
+<hr>
+
+</p>
+<hr>
+</div>
+
+</ion-view>
+</ion-content>

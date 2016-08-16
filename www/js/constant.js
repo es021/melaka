@@ -18,6 +18,7 @@ myApp.constant("APP_CONSTANT",{
         "LOGO_ONLY_SMALL" : "img/logo_only_small.png",
         "LOADER" : "img/AjaxLoader.gif",
         "DOMAIN" : "http://hosting.backand.io/dropbug/#/",
+        "DOMAIN_SIMPLE" : "hosting.backand.io/dropbug",
         "BACKAND_APP_NAME" : "dropbug",
         "BACKAND_TOKEN" : "5ee54b6c-f992-4a78-b789-0a36721791c7"
 });

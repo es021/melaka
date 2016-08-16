@@ -17,6 +17,7 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'sample.contact',
   'sample.about',
   'sample.faq',
+  'sample.invite',
   //'sample.redirect',
   'sample.service',
   'sample.constant',
@@ -139,7 +140,7 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
       if($scope.authProfile == null)
       {
 
-        var notRequiredLoginPage = ["home","contact","login","faq","findUser","signup","about","showProduct","showUser"];
+        var notRequiredLoginPage = ["home","contact","login","invite","faq","findUser","signup","about","showProduct","showUser"];
         var goToLogin = false;
         console.log(state);
         goToLogin = notRequiredLoginPage.indexOf(state) < 0;
@@ -168,7 +169,7 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
       } 
       else if($scope.authProfile != null && $scope.userInSession == null)
       {
-          var notRequiredRegisterPage = ["home","contact","login","findUser","faq","signup","about","showProduct","showUser"];
+          var notRequiredRegisterPage = ["home","contact","invite","login","findUser","faq","signup","about","showProduct","showUser"];
           var goToHome = false;
           goToHome = notRequiredRegisterPage.indexOf(state) < 0;
           if(goToHome)
@@ -250,6 +251,88 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     $state.go('home');    
   };
 
+  $scope.login = function() {
+    console.log("here");
+    $state.go('login');    
+  };  
+
+  $scope.signup = function() {
+    $state.go('signup');    
+  };
+  $scope.findUser = function(user_type_request) {
+    closeSideMenuBar();
+    $state.go('findUser',{user_type_request:user_type_request});
+  };  
+  $scope.contact = function() {   
+    closeSideMenuBar();
+    $state.go('contact');    
+  };
+
+  $scope.faq = function() {   
+    closeSideMenuBar();
+    $state.go('faq');    
+  };
+
+  $scope.about = function() {   
+    closeSideMenuBar();
+    $state.go('about');    
+  };
+
+  $scope.invite = function() {   
+    closeSideMenuBar();
+    $state.go('invite');    
+  };
+
+  $scope.showUser = function (id){
+    closeSideMenuBar();
+    console.log(id);
+    $state.go('showUser',{id:id}); 
+  };  
+
+
+  $scope.showProduct = function(product_id,show)
+  {
+    $state.go('showProduct',{product_id:product_id,show:show})
+  };
+
+  $scope.share = function(social,page,id,title,picture,description)
+  {
+    console.log(social);
+    console.log(page);
+    console.log(id);
+    console.log(title);
+
+    var url =APP_CONSTANT.DOMAIN+page;
+    var text = "";
+
+    if(page == "showProduct")
+    {
+      //url += "?product_id=" + id +"&show=info";
+      url += "?product_id=" + id;
+      text = title + " on DropBug.";
+    }
+
+    if(page == "showUser")
+    {
+      url += "?id=" + id;
+      text = "Check Out My Profile on DropBug.";
+    }
+
+    console.log(url);
+
+    if(social == "twitter")
+    {
+      PublicService.shareOnTwitter(url,text);
+    }
+
+    if(social == "facebook")
+    {
+      PublicService.shareOnFacebook(url,title,picture,description);
+    }
+  }  
+  /////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////
+
   $scope.allUsers = function() {
     closeSideMenuBar();
     $state.go('allUsers');
@@ -260,14 +343,6 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     $state.go("addProduct");
   }
 
-  $scope.login = function() {
-    console.log("here");
-    $state.go('login');    
-  };  
-
-  $scope.signup = function() {
-    $state.go('signup');    
-  };
 
   $scope.myActiveListing = function() {
     closeSideMenuBar();
@@ -282,13 +357,6 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     var pageNumber = 1;
     $state.go('myCompletedTransaction',{pageNumber,pageNumber});
   };
-
-
-  $scope.findUser = function(user_type_request) {
-    closeSideMenuBar();
-    $state.go('findUser',{user_type_request:user_type_request});
-  };    
-
 
   $scope.myProducts = function() {
     closeSideMenuBar();
@@ -334,27 +402,6 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     $state.go('myPendingLinkRequest');
   } 
 
-  $scope.contact = function() {   
-    closeSideMenuBar();
-    $state.go('contact');    
-  };
-
-  $scope.faq = function() {   
-    closeSideMenuBar();
-    $state.go('faq');    
-  };
-
-  $scope.about = function() {   
-    closeSideMenuBar();
-    $state.go('about');    
-  };
-
-  $scope.showUser = function (id){
-    closeSideMenuBar();
-    console.log(id);
-    $state.go('showUser',{id:id}); 
-  };
-
   $scope.myProfile = function (){
     closeSideMenuBar();
     $state.go('myProfile'); 
@@ -373,46 +420,6 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     $state.go('allNotifications',{pageNumber:pageNumber});
   }
 
-  $scope.showProduct = function(product_id,show)
-  {
-    $state.go('showProduct',{product_id:product_id,show:show})
-  };
-
-  $scope.share = function(social,page,id,title,picture,description)
-  {
-    console.log(social);
-    console.log(page);
-    console.log(id);
-    console.log(title);
-
-    var url =APP_CONSTANT.DOMAIN+page;
-    var text = "";
-
-    if(page == "showProduct")
-    {
-      //url += "?product_id=" + id +"&show=info";
-      url += "?product_id=" + id;
-      text = title + " on DropBug.";
-    }
-
-    if(page == "showUser")
-    {
-      url += "?id=" + id;
-      text = "Check Out My Profile on DropBug.";
-    }
-
-    console.log(url);
-
-    if(social == "twitter")
-    {
-      PublicService.shareOnTwitter(url,text);
-    }
-
-    if(social == "facebook")
-    {
-      PublicService.shareOnFacebook(url,title,picture,description);
-    }
-  }
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
@@ -447,5 +454,25 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
       }
       return input;
   };
+
+  $scope.copyToClipboard = function(textToCopy)
+  {
+     $("body")
+        .append($('<input type="text" name="fname" class="textToCopyInput"/>' )
+        .val(textToCopy))
+        .find(".textToCopyInput")
+        .select();
+      try {
+        var successful = document.execCommand('copy');
+        var msg = successful ? 'successful' : 'unsuccessful';
+        PublicService.successCallbackFunction(textToCopy,"Text successfully copied to clipboard!");
+
+      } catch (err) {
+        window.prompt("To copy the text to clipboard: Ctrl+C, Enter", textToCopy);
+      }
+     $(".textToCopyInput").remove();
+
+  }
+
 
 }]);
