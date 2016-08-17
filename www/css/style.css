@@ -477,3 +477,17 @@ img {
 .alert-tip{
   opacity: 0.7;
 }
+
+#load-body{
+  background-color: #fff3de;
+  position: absolute;
+  display: table;
+  text-align: center;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#load-body-inner{
+  display: table-cell !important;
+  vertical-align: middle !important;
+}

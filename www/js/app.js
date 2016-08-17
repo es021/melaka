@@ -51,6 +51,7 @@ myApp.run(["$ionicPlatform", function($ionicPlatform) {
     }
   });
 
+
   //ar config = require('../server.js');
 
 
@@ -62,8 +63,11 @@ myApp.run(["$ionicPlatform", function($ionicPlatform) {
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // AUTH 0 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.config( ["$urlRouterProvider", "$stateProvider", "authProvider", "$httpProvider", "growlProvider", "BackandProvider", "$locationProvider", "APP_CONSTANT", function ($urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider,APP_CONSTANT) {
+myApp.config( ["$urlRouterProvider", "$stateProvider", "authProvider","$compileProvider",'$logProvider', "$httpProvider", "growlProvider", "BackandProvider", "$locationProvider", "APP_CONSTANT", function ($logProvider,$compileProvider,$urlRouterProvider, $stateProvider, authProvider, $httpProvider,growlProvider,BackandProvider,$locationProvider,APP_CONSTANT) {
   //$locationProvider.html5Mode(true);
+  $logProvider.debugEnabled = false ;
+  $compileProvider.debugInfoEnabled = false ;
+
   growlProvider.globalTimeToLive(5000);
   //growlProvider.globalPosition('bottom-right');
 
@@ -93,12 +97,25 @@ myApp.run(["auth", function(auth) {
 
 myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", "$ionicModal", "$ionicPopup", "$ionicSideMenuDelegate", "auth", "$state", "$stateParams", "PublicService", "$location", "AUTH_CONSTANT", "USER_TYPE", "APP_CONSTANT", function (growl,Backand,$scope,UserService,$ionicModal,$ionicPopup,$ionicSideMenuDelegate, auth, $state,$stateParams,PublicService,$location,AUTH_CONSTANT, USER_TYPE,APP_CONSTANT) {
 
-  console.log("FROM APP CONTROLLER");
 
+  $scope.ready = false;
+
+  angular.element(document).ready(function () {
+    console.log( "ready!" );
+    $("div#main-body").removeClass("hidden");
+    $("div#load-body").addClass("hidden");
+
+    $scope.ready = true;
+    $scope.main();
+  });
+
+
+
+  console.log("FROM APP CONTROLLER");
   $scope.APP_CONSTANT = APP_CONSTANT;
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile")); 
-  console.log($scope.userInSession); 
+  //console.log($scope.userInSession); 
   $scope.USER_TYPE = USER_TYPE;
 
 
@@ -202,7 +219,6 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     }
   }
   
-  $scope.main();
 
   function socialLoginHandler(state)
   {

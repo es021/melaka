@@ -9,6 +9,32 @@
     <meta property="og:description"   content="">
     <meta property="og:image"         content="http://hosting.backand.io/dropbug/img/logo_small_new.png">
     <title>DropBug</title>
+    <link rel="icon" type="image/png" href="img/favicons/favicon.ico">
+
+    <!-- angular-js -->
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.17/angular.js"></script>
+    <!-- compiled css output -->
+
+        <!-- CSS ORI VERSION -->
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/button.css" rel="stylesheet">
+
+    <!-- CSS ORI VERSION -->
+
+    <link href="css/ionic.app.min.css" rel="stylesheet">
+
+    <!-- Growl Notification -->
+    <link href="lib/growl/angular-growl.min.css" rel="stylesheet" media="screen"> 
+    <script src="lib/growl/angular-growl.min.js"></script>
+
+
+        <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+  
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+   
 
 
   </head>
@@ -19,6 +45,16 @@
 
 <body ng-app="sample" ng-controller="AppController">
 
+<div id="load-body">
+
+  <span id="load-body-inner">
+      <h2><small>Welcome To</small><br><strong>DropBug</strong></h2>
+      <img ng-src="img/AjaxLoader.gif"/><br>
+      <small>Please Wait. Loading Page...</small>
+  </span>
+</div>  
+
+<div id="main-body" class="hidden" ng-show="ready">
       <!--HEADER-->
         <div class="bar bar-header bar-energized">
 
@@ -288,18 +324,17 @@
         
       </div>
 
+      </div>
+
       <!--END OF FOOTER-->
 
 
   </body>
 
     
-    <!-- angular-js -->
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.17/angular.js"></script>
-    <script src="lib/angular-update-meta/dist/update-meta.min.js"></script>
-    <!-- compiled css output -->
+  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <link href="css/modal.css" rel="stylesheet">
 
-    <link rel="icon" type="image/png" href="img/favicons/favicon.ico">
     <!-- time ago -->
     <script src="lib/timeago/jquery-3.0.0.min.js"></script>
     <script src="lib/timeago/jquery.timeago.js"></script>    
@@ -353,27 +388,7 @@
     <!-- JS MINIFIED VERSION -->
 
 
-    <!-- CSS ORI VERSION -->
-    <link href="css/style.css" rel="stylesheet">
-    <link href="css/button.css" rel="stylesheet">
 
-    <!-- CSS ORI VERSION -->
-
-    <link href="css/ionic.app.min.css" rel="stylesheet">
-
-    <!-- Growl Notification -->
-    <link href="lib/growl/angular-growl.min.css" rel="stylesheet" media="screen"> 
-    <script src="lib/growl/angular-growl.min.js"></script>
-
-
-        <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
-  
-    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="css/modal.css" rel="stylesheet">
 
     <!-- auth0-angular -->
     <script src="lib/auth0-angular/build/auth0-angular.js"></script>
@@ -399,6 +414,5 @@
 
     <link href="https://fonts.googleapis.com/css?family=Rakkas" rel="stylesheet">
     <script src="http://connect.facebook.net/en_US/all.js"></script>
-
 
 </html>
