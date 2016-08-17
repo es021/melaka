@@ -17,9 +17,10 @@ myApp.config(function($stateProvider) {
 
 });
 
+//dependecy injection
+
 myApp.controller('AboutController', function($location,growl, $scope, $state, APP_CONSTANT){
   
   $scope.APP_CONSTANT = APP_CONSTANT;
-
 
 });

@@ -22,8 +22,10 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
   }
 
   getObjectById = function(objectName,id){
-    console.log(getUrl(objectName) + id);
+    //console.log(getUrl(objectName) + id);
     return $http.get(getUrl(objectName) + id);
+    //console.log("My own server yo!");
+    //return $http.get("/v1/"+objectName+"/"+id);
   }
 
   addObject = function(objectName,object){
@@ -42,6 +44,7 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     return $http ({
         method: 'GET',
         url: Backand.getApiUrl() + '/1/query/data/getAllProductByUserId',
+        //url: '/v1/query/data/getAllProductByUserId',
         params: {
           parameters: {
             user_id: user_id,

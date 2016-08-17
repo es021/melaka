@@ -11,12 +11,16 @@
     "url": "https://github.com/es021/melaka.git"
   },
   "dependencies": {
+    "body-parser": "^1.15.2",
+    "compression": "^1.6.2",
     "express": "^4.13.4",
     "gulp": "^3.5.6",
     "gulp-concat": "^2.2.0",
     "gulp-minify-css": "^0.3.0",
     "gulp-rename": "^1.2.0",
     "gulp-sass": "^2.0.4",
+    "http": "0.0.0",
+    "mysql": "^2.11.1",
     "ng-cordova-oauth": "^0.2.7",
     "tinify": "^1.3.0"
   },
