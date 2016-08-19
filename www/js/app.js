@@ -152,7 +152,7 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
       if($scope.authProfile == null)
       {
 
-        var notRequiredLoginPage = ["home","contact","login","invite","faq","findUser","signup","about","showProduct","showUser"];
+        var notRequiredLoginPage = ["home","contact","login","invite","allUsers","faq","findUser","signup","about","showProduct","showUser"];
         var goToLogin = false;
         console.log(state);
         goToLogin = notRequiredLoginPage.indexOf(state) < 0;
@@ -181,7 +181,7 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
       } 
       else if($scope.authProfile != null && $scope.userInSession == null)
       {
-          var notRequiredRegisterPage = ["home","contact","invite","login","findUser","faq","signup","about","showProduct","showUser"];
+          var notRequiredRegisterPage = ["home","contact","invite","login","allUsers","findUser","faq","signup","about","showProduct","showUser"];
           var goToHome = false;
           goToHome = notRequiredRegisterPage.indexOf(state) < 0;
           if(goToHome)
@@ -260,13 +260,18 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
   function footerActive(name)
   {
     //reset all footer
-    console.log("white " +name);
-    var prevState = $state.current.name;
-    $("span#footer-"+prevState).removeClass("footer-active");
+    var footers = ["home","contact","invite","findUser","faq","about","showProductList","myActiveListing"];
 
-    if(name != "none")
+    for(var i =0; i<footers.length; i++)
     {
-      $("span#footer-"+name).addClass("footer-active");
+      if(footers[i] == name)
+      {
+        $("span#footer-"+footers[i]).addClass("footer-active");
+      }
+      else
+      {
+        $("span#footer-"+footers[i]).removeClass("footer-active");
+      }
     }
 
   }

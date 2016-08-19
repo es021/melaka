@@ -23,6 +23,11 @@ myApp.constant("APP_CONSTANT",{
         "BACKAND_TOKEN" : "5ee54b6c-f992-4a78-b789-0a36721791c7"
 });
 
+myApp.constant("USER_STATUS", {
+        "ACTIVE": 1,
+        "DEACTIVATED" : 2
+});
+
 myApp.constant("USER_LINK_TYPE", {
         "LINKED": 1,
         "REQUESTED" : 2,
