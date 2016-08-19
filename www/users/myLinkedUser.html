@@ -17,22 +17,22 @@
 
         <div class="text-left">
         <div class="list">
-          <div ng-repeat="item in searchProduct">
+          <div ng-repeat="item in searchLinked">
             <div>
-              <a class="item item-avatar" ng-click="showUser({{item.id}})">
-              <img src="{{item.picture}}">
-                  <h2>{{item.first_name}} {{item.last_name}}</h2>
-                  <p>{{item.state}}</p>
-                  <span class="badge">
-                    {{item.user_type.getUserType()}}
-                  </span>
-              </a>
+              <div class="item item-avatar">
+                  <img src="{{item.picture}}">
+                      <a href="" ng-click="showUser({{item.id}})"><h2>{{item.first_name}} {{item.last_name}}</h2></a>
+                      <p>
+                        <span><span class="fa {{item.user_type.getUserTypeLogo()}}"></span> {{item.user_type.getUserType()}}</span><br>
+                        <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+                      </p>        
+                </div>
             </div>
           </div>
         </div>
       </div>
 
-        <div ng-if="searchProduct.length == 0 && isSubmit && search.key.length>2 && !searchLoad">
+        <div ng-if="searchLinked.length == 0 && isSubmit && search.key.length>2 && !searchLoad">
           No result found for <strong>'{{search.key}}'</strong>
         </div>
 
@@ -64,16 +64,14 @@
         </div>
 
         <div ng-repeat="item in myLinkedUser">
-          <div>
-            <a class="item item-avatar" ng-click="showUser({{item.id}})">
-            <img src="{{item.picture}}">
-                <h2>{{item.first_name}} {{item.last_name}}</h2>
-                <p>{{item.state}}</p>
-                <span class="badge">
-                  {{item.user_type.getUserType()}}
-                </span>
-            </a>
-          </div>
+          <div class="item item-avatar">
+              <img src="{{item.picture}}">
+                  <a href="" ng-click="showUser({{item.id}})"><h2>{{item.first_name}} {{item.last_name}}</h2></a>
+                  <p>
+                    <span><span class="fa {{item.user_type.getUserTypeLogo()}}"></span> {{item.user_type.getUserType()}}</span><br>
+                    <span><span class="fa fa-map-marker"></span> {{item.state}}</span>
+                  </p>        
+            </div>
         </div>
 
         <div  class="item item-body text-center" ng-if="myLinkedUser.length == 0">

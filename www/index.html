@@ -14,10 +14,10 @@
     <!-- angular-js -->
     <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.0-beta.17/angular.js"></script>
     <!-- compiled css output -->
-
         <!-- CSS ORI VERSION -->
     <link href="css/style.css" rel="stylesheet">
     <link href="css/button.css" rel="stylesheet">
+
 
     <!-- CSS ORI VERSION -->
 
@@ -35,6 +35,7 @@
   
     <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
    
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
 
   </head>
@@ -49,8 +50,8 @@
 
   <span id="load-body-inner">
       <h2><small>Welcome To</small><br><strong>DropBug</strong></h2>
-      <img ng-src="img/AjaxLoader.gif"/><br>
-      <small>Please Wait. Loading Page...</small>
+      <img ng-src="img/AjaxLoader.gif" alt="loading"><br>
+      <small>Loading Page<br>Please Wait..</small>
   </span>
 </div>  
 
@@ -214,22 +215,30 @@
       <!--FOOTER FOR DROPSHIP--> 
       <div class="tabs tabs-icon-top" id="footer_dropship" style="display:none">
         <a class="tab-item">
-          <i class="icon ion-home" ng-click="home()"></i>
-            <div>Home</div>
+          <span id="footer-home">
+            <i class="icon ion-home" ng-click="home()" ></i>
+            Home
+          </span>
         </a>
         <a class="tab-item">
+          <span id="footer-findUser">
           <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.DROPSHIP)"></i>
             Connect
+          </span>
         </a>
 
     <a class="tab-item">
+          <span id="footer-invite">
           <i class="icon ion-share" ng-click="invite()"></i>
             Invite
+          </span>
         </a>
 
         <a class="tab-item">
+          <span id="footer-myActiveListing">
           <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
             My Active Listing
+          </span>
         </a>
 
       </div>          
@@ -239,25 +248,35 @@
       <!--FOOTER FOR STOCKIST--> 
       <div class="tabs tabs-icon-top" id="footer_stockist" style="display:none">
         <a class="tab-item">
-          <i class="icon ion-home" ng-click="home()"></i>
-            <div>Home</div>
+          <span id="footer-home">
+            <i class="icon ion-home" ng-click="home()" ></i>
+            Home
+          </span>
         </a>
         <a class="tab-item">
+          <span id="footer-findUser">
           <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.STOCKIST)"></i>
             Connect
+          </span>
         </a>
          <a class="tab-item">
+          <span id="footer-invite">
           <i class="icon ion-share" ng-click="invite()"></i>
             Invite
+          </span>
         </a>
         <a class="tab-item">
+          <span id="footer-myActiveListing">
           <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
             My Active Listing
+          </span>
         </a>            
 
         <a class="tab-item">
+          <span id="footer-showProductList">
           <i class="icon ion-bag" ng-click="myProducts()"></i>
             My Products
+          </span>
         </a>
 
       </div>    
@@ -267,25 +286,35 @@
       <!--FOOTER FOR SUPPLIER--> 
       <div class="tabs tabs-icon-top" id="footer_supplier" style="display:none background-color:blue;">
         <a class="tab-item">
-          <i class="icon ion-home" ng-click="home()"></i>
-            <div>Home</div>
+          <span id="footer-home">
+            <i class="icon ion-home" ng-click="home()" ></i>
+            Home
+          </span>
         </a>
         <a class="tab-item">
+          <span id="footer-findUser">
           <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.SUPPLIER)"></i>
             Connect
+          </span>
         </a>
         <a class="tab-item">
+          <span id="footer-invite">
           <i class="icon ion-share" ng-click="invite()"></i>
             Invite
+          </span>
         </a> 
         <a class="tab-item">
+          <span id="footer-myActiveListing">
           <i class="icon ion-arrow-swap" ng-click="myActiveListing()"></i>
             My Active Listing
+          </span>
         </a>            
 
         <a class="tab-item">
+          <span id="footer-showProductList">
           <i class="icon ion-bag" ng-click="myProducts()"></i>
             My Products
+          </span>
         </a>
 
       </div>
@@ -295,30 +324,42 @@
       <!--FOOTER FOR NEW USER--> 
       <!--FOOTER FOR NEW USER--> 
       <div class="tabs tabs-icon-top" id="footer_newUser" style="display:default">
-        <a class="tab-item">
-          <i class="icon ion-home" ng-click="home()"></i>
-            <div>Home</div>
+        <a class="tab-item" >
+          <span id="footer-home">
+            <i class="icon ion-home" ng-click="home()" ></i>
+            Home
+          </span>
         </a>
         <a class="tab-item">
+          <span id="footer-findUser">
           <i class="icon ion-person-stalker" ng-click="findUser(USER_TYPE.SUPPLIER)"></i>
             Find Users
+          </span>
         </a>        
         <a class="tab-item" ng-click="about()">
+          <span id="footer-about">
           <i class="icon ion-help-circled" ></i>
               Why {{APP_CONSTANT.NAME}}
+          </span>
         </a>       
         <a class="tab-item">
+          <span id="footer-invite">
           <i class="icon ion-share" ng-click="invite()"></i>
             Invite
+          </span>
         </a> 
         <a class="tab-item" ng-click="faq()">
+          <span id="footer-faq">
           <i class="icon ion-help" ></i>
               F.A.Q
+           </span>   
         </a>
 
         <a class="tab-item" ng-click="contact()">
+          <span id="footer-contact">
           <i class="icon ion-email"></i>
             Contact Us
+          </span>  
         </a>
         <br>
         
@@ -331,9 +372,7 @@
 
   </body>
 
-    
-  <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <link href="css/modal.css" rel="stylesheet">
+        <link href="css/modal.css" rel="stylesheet">
 
     <!-- time ago -->
     <script src="lib/timeago/jquery-3.0.0.min.js"></script>
@@ -349,7 +388,7 @@
     <script src="https://cdn.auth0.com/w2/auth0-6.7.js"></script>
 
     <!-- JS ORIGINAL VERSION -->
- <!--   <script src="js/app.js"></script>
+    <script src="js/app.js"></script>
     <script src="js/service.js"></script>
     <script src="js/constant.js"></script>
     <script src="js/directive.js"></script>
@@ -369,7 +408,7 @@
     
 
     <!-- JS MINIFIED VERSION -->
-    <script src="js/app.js"></script>
+    <!--<script src="js/app.js"></script>
     <script src="js/service.js.min.js"></script>
     <script src="js/constant.js.min.js"></script>
     <script src="js/directive.js.min.js"></script>
@@ -414,5 +453,7 @@
 
     <link href="https://fonts.googleapis.com/css?family=Rakkas" rel="stylesheet">
     <script src="http://connect.facebook.net/en_US/all.js"></script>
+
+ 
 
 </html>

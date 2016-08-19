@@ -491,3 +491,7 @@ img {
   display: table-cell !important;
   vertical-align: middle !important;
 }
+
+.footer-active{
+  color:white;
+}

@@ -654,7 +654,7 @@ myApp.controller('LinkedUserController', function ($scope,growl,OFFSET, $state,$
   $scope.OFFSET = OFFSET; 
   $scope.search = {};
 
-  $scope.searchProduct = [];
+  $scope.searchLinked = [];
   $scope.searchLoad = false;
   $scope.isSubmit = false;
 
@@ -678,7 +678,7 @@ myApp.controller('LinkedUserController', function ($scope,growl,OFFSET, $state,$
 
     $scope.searchLoad = true;
     SearchService.searchLinkedUserByNameByState(searchKey,$scope.userInSession.user_id).then(function(result){
-      $scope.searchProduct = result.data
+      $scope.searchLinked = result.data
       console.log(result);
       $scope.searchLoad = false;
 
@@ -693,7 +693,7 @@ myApp.controller('LinkedUserController', function ($scope,growl,OFFSET, $state,$
   {
     if(!$scope.search.key || $scope.search.key == '')
     {
-      $scope.searchProduct = [];
+      $scope.searchLinked = [];
     }
     $scope.isSubmit = true;
     searchProductByNameByCategory($scope.search.key);    

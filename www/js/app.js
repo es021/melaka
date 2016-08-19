@@ -140,16 +140,11 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     //login with sosial provider
     if(state.length > 30)
     {
-      console.log("a");
       socialLoginHandler(state);
     }
     else if(state == "")
     {
       $state.go("home");
-    }
-    else if(state.includes("faq_anchor"))
-    {
-      $state.go("faq");
     }
     else
     {
@@ -262,13 +257,29 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
      });
   }
   
+  function footerActive(name)
+  {
+    //reset all footer
+    console.log("white " +name);
+    var prevState = $state.current.name;
+    $("span#footer-"+prevState).removeClass("footer-active");
+
+    if(name != "none")
+    {
+      $("span#footer-"+name).addClass("footer-active");
+    }
+
+  }
+
   $scope.home = function() {    
     closeSideMenuBar();
+    footerActive("home");
     $state.go('home');    
   };
 
   $scope.login = function() {
     console.log("here");
+    footerActive("none");    
     $state.go('login');    
   };  
 
@@ -277,42 +288,48 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
   };
   $scope.findUser = function(user_type_request) {
     closeSideMenuBar();
+    footerActive("findUser");
     $state.go('findUser',{user_type_request:user_type_request});
   };  
   $scope.contact = function() {   
     closeSideMenuBar();
+    footerActive("contact");
     $state.go('contact');    
   };
 
   $scope.faq = function() {   
     closeSideMenuBar();
+    footerActive("faq");
     $state.go('faq');    
   };
 
   $scope.about = function() {   
     closeSideMenuBar();
+    footerActive("about");       
     $state.go('about');    
   };
 
   $scope.invite = function() {   
     closeSideMenuBar();
+    footerActive("invite");
     $state.go('invite');    
   };
 
   $scope.showUser = function (id){
     closeSideMenuBar();
-    console.log(id);
+    footerActive("none");
     $state.go('showUser',{id:id}); 
   };  
 
 
   $scope.showProduct = function(product_id,show)
   {
+    footerActive("none");
     $state.go('showProduct',{product_id:product_id,show:show})
   };
 
   $scope.share = function(social,page,id,title,picture,description)
-  {
+  {    
     console.log(social);
     console.log(page);
     console.log(id);
@@ -356,11 +373,13 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
 
   $scope.addProduct = function(){
     console.log("Add Product Page");
+    footerActive("none");    
     $state.go("addProduct");
   }
 
 
   $scope.myActiveListing = function() {
+    footerActive("myActiveListing");
     closeSideMenuBar();
     var pageNumber = 1;
     console.log("Page "+pageNumber);
@@ -369,12 +388,14 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
   
 
   $scope.myCompletedTransaction = function() {
+    footerActive("none");    
     closeSideMenuBar();
     var pageNumber = 1;
     $state.go('myCompletedTransaction',{pageNumber,pageNumber});
   };
 
   $scope.myProducts = function() {
+    footerActive("showProductList");
     closeSideMenuBar();
     //$state.go('myProducts');
     if($scope.userInSession == null)
@@ -407,6 +428,7 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
   }
 
   $scope.myLinkedUser = function() {
+    footerActive("none");        
     closeSideMenuBar();
     var pageNumber = 1;
     $state.go('myLinkedUser',{pageNumber,pageNumber});
@@ -414,22 +436,26 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
 
   $scope.myPendingLinkRequest = function()
   {
+    footerActive("none");        
     closeSideMenuBar();
     $state.go('myPendingLinkRequest');
   } 
 
   $scope.myProfile = function (){
+    footerActive("none");       
     closeSideMenuBar();
     $state.go('myProfile'); 
   };
 
   $scope.showProductList = function(user_id){
+    footerActive("none");    
     closeSideMenuBar();
     var pageNumber = 1;
     $state.go('showProductList',{user_id:user_id,refresh:'y', pageNumber:pageNumber});
   }
 
   $scope.allNotifications = function(){
+    footerActive("none");    
     closeSideMenuBar();
     var pageNumber = 1;
     console.log("Page "+pageNumber);
