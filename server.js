@@ -1,16 +1,9 @@
-var AWS = {
-  "ACCESS_KEY_ID"       : 'AKIAIJO7YPBHO4WTVKDA',
-  "SECRECT_ACCESS_KEY"  : 'gT4jdhZwHqj1MCUyzifyi2zBO94HIOerLW7xv4VF',
-  "REGION"              : 'ap-southeast-1',
-  "BUCKET_NAME"         : 'elasticbeanstalk-ap-southeast-1-807460766039'
-}
+var config = require('./config.json');
+var AWS = config.AWS;
+var MYSQL = config.MYSQL;
+console.log(AWS);
+console.log(MYSQL);
 
-var MYSQL = {
-  "HOST"     : 'sql5.freesqldatabase.com',
-  "USER"     : 'sql5104477',
-  "PASSWORD" : '9XUcya9tVl',
-  "DATABASE" : 'sql5104477'
-}
 
 var express = require('express');
 var app = express();
@@ -30,8 +23,8 @@ var connection = mysql.createConnection({
 /// APP INIT ////////////////////////////////////////////////////////////////////////
 /// APP INIT ////////////////////////////////////////////////////////////////////////
 
-appInit();
-tinifyInit();
+//appInit();
+//tinifyInit();
 
 function appInit()
 {
