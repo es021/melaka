@@ -24,8 +24,8 @@ myApp.constant("APP_CONSTANT",{
 });
 
 myApp.constant("USER_STATUS", {
-        "ACTIVE": 1,
-        "DEACTIVATED" : 2
+        "DEACTIVATED" : 0,
+        "ACTIVE": 1
 });
 
 myApp.constant("USER_LINK_TYPE", {

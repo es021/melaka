@@ -27,7 +27,7 @@ myApp.controller('RegisterController', function($scope, $state,USER_TYPE){
 
 });
 
-myApp.controller('ProfileControllerHelper', function($scope, $stateParams, growl, BackandService, PublicService, auth, $state, USER_TYPE){
+myApp.controller('ProfileControllerHelper', function($scope, $stateParams, growl, BackandService, PublicService, auth, $state, USER_TYPE,USER_STATUS){
   //console.log("aaa");
   $scope.newUser = {};
   $scope.user_id = $stateParams.user_id;
@@ -52,6 +52,9 @@ myApp.controller('ProfileControllerHelper', function($scope, $stateParams, growl
     $scope.newUser.auth_id = $scope.authProfile.auth_id;
 
     $scope.newUser.user_type = $scope.user_type;
+
+    $scope.newUser.user_status = USER_STATUS.ACTIVE;
+
     $scope.newUser.created_at = PublicService.getTimestampinMysql();
     $scope.newUser.updated_at = PublicService.getTimestampinMysql();
 
@@ -98,8 +101,7 @@ myApp.controller('ProfileControllerHelper', function($scope, $stateParams, growl
   }
 });
 
-
-myApp.controller('RegisterControllerHelper', function($scope, $stateParams, growl, BackandService, PublicService, auth, $state, USER_TYPE){
+myApp.controller('RegisterControllerHelper', function($scope, $stateParams, growl, BackandService, PublicService, auth, $state, USER_TYPE,USER_STATUS){
   //console.log("aaa");
   $scope.newUser = {};
   $scope.user_type = $stateParams.user_type;
@@ -122,6 +124,8 @@ myApp.controller('RegisterControllerHelper', function($scope, $stateParams, grow
     $scope.newUser.auth_id = $scope.authProfile.auth_id;
 
     $scope.newUser.user_type = $scope.user_type;
+    $scope.newUser.user_status = USER_STATUS.ACTIVE;
+
     $scope.newUser.created_at = PublicService.getTimestampinMysql();
     $scope.newUser.updated_at = PublicService.getTimestampinMysql();
 
