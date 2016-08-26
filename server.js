@@ -1,9 +1,7 @@
 var config = require('./config.json');
 var AWS = config.AWS;
 var MYSQL = config.MYSQL;
-console.log(AWS);
-console.log(MYSQL);
-
+var TINIFY = config.TINIFY;
 
 var express = require('express');
 var app = express();
@@ -23,13 +21,14 @@ var connection = mysql.createConnection({
 /// APP INIT ////////////////////////////////////////////////////////////////////////
 /// APP INIT ////////////////////////////////////////////////////////////////////////
 
-//appInit();
+appInit();
+
 //tinifyInit();
 
 function appInit()
 {
-	app.use(bodyParser.urlencoded({ extended: false }));
-	app.use(bodyParser.json()); // Body parser use JSON da
+	app.use(bodyParser.urlencoded({ extended: true }));
+	app.use(bodyParser.json());
   app.use(compression());
   app.use(express.static(__dirname + '/www'));
 
@@ -50,7 +49,7 @@ function appInit()
 
 function tinifyInit(){
   console.log("Initialize TinyPNG")
-  tinify.key = "XCi84z1igNgjjp0hDh_QuT-gol_ePm1r";
+  tinify.key = TINIFY.KEY;
 }
 
 function tinifyStoreAWS(fileUrl, fileBaseName,product_id,APIResponse){
@@ -71,18 +70,12 @@ function tinifyStoreAWS(fileUrl, fileBaseName,product_id,APIResponse){
       region                : AWS.REGION,
       path                  : AWS.BUCKET_NAME+"/Images/"+fileBaseName
 
-/*    service: "s3",
-      aws_access_key_id: "AKIAIJO7YPBHO4WTVKDA",
-      aws_secret_access_key: "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",
-      region: "ap-southeast-1",
-      path: "elasticbeanstalk-ap-southeast-1-807460766039/Images/"+fileBaseName*/
-
     }).then(function(result){
         var location = result.headers.location
         if(location!= null && location != '')
         {
           var query = "UPDATE products SET picture_tinify = '"+location+"' WHERE id LIKE "+product_id;
-          //runAdvancedQuery(query,APICallbackFunction,response);  
+          querySuccess(location,APIResponse);
         }
     });  
 }
@@ -140,11 +133,7 @@ var advancedQueryCallbackFunction = function(err, rows, fields, APIResponse){
 }
 
 function setTimerFlush (res){
-  // send a ping approx every 2 seconds
   var timer = setInterval(function () {
-    //res.write('data: ping\n\n')
-
-    // !!! this is the important part
     res.flush()
   }, 2000)
 
@@ -160,10 +149,26 @@ function setTimerFlush (res){
 app.get('/v1/:object/:id', function(request, response, next) {
   var id = request.params.id;
   var object = request.params.object;
-  //console.log(object+"/"+id);
   var query = "SELECT * from "+object+" WHERE id LIKE "+id;
   runBasicQuery(query,APICallbackFunction, response)
   setTimerFlush(response);
+});
+
+app.put('/v1/:object/:id', function(request, response, next) {
+  var id = request.params.id;
+  var object = request.params.object;
+  var data = request.body;
+  
+  for(key in data)
+  {
+    console.log(key+"="+data[key]);
+  }
+
+  //var query = "SELECT * from "+object+" WHERE id LIKE "+id;
+  
+
+  //runBasicQuery(query,APICallbackFunction, response)
+  //setTimerFlush(response);
 });
 
 function runBasicQuery(query,callback,APIResponse){

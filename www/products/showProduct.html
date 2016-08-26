@@ -78,7 +78,7 @@
               RM {{showObject.price_per_unit}} / unit
           </h1>
 
-          <h1 ng-if="hasSpecification" style="font-size:20px;"><small><i class="fa fa-list-ol"></i> Minimum Order Quantity</small>
+          <h1 ng-if="showObject.specification.min_req_quantity != null" style="font-size:20px;"><small><i class="fa fa-list-ol"></i> Minimum Order Quantity</small>
               <br>
               {{showObject.specification.min_req_quantity}} unit
           </h1>

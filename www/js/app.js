@@ -18,10 +18,12 @@ var myApp = angular.module('sample', ['ionic','ionic.service.core',
   'sample.about',
   'sample.faq',
   'sample.invite',
-  //'sample.redirect',
   'sample.service',
   'sample.constant',
   'sample.directive',
+
+  //'sample.test',
+  //'sample.server-service',
   
   'auth0',
   'ngCookies',

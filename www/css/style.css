@@ -495,3 +495,10 @@ img {
 .footer-active{
   color:white;
 }
+
+#selectable{
+  -webkit-user-select: auto;
+  -moz-user-select: text !important;
+  -ms-user-select: text !important;
+  user-select: text !important;
+}

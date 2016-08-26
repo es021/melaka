@@ -1,7 +1,7 @@
 <ion-view>
-<ion-content class="text-center has-header has-footer padding">
+<ion-content class="text-center has-header has-footer padding" overflow-scroll="true">
 
-<div class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
+<div id="selectable" class="col-xs-12 col-xs-offset-0 col-md-8 col-md-offset-2 nopadding">
 
 <h2 class="title">Spread The Love <span class="ion-heart"></span></h2>
 <h4 class="subtitle">Share DropBug with your <br>
@@ -14,7 +14,8 @@
 <hr>
 
     <h3 class="subtitle">{{APP_CONSTANT.DOMAIN_SIMPLE}}</h3>
-     <button type="submit" class="button button-orange" ng-click="copyToClipboard('{{APP_CONSTANT.DOMAIN}}')"><span class="fa fa-clipboard"></span> Copy Link</button>
+     <button type="submit" class="button button-orange" ng-click="copyToClipboard('{{APP_CONSTANT.DOMAIN}}')"><span class="fa fa-clipboard"></span> Copy To Clipboard</button>
+     <br><small>* Copy To Clipboard will <strong>not work for iOS device.</strong><br>Select on the link and copy manually *</small>
 <hr>
 
 <h4 class="subtitle">Invite through Email<br></h4>
