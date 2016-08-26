@@ -2,17 +2,22 @@
 /// APP INIT ////////////////////////////////////////////////////////////////////////
 /// APP INIT ////////////////////////////////////////////////////////////////////////
 
+var config = require('./config.json');
+var AWS = config.AWS;
+var MYSQL = config.MYSQL;
+var TINIFY = config.TINIFY;
+
 var express = require('express');
 var app = express(); // Express App include
 var http = require('http').Server(app); // http server
 var mysql = require('mysql'); // Mysql include
 var bodyParser = require("body-parser"); // Body parser for fetch posted data
 var compression = require('compression')
-var connection = mysql.createConnection({ // Mysql Connection
-  host     : 'sql5.freesqldatabase.com',
-  user     : 'sql5104477',
-  password : '9XUcya9tVl',
-  database : 'sql5104477'
+var connection = mysql.createConnection({
+  host     : MYSQL.HOST,
+  user     : MYSQL.USER,
+  password : MYSQL.PASSWORD,
+  database : MYSQL.DATABASE
 });
 
 appInit();
