@@ -1,18 +1,15 @@
-/////////////////////////////////////////////////////////////////////////////////////
-/// APP INIT ////////////////////////////////////////////////////////////////////////
-/// APP INIT ////////////////////////////////////////////////////////////////////////
-
 var config = require('./config.json');
 var AWS = config.AWS;
 var MYSQL = config.MYSQL;
 var TINIFY = config.TINIFY;
 
 var express = require('express');
-var app = express(); // Express App include
-var http = require('http').Server(app); // http server
-var mysql = require('mysql'); // Mysql include
-var bodyParser = require("body-parser"); // Body parser for fetch posted data
+var app = express();
+var http = require('http').Server(app);
+var mysql = require('mysql');
+var bodyParser = require("body-parser");
 var compression = require('compression')
+var tinify = require("tinify");
 var connection = mysql.createConnection({
   host     : MYSQL.HOST,
   user     : MYSQL.USER,
@@ -20,12 +17,16 @@ var connection = mysql.createConnection({
   database : MYSQL.DATABASE
 });
 
+/////////////////////////////////////////////////////////////////////////////////////
+/// APP INIT ////////////////////////////////////////////////////////////////////////
+/// APP INIT ////////////////////////////////////////////////////////////////////////
+
 appInit();
 
 function appInit()
 {
   app.use(bodyParser.urlencoded({ extended: true }));
-  app.use(bodyParser.json()); // Body parser use JSON da
+  app.use(bodyParser.json());
   app.use(compression());
   app.use(express.static(__dirname + '/www'));
 
@@ -40,18 +41,59 @@ function appInit()
   }); 
 }
 
+///////////////////////////////////////////////////////////////////////////////////
+/// TINIFY ////////////////////////////////////////////////////////////////////////
+/// TINIFY ////////////////////////////////////////////////////////////////////////
+
+function tinifyInit(){
+  console.log("Initialize TinyPNG")
+  tinify.key = TINIFY.KEY;
+}
+
+function tinifyStoreAWS(fileUrl, fileBaseName,product_id,APIResponse){
+    if(product_id == null || product_id < 0)
+    {
+      return queryError("Undefined product id",APIResponse);
+    }    
+
+    if(typeof fileUrl != "string")
+    {
+      return queryError("Params file_url is not type of string",APIResponse);
+    }
+
+    tinify.fromUrl(fileUrl).store({ 
+      service               : "s3",
+      aws_access_key_id     : AWS.ACCESS_KEY_ID,
+      aws_secret_access_key : AWS.SECRECT_ACCESS_KEY,
+      region                : AWS.REGION,
+      path                  : AWS.BUCKET_NAME+"/Images/"+fileBaseName
+
+    }).then(function(result){
+        var location = result.headers.location
+        if(location!= null && location != '')
+        {
+          var query = "UPDATE products SET picture_tinify = '"+location+"' WHERE id LIKE "+product_id;
+          querySuccess(location,APIResponse);
+        }
+    });  
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////
+/// CALLBACK FUNCTION ////////////////////////////////////////////////////////////////////////
+/// CALLBACK FUNCTION ////////////////////////////////////////////////////////////////////////
+
 var APICallbackFunction = function(error,results,APIResponse){
     if (error)
     {
       APIResponse.status(500);
-      return APIResponse.json();
+      return APIResponse.json(error);
     }
     return APIResponse.json(results); 
 }
 
-var queryError = function(APIResponse){
+var queryError = function(errorMessage, APIResponse){
   console.log("Error"); 
-  return APICallbackFunction(new Error(),null,APIResponse);
+  return APICallbackFunction(errorMessage,null,APIResponse);
 }
 
 var querySuccess = function(data,APIResponse){
@@ -62,71 +104,86 @@ var querySuccess = function(data,APIResponse){
 //the basic call to rest api
 //only return one object
 var basicQueryCallbackFunction = function(err, rows, fields, APIResponse){
-    if(err || rows == null)
-      return queryError(APIResponse);
+    if(err)
+      return queryError(err,APIResponse);
 
+    if(rows == null)
+      return queryError("Row return null", APIResponse);
+    
     if(rows.length == 0)
-        return queryError(APIResponse);
+      return queryError("Row return empty", APIResponse);
     else
-    {
-    return querySuccess(rows[0],APIResponse);
-    }
+      return querySuccess(rows[0],APIResponse);
+    
 }
 
 var advancedQueryCallbackFunction = function(err, rows, fields, APIResponse){
-    if(err || rows == null)
-      return queryError(APIResponse);
+    if(err)
+      return queryError(err,APIResponse);
 
+    if(rows == null)
+      return queryError("Row return null", APIResponse);
+    
     if(rows.length == 0)
-        return queryError(APIResponse);
+      return queryError("Row return empty", APIResponse);
     else
-    {
-    return querySuccess(rows,APIResponse);
-    }
+      return querySuccess(rows,APIResponse);
 }
 
 function setTimerFlush (res){
-  // send a ping approx every 2 seconds
   var timer = setInterval(function () {
-    //res.write('data: ping\n\n')
-
-    // !!! this is the important part
     res.flush()
   }, 2000)
 
   res.on('close', function () {
     clearInterval(timer)
   })
-
 }
-/////////////////////////////////////////////////////////////////////////////////////
-/// REST API ////////////////////////////////////////////////////////////////////////
-/// REST API ////////////////////////////////////////////////////////////////////////
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/// BASIC REST API QUERY ////////////////////////////////////////////////////////////////////////
+/// BASIC REST API QUERY ////////////////////////////////////////////////////////////////////////
 
 app.get('/v1/:object/:id', function(request, response, next) {
   var id = request.params.id;
   var object = request.params.object;
-  console.log(object+"/"+id);
-  getObjectById(object, id, APICallbackFunction, response);
-
+  var query = "SELECT * from "+object+" WHERE id LIKE "+id;
+  runBasicQuery(query,APICallbackFunction, response)
   setTimerFlush(response);
 });
 
-var getObjectById = function (object, id, callback, APIResponse) {
-  connection.query("SELECT * from "+object+" WHERE id LIKE "+id,
+app.put('/v1/:object/:id', function(request, response, next) {
+  var id = request.params.id;
+  var object = request.params.object;
+  var data = request.body;
+  
+  for(key in data)
+  {
+    console.log(key+"="+data[key]);
+  }
+
+  //var query = "SELECT * from "+object+" WHERE id LIKE "+id;
+  
+
+  //runBasicQuery(query,APICallbackFunction, response)
+  //setTimerFlush(response);
+});
+
+function runBasicQuery(query,callback,APIResponse){
+  connection.query(query,
     function(err, rows, fields){
       basicQueryCallbackFunction(err, rows, fields, APIResponse);
     }
   );
+}
 
-};
-
-//////////////////////////////////////////////////////////////////////////////////
-/// QUERY ////////////////////////////////////////////////////////////////////////
-/// QUERY ////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////
+/// ADVANCED QUERY ////////////////////////////////////////////////////////////////////////
+/// ADVANCED QUERY ////////////////////////////////////////////////////////////////////////
 
 app.get('/v1/query/data/:queryName', function(request, response, next) {
   var queryName = request.params.queryName;
+  console.log(request.query.parameters);
   var params = JSON.parse(request.query.parameters);
 
   switch(queryName)
@@ -135,11 +192,22 @@ app.get('/v1/query/data/:queryName', function(request, response, next) {
       var user_id = params.user_id;
       var start_from = params.start_from;
       var offset = params.offset;
-    getAllProductByUserId(user_id,start_from,offset, APICallbackFunction,response);
+      var query = "SELECT * from products"+
+        " WHERE user_id LIKE "+user_id+
+        " ORDER BY updated_at DESC"+
+        " LIMIT "+start_from+", "+offset+";";
+      runAdvancedQuery(query,APICallbackFunction,response);  
+      break;
+
+    case "tinifyStoreAWS":
+      var file_url = params.file_url;
+      var file_basename = params.file_basename;
+      var product_id = params.product_id;
+      tinifyStoreAWS(file_url,file_basename,product_id,response);
       break;
 
     default :
-      return queryError(response);
+      return queryError("Invalid query name",response);
       break;
   }
 
@@ -147,20 +215,12 @@ app.get('/v1/query/data/:queryName', function(request, response, next) {
 
 });
 
-function getAllProductByUserId(user_id,start_from,offset,callback,APIResponse){
-  var query = "SELECT * from products"+
-    " WHERE user_id LIKE "+user_id+
-    " ORDER BY updated_at DESC"+
-    " LIMIT "+start_from+", "+offset+";";
-  
-  console.log(query);
-
+function runAdvancedQuery(query,callback,APIResponse){
   connection.query(query,
     function(err, rows, fields){
       advancedQueryCallbackFunction(err, rows, fields, APIResponse);
     }
   );
 }
-
 
 
