@@ -384,6 +384,9 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     $state.go("addProduct");
   }
 
+  $scope.transactionsSortByAgent = function() {   
+    $state.go('transactionsSortByAgent');
+  };
 
   $scope.myActiveListing = function() {
     footerActive("myActiveListing");
@@ -469,6 +472,11 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     $state.go('allNotifications',{pageNumber:pageNumber});
   }
 
+
+ $scope.showTransaction = function(id,other_user_id)
+ {
+    $state.go("showTransaction",{id:id, other_user_id: other_user_id});
+ }  
 
 ////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////

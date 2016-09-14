@@ -27,7 +27,7 @@
                     <h3 class="text-muted">
                     <span ng-if="userInSession.user_id == showItem.from_user_id">requested to 
                         <a href="" ng-click="showUser({{showItem.to_user_id}})">{{showItem.other_user_name}}</a>
-                    </span ng-if="userInSession.user_type=='supplier'">
+                    </span>
 
                     <span ng-if="userInSession.user_id == showItem.to_user_id">requested from 
                         <a href="" ng-click="showUser({{showItem.from_user_id}})">{{showItem.other_user_name}}</a>
@@ -47,7 +47,7 @@
                     <span ng-if="showItem.status == TRANS_STATUS.REQUESTED" class="label label-primary"><i class="fa fa-paper-plane"></i> Requested</span>
                     <span ng-if="showItem.status == TRANS_STATUS.DENIED" class="label label-danger"><i class="fa fa-times"></i> Denied</span>
                     <span ng-if="showItem.status == TRANS_STATUS.APPROVED" class="label label-success"><i class="fa fa-check"></i> Approved</span>
-                    <span ng-if="showItem.status == TRANS_STATUS.DELIVERED && showItem.type == 'Delivery'" class="label label-info"><i class="fa fa-truck"></i> Delivered</span>
+                    <span ng-if="showItem.status == TRANS_STATUS.DELIVERED && showItem.type > TRANS_TYPE.PICK_UP" class="label label-info"><i class="fa fa-truck"></i> Delivered</span>
                     <span ng-if="showItem.status == TRANS_STATUS.RECEIVED" class="label label-primary"><i class="fa fa-download"></i> Package Received</span>
 
                     <span ng-if="showItem.payment_status == TRANS_STATUS.NOT_PAID" class="label label-danger"><i class="fa fa-times"></i> Not Paid</span>
@@ -86,7 +86,7 @@
                     ng-click="updateTrans({{showItem.id}},'status',TRANS_STATUS.DENIED)"
                     class="button button-small button-outline button-assertive icon-left ion-close-round">Deny</button>
         
-                    <button ng-if="showItem.status == TRANS_STATUS.APPROVED && showItem.type == 'Delivery'"
+                    <button ng-if="showItem.status == TRANS_STATUS.APPROVED && showItem.type > TRANS_TYPE.PICK_UP"
                     ng-click="updateTrans({{showItem.id}},'status',TRANS_STATUS.DELIVERED)" 
                     class="button button-small button-outline button-balanced icon-left ion-paper-airplane">Deliver</button>
         
@@ -114,17 +114,33 @@
 
             <h1 style="font-size:20px;"><small class="icon-left ion-bookmark"> Type</small>
             <br>
-            <i ng-if="showItem.type == 'Pick Up' " class="fa fa-home"></i>
-            <i ng-if="showItem.type == 'Delivery' " class="fa fa-truck"></i>
-            {{showItem.type}}
+            <i ng-if="showItem.type == TRANS_TYPE.PICK_UP " class="fa fa-home"></i>
+            <i ng-if="showItem.type > TRANS_TYPE.PICK_UP " class="fa fa-truck"></i>
+            {{showItem.type.getTransType()}}
             </h1>
 
-            <h1 ng-if="showItem.delivery_address != null && showItem.delivery_address != ''" style="font-size:20px;">
-            <small class="icon-left ion-paper-airplane"> Delivery Address</small>
+            <!-- DELIVER TO ME -->
+            <h1 ng-if="showItem.type == TRANS_TYPE.DELIVER_TO_ME && userInSession.user_id == showItem.from_user_id" style="font-size:20px;">
+                <small class="icon-left ion-paper-airplane"> Deliver To</small>
+                <br> Me
+            </h1> 
+
+            <h1 ng-if="showItem.type == TRANS_TYPE.DELIVER_TO_ME && userInSession.user_id == showItem.to_user_id" style="font-size:20px;">
+                <small class="icon-left ion-paper-airplane"> Deliver To</small>
+                <br>  <a href="" ng-click="showUser({{showItem.to_user_id}})">{{showItem.other_user_name}}</a>
+            </h1>                 
+
+            <!-- DELIVER To OTHER -->
+            <h1 ng-if="showItem.type == TRANS_TYPE.DELIVER_TO_OTHER && showItem.delivery_address != null && showItem.delivery_address != ''" 
+            style="font-size:20px;">
+            <small class="icon-left ion-paper-airplane"> Deliver To</small>
             <br>
-                {{showItem.delivery_address.address_line_1}}<br>
-                <span ng-if="showItem.delivery_address.address_line_2 != null">{{showItem.delivery_address.address_line_2}}<br></span>
-                {{showItem.delivery_address.city}}<br>{{showItem.delivery_address.state}}, {{showItem.delivery_address.postal_code}}
+                {{showItem.recipient_name}}<br>
+                <span style="font-size:15px;">
+                    {{showItem.delivery_address.address_line_1}}<br>
+                    <span ng-if="showItem.delivery_address.address_line_2 != null">{{showItem.delivery_address.address_line_2}}<br></span>
+                    {{showItem.delivery_address.city}}<br>{{showItem.delivery_address.state}}, {{showItem.delivery_address.postal_code}}
+                </span>
             </h1>
 
     <hr>

@@ -38,6 +38,12 @@ Number.prototype.getUserTypeLower = function() {
       return "dropship";
 }
 
+Number.prototype.getTransType = function(){
+  if(this == 1)
+    return "Pick Up";
+  if(this > 1)
+    return "Delivery"
+}
 
 String.prototype.getDate = function(){
 

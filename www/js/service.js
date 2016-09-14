@@ -561,6 +561,33 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
       })
   }
 
+  //in transactionsSortByAgent
+  getOtherUserListFromTransaction = function (user_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getOtherUserListFromTransaction',
+        params: {
+          parameters: {
+            user_id: user_id,
+          }
+        }
+      })
+  }
+
+  //in transactionsSortByAgent
+  getTransactionByOtherUserId = function (user_id, other_user_id){
+    return $http ({
+        method: 'GET',
+        url: Backand.getApiUrl() + '/1/query/data/getTransactionByOtherUserId',
+        params: {
+          parameters: {
+            user_id: user_id,
+            other_user_id: other_user_id
+          }
+        }
+      })
+  }
+
   editDeliveryDetailByTransId = function (trans_id,delivery_detail,updated_at){
     return $http ({
         method: 'GET',
@@ -806,6 +833,8 @@ myApp.service('BackandService', function ($http, Backand, auth, USER_TYPE,OFFSET
     //transactionQuery
     getUserActiveListing : getUserActiveListing,
     getUserCompletedTransaction : getUserCompletedTransaction,
+    getOtherUserListFromTransaction : getOtherUserListFromTransaction,
+    getTransactionByOtherUserId : getTransactionByOtherUserId,
 
     editTransactionStatus : editTransactionStatus,
     editTransactionPaymentStatus : editTransactionPaymentStatus,

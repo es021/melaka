@@ -2,31 +2,27 @@ var myApp = angular.module('sample.server-service', [
   'ui.router'
 ]);
 
-myApp.service('ServerService', function ($http, Backand, auth, USER_TYPE,OFFSET){
+myApp.service('ServerService', function ($http){
 
   var BASE_URL = "/v1";
 
-  putObject = function(object,id,data){
-    return $http({
-      method: "PUT",
-      url: BASE_URL +"/"+ object +"/"+ id,
-      data: data
-    })
+  tinifyStoreAWS = function (file_url,file_basename,product_id){
+    return $http ({
+        method: 'GET',
+        url: BASE_URL + '/query/data/tinifyStoreAWS',
+        params: {
+          parameters: {
+            file_url: file_url,
+            file_basename: file_basename,
+            product_id: product_id
+          }
+        }
+      })
   }
 
-  editTransactionStatus = function(id,status,timeUpdated){
-    return $http({
-      method: "PUT",
-      url: BASE_URL + "/transactions/"+id,
-      data: {
-        status: status,
-        updated_at: timeUpdated
-        }
-    })
-  }
 
   return{
-    putObject : putObject
+    tinifyStoreAWS : tinifyStoreAWS
   }
 
 });  

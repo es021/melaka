@@ -171,16 +171,23 @@
         <label class="item item-input item-select">
           <div class="input-label">Request Type</div>
           <select ng-model="newRequest.type" required>
-            <option selected>Delivery</option>
-            <option>Pick Up</option>
+            <option value="1">Pick Up</option>
+            <option value="2">Deliver To Me</option>
+            <option value="3">Deliver To Other</option>
           </select>
         </label>
 
 
         <!-- Delivery Address -->
         <!-- Delivery Address -->
-      <label ng-show="newRequest.type != 'Pick Up'" class="item item-input item-stacked-label">
-          <div class="input-label">Delivery Address</div>
+      <label ng-show="newRequest.type == TRANS_TYPE.DELIVER_TO_OTHER " class="item item-input item-stacked-label">
+          <div class="input-label">Recipient Name</div>
+          <!-- address-line1 input-->
+          <label class="item-input">
+            <input type="text" class="form-control" id="recipient-name" name="recipient-name" placeholder="Enter Customer Name" ng-model="newRequest.recipient_name" required>
+          </label>    
+
+          <div class="input-label">Recipient Address</div>
 
           <!-- address-line1 input-->
           <label class="item-input">
@@ -243,11 +250,11 @@
           <img id="mySpinner" ng-src="{{APP_CONSTANT.LOADER}}"/>
       </div>
 
-      <button ng-if="newRequest.type == 'Delivery' || newRequest.type == null" ng-disabled="!requestform.$valid || loadingRequest 
+      <button ng-if="newRequest.type == TRANS_TYPE.DELIVER_TO_OTHER || newRequest.type == null" ng-disabled="!requestform.$valid || loadingRequest 
                       || (newRequest.quantity > showObject.quantity) || (newRequest.quantity < showObject.specification.min_req_quantity)" 
         type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
 
-      <button ng-if="newRequest.type == 'Pick Up'" ng-disabled="loadingRequest || (newRequest.quantity > showObject.quantity) 
+      <button ng-if="newRequest.type < TRANS_TYPE.DELIVER_TO_OTHER " ng-disabled="loadingRequest || (newRequest.quantity > showObject.quantity) 
                       || newRequest.quantity == null || (newRequest.quantity < showObject.specification.min_req_quantity)" 
         type="submit" class="button button-block button-positive" ng-click="requestProduct()">Send Request</button>
 

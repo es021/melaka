@@ -33,12 +33,100 @@ myApp.config(function($stateProvider, BackandProvider) {
       data: {
         requiresLogin: true
       }
+    });    
+
+    $stateProvider
+    .state('transactionsSortByAgent', {
+      url: "/transactionsSortByAgent",
+      controller: 'TransactionsSortByAgentController',
+      templateUrl: 'transactions/transactionsSortByAgent.html',
+      data: {
+        requiresLogin: true
+      }
     });
 
 });
 
 
-myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,growl,NOTI_CATEGORY, $ionicPopup,$scope, BackandService,PublicService,FileReaderService, auth, TRANS_STATUS){
+myApp.controller('TransactionsSortByAgentController', function($state,OFFSET,$stateParams,growl,TRANS_TYPE, $scope, BackandService,PublicService, TRANS_STATUS){
+  
+  $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
+  $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
+
+  $scope.userList = {};
+  $scope.transactions = {};
+  $scope.showItem = {};
+  $scope.userListLoad = false;
+  $scope.showItemLoad = false;
+
+  $scope.TRANS_STATUS = TRANS_STATUS;
+  $scope.TRANS_TYPE = TRANS_TYPE;
+
+  getOtherUserListFromTransaction($scope.userInSession.user_id);
+
+
+  function getOtherUserListFromTransaction(user_id)
+  {
+    $scope.userListLoad = true;
+    BackandService.getOtherUserListFromTransaction(user_id).then(function(result){
+      
+        console.log(result.data);  
+
+        if(result.status == 200)
+        {
+          $scope.userList = result.data;
+          $scope.userListLoad = false;
+        }
+
+      }, function errorCallback(result){
+          PublicService.errorCallbackFunction(result,"default");
+          $scope.userListLoad = false;
+    }); 
+  }
+
+  function getTransactionByOtherUserId(user_id, other_user_id)
+  {
+    $scope.showItemLoad = true;
+    BackandService.getTransactionByOtherUserId(user_id, other_user_id).then(function(result){
+      
+        console.log(result.data);  
+
+        if(result.status == 200)
+        {
+          $scope.transactions = result.data;
+          $scope.showItemLoad = false;
+        }
+
+      }, function errorCallback(result){
+          PublicService.errorCallbackFunction(result,"default");
+          $scope.showItemLoad = false;
+    }); 
+  }
+
+
+  $scope.toggleItem = function(item) {
+    //console.log(item.product_id);
+    //getProductbyId(item.product_id);
+
+    if ($scope.isItemShown(item)) 
+    {
+      $scope.showItem = null;
+    } 
+    else 
+    {
+      getTransactionByOtherUserId($scope.userInSession.user_id, item.id);
+      $scope.showItem = item;
+    }
+
+  };
+
+  $scope.isItemShown = function(item) {
+    return $scope.showItem === item;
+  }; 
+  
+});
+
+myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,growl,NOTI_CATEGORY,TRANS_TYPE, $ionicPopup,$scope, BackandService,PublicService,FileReaderService, auth, TRANS_STATUS){
   
   $scope.authProfile = JSON.parse(window.localStorage.getItem("AuthProfile"));
   $scope.userInSession = JSON.parse(window.localStorage.getItem("UserInSession"));
@@ -46,6 +134,7 @@ myApp.controller('TransactionsController', function($state,OFFSET,$stateParams,g
   $scope.showItem = {};
   $scope.product_quantity = null;
   $scope.TRANS_STATUS = TRANS_STATUS;
+  $scope.TRANS_TYPE = TRANS_TYPE;
   $scope.stateName = $state.current.name;
   $scope.loading = false;
   $scope.show = 'info';

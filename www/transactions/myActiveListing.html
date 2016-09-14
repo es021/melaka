@@ -21,6 +21,8 @@
 </a>
     <a href="" class="link small" ng-click="myActiveListing()">See My Active Listing</a>
 </div>
+<a href="" class="link small" ng-click="transactionsSortByAgent()">Sort Transactions By User</a>
+<br>
 <br>
       <!-- ******************************************************************************************************************************* -->
       <ion-list class="text-left">
@@ -41,8 +43,8 @@
         <div ng-repeat="item in activeListing">
             <a class="item item-icon-right" ng-click="toggleItem(item)" ng-class="{active: isItemShown(item)}">
 		    
-		    <i ng-if="item.type == 'Pick Up'" class="fa fa-home"></i>
-		    <i ng-if="item.type == 'Delivery'" class="fa fa-truck"></i>
+		    <i ng-if="item.type == TRANS_TYPE.PICK_UP" class="fa fa-home"></i>
+		    <i ng-if="item.type > TRANS_TYPE.PICK_UP" class="fa fa-truck"></i>
 			
 			{{item.product_name}} 
 
@@ -57,7 +59,7 @@
 			<span ng-if="item.status == TRANS_STATUS.REQUESTED" class="label label-primary"><i class="fa fa-paper-plane"></i> Requested</span>
             <span ng-if="item.status == TRANS_STATUS.DENIED" class="label label-danger"><i class="fa fa-times"></i> Denied</span>
             <span ng-if="item.status == TRANS_STATUS.APPROVED" class="label label-success"><i class="fa fa-check"></i> Approved</span>
-            <span ng-if="item.status == TRANS_STATUS.DELIVERED && item.type == 'Delivery'" class="label label-info"><i class="fa fa-truck"></i> Delivered</span>
+            <span ng-if="item.status == TRANS_STATUS.DELIVERED && item.type > TRANS_TYPE.PICK_UP" class="label label-info"><i class="fa fa-truck"></i> Delivered</span>
             <span ng-if="item.status == TRANS_STATUS.RECEIVED" class="label label-primary"><i class="fa fa-download"></i> Package Received</span>
 
             <span ng-if="item.payment_status == TRANS_STATUS.NOT_PAID" class="label label-danger"><i class="fa fa-times"></i> Not Paid</span>
@@ -157,7 +159,7 @@
 					ng-click="updateTrans({{showItem.id}},'status',TRANS_STATUS.DENIED)"
 					class="button button-small button-outline button-assertive icon-left ion-close-round">Deny</button>
     	
-					<button ng-if="showItem.status == TRANS_STATUS.APPROVED && showItem.type == 'Delivery'"
+					<button ng-if="showItem.status == TRANS_STATUS.APPROVED && showItem.type > TRANS_TYPE.PICK_UP"
 					ng-click="updateTrans({{showItem.id}},'status',TRANS_STATUS.DELIVERED)" 
 					class="button button-small button-outline button-balanced icon-left ion-paper-airplane">Deliver</button>
     	

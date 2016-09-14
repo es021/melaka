@@ -163,8 +163,6 @@ app.put('/v1/:object/:id', function(request, response, next) {
   }
 
   //var query = "SELECT * from "+object+" WHERE id LIKE "+id;
-  
-
   //runBasicQuery(query,APICallbackFunction, response)
   //setTimerFlush(response);
 });

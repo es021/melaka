@@ -54,12 +54,14 @@ myApp.config(function($stateProvider,$urlRouterProvider, authProvider) {
 ///////////////// ShowProductController  //////////////////////////////////////////////////////////////////////////////////////////////
 ///////////////// ShowProductController  //////////////////////////////////////////////////////////////////////////////////////////////
 
-myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, PublicService,BackandService,NOTI_CATEGORY, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
+myApp.controller('ShowProductController', function($scope,$ionicPopup, $location, PublicService,BackandService,NOTI_CATEGORY,TRANS_TYPE, $state, $stateParams, growl, TRANS_STATUS, USER_LINK_TYPE){
   $scope.showObject = null;
   $scope.lastUpdated = null;
   $scope.hasCustomPricing = null;
   $scope.customPricingList = [];
   $scope.imageList = [];
+
+  $scope.TRANS_TYPE = TRANS_TYPE;
 
   $scope.productId = $stateParams.product_id;
   $scope.show = $stateParams.show;

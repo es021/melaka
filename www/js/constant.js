@@ -56,6 +56,12 @@ myApp.constant("USER_TYPE", {
 
 });
 
+myApp.constant("TRANS_TYPE", {
+        "PICK_UP": 1,
+        "DELIVER_TO_ME": 2,
+        "DELIVER_TO_OTHER": 3
+});
+
 myApp.constant("TRANS_STATUS", {
         "REQUESTED": 1,
         "DENIED": 2,

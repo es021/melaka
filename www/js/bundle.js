@@ -271,6 +271,11 @@ myApp.controller('AppController', ["growl", "Backand", "$scope", "UserService", 
     $state.go('signup');    
   };
 
+  $scope.transactionsSortByAgent = function() {  
+     
+    $state.go('transactionsSortByAgent');
+  };
+
   $scope.myActiveListing = function() {
     closeSideMenuBar();
     var pageNumber = 1;
