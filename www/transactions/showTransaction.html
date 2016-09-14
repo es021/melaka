@@ -127,7 +127,9 @@
 
             <h1 ng-if="showItem.type == TRANS_TYPE.DELIVER_TO_ME && userInSession.user_id == showItem.to_user_id" style="font-size:20px;">
                 <small class="icon-left ion-paper-airplane"> Deliver To</small>
-                <br>  <a href="" ng-click="showUser({{showItem.to_user_id}})">{{showItem.other_user_name}}</a>
+                <br>  
+                    <a ng-if="userInSession.user_id == showItem.from_user_id" href="" ng-click="showUser({{showItem.to_user_id}})">{{showItem.other_user_name}}</a>
+                    <a ng-if="userInSession.user_id == showItem.to_user_id" href="" ng-click="showUser({{showItem.from_user_id}})">{{showItem.other_user_name}}</a>
             </h1>                 
 
             <!-- DELIVER To OTHER -->
